@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Golf Score</title>
+  <meta name="theme-color" content="#2f6b3f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Golf Score" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <style>
+    :root {
+      --primary: #2f6b3f;
+      --primary-dark: #1e4d2b;
+      --primary-soft: #dfeedd;
+      --accent: #c6a15b;
+      --sand: #f3eee2;
+      --bg: #eef4ec;
+      --card: #ffffff;
+      --border: #d6e2d3;
+      --birdie: #c33232;
+      --bogey: #2f2f2f;
+      --muted: #7c8879;
+      --warn: #a72828;
+      --text: #18311f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(180deg, #f4f8f2 0%, var(--bg) 100%);
+      margin: 0;
+      padding-bottom: 34px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: .01em;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .tab-nav {
+      display: flex;
+      background: rgba(255,255,255,.96);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(47,107,63,.08);
+      box-shadow: 0 4px 18px rgba(18,45,26,.08);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 18px 8px;
+      border: none;
+      background: none;
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: #6f7a6f;
+      border-bottom: 4px solid transparent;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .tab-btn.active { color: var(--primary-dark); border-bottom: 4px solid var(--primary); background: linear-gradient(180deg, rgba(47,107,63,.03), rgba(47,107,63,.01)); }
+    .content { padding: 12px; display: none; max-width: 1380px; margin: 0 auto; }
+    .content.active { display: block; }
+    .card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(31,66,40,.06);
+      margin-bottom: 14px;
+    }
+    h2 {
+      color: var(--primary-dark);
+      font-size: 1.14rem;
+      border-left: 5px solid var(--accent);
+      padding-left: 10px;
+      margin: 0 0 12px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .small-note { font-size: .86rem; color: #61705f; line-height: 1.45; }
+    .warning-box {
+      display: none;
+      background: #fff4e5;
+      border: 2px solid #ffcc80;
+      color: #8a4b00;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+    .danger-box {
+      display: none;
+      background: #ffebee;
+      border: 2px solid #ef9a9a;
+      color: var(--warn);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+    label small { display: block; margin-bottom: 5px; color: #5f6d5d; font-size: .82rem; }
+    input, select {
+      width: 100%;
+      padding: 13px 12px;
+      border: 2px solid #d2ddd0;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 900;
+      background: #fff;
+      color: var(--text);
+      min-height: 50px;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(47,107,63,.09);
+    }
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-right: 8px;
+      pointer-events: none;
+    }
+    .check-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .check-item {
+      background: #fff;
+      border: 2px solid #cfdbcf;
+      padding: 14px 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      min-height: 52px;
+    }
+    .check-item.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); }
+    .check-item.disabled { background: #f1f3f0; border-color: #e1e6df; color: #adb6ab; cursor: not-allowed; }
+    .mode-stack { display: grid; gap: 8px; }
+    .mode-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid #cfdbcf;
+      border-radius: 14px;
+      padding: 13px 14px;
+      cursor: pointer;
+      user-select: none;
+      min-height: 54px;
+      background: #fff;
+    }
+    .mode-row.active { background: linear-gradient(180deg, #edf7ee, #e5f2e6); border-color: var(--primary); color: var(--primary-dark); }
+    .mode-row.disabled { background: #f1f3f0; border-color: #e1e6df; color: #a5afa2; cursor: not-allowed; }
+    .mode-child { margin-left: 18px; }
+    .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .table-wrapper { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    table { border-collapse: collapse; text-align: center; width: 100%; min-width: 1900px; table-layout: fixed; }
+    th, td {
+      border: 1px solid #e4ebe2;
+      padding: 4px;
+      height: 68px;
+      position: relative;
+      font-weight: 900;
+      font-size: 1.04rem;
+      background: #fff;
+      color: var(--text);
+    }
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      background: #f8fbf7;
+      z-index: 60;
+      width: 108px;
+      border-right: 2px solid #dbe5d8;
+    }
+    .score-cell input { border: none !important; background: transparent !important; width: 100%; height: 100%; font-size: 1.58rem; padding: 0; }
+    .mark-circle {
+      border: 3px solid var(--birdie);
+      border-radius: 50%; width: 48px; height: 48px;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .mark-double-circle {
+      border: 6px double var(--birdie);
+      border-radius: 50%; width: 52px; height: 52px;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .mark-square {
+      border: 3px solid var(--bogey);
+      width: 48px; height: 48px;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .mark-double-square {
+      border: 6px double var(--bogey);
+      width: 52px; height: 52px;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .res-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf1ec;
+      font-size: 1.02rem;
+    }
+    .red-text { color: #c33232; }
+    .green-text { color: var(--primary-dark); }
+    .muted { color: #7a8678; }
+    .final-area {
+      background: linear-gradient(180deg, #2f6b3f 0%, #285937 100%);
+      color: white;
+      padding: 16px;
+      border-radius: 18px;
+      margin-top: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 14px 28px rgba(24,49,31,.16);
+    }
+    .res-table { min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .res-table th, .res-table td { height: auto; padding: 9px 8px; font-size: .98rem; }
+    .res-table th { background: #f3f7f1; color: var(--primary-dark); }
+    .pair-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .player-pair-card { border: 2px solid var(--border); border-radius: 14px; padding: 14px; }
+    .player-pair-title { font-size: 1.02rem; color: var(--primary-dark); margin-bottom: 10px; }
+    .pair-row {
+      display: grid;
+      grid-template-columns: auto 1fr 96px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e9e0;
+    }
+    .pair-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .pair-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border: 2px solid #cfd9cd;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      background: #fff;
+    }
+    .pair-toggle.active { background: var(--primary-soft); border-color: var(--primary); }
+    .pair-toggle.disabled { background: #f1f3f0; border-color: #e1e6df; cursor: not-allowed; }
+    .pair-name { text-align: left; font-size: .98rem; }
+    .pair-score-input { padding: 10px 8px; font-size: .98rem; min-height: 44px; }
+    .pair-score-input:disabled { background: #f4f5f3; color: #aaa; }
+    .rank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .action-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
+    button.action-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: .98rem;
+      font-weight: 900;
+      cursor: pointer;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 6px 18px rgba(47,107,63,.16);
+    }
+    button.action-btn.secondary { background: #607d8b; }
+    button.action-btn.danger { background: #c62828; }
+    .hole-win-log { display: grid; gap: 6px; }
+    .hole-win-item {
+      background: #f6faf5;
+      border: 1px solid #dde7db;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .96rem;
+      color: var(--text);
+    }
+    .summary-table { width: 100%; min-width: unset; table-layout: auto; border-collapse: separate; border-spacing: 0; }
+    .summary-table th, .summary-table td { height: auto; padding: 10px 8px; font-size: .96rem; }
+    .summary-table th { background: var(--primary); color: #fff; border-bottom: 1px solid var(--primary-dark); }
+    .summary-table td { background: rgba(255,255,255,.96); color: var(--text); border-bottom: 1px solid #e5eee2; }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table td:first-child, .summary-table th:first-child { border-top-left-radius: 12px; }
+    .summary-table td:last-child, .summary-table th:last-child { border-top-right-radius: 12px; }
+    .center-note { text-align: center; color: #72806f; padding: 8px 0 2px; font-size: .95rem; }
+    .result-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 12px; }
+    .result-stack { display: grid; gap: 12px; }
+    #result .card { overflow: hidden; }
+
+    .collapse-block { border: 1px solid #dde7db; border-radius: 14px; overflow: hidden; background: #fff; margin-top: 10px; }
+    .collapse-head {
+      width: 100%; border: none; background: #f4f8f3; color: var(--primary-dark);
+      font-size: .98rem; font-weight: 900; padding: 13px 14px; text-align: left; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .collapse-head::after { content: '＋'; font-size: 1.1rem; }
+    .collapse-block.open .collapse-head::after { content: '－'; }
+    .collapse-body { display: none; padding: 10px; border-top: 1px solid #e3ece1; background: #fff; }
+    .collapse-block.open .collapse-body { display: block; }
+    .section-summary {
+      background: #eef5ec; border: 1px solid #dbe7d8; border-radius: 12px; padding: 10px 12px;
+      font-size: .93rem; color: var(--text); margin-bottom: 8px; line-height: 1.5;
+    }
+    .export-wrap { margin-bottom: 10px; display: flex; justify-content: flex-end; }
+    .jpg-capture { background: #fff; border-radius: 18px; }
+
+    .vegas-rank-btn {
+      width: 100%;
+      padding: 13px 44px 13px 12px;
+      border: 2px solid #d2ddd0;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 900;
+      background: #fff;
+      color: var(--text);
+      min-height: 50px;
+      position: relative;
+      cursor: pointer;
+    }
+    .vegas-rank-btn::after {
+      content: '⌄';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-52%);
+      font-size: 1.35rem;
+      color: var(--text);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .vegas-rank-btn:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(47,107,63,.09);
+    }
+    .rank-picker-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.28);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 18px;
+    }
+    .rank-picker-overlay.show { display: flex; }
+    .rank-picker-sheet {
+      width: min(420px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.22);
+    }
+    .rank-picker-title {
+      padding: 16px 18px;
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      border-bottom: 1px solid #e6ece4;
+      text-align: center;
+    }
+    .rank-picker-option {
+      width: 100%;
+      border: none;
+      background: #fff;
+      padding: 18px 20px;
+      text-align: left;
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: var(--text);
+      border-bottom: 1px solid #edf1ec;
+      cursor: pointer;
+    }
+    .rank-picker-option:last-child { border-bottom: none; }
+
+    @media (max-width: 1024px) {
+      .result-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) {
+      .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid { grid-template-columns: 1fr; }
+      .pair-row { grid-template-columns: 42px 1fr 88px; }
+      .tab-btn { font-size: .95rem; padding: 15px 6px; }
+      .content { padding: 10px; }
+      .card { padding: 13px; border-radius: 16px; margin-bottom: 10px; }
+      h2 { font-size: 1.02rem; margin-bottom: 10px; }
+      .small-note { font-size: .8rem; }
+      input, select { min-height: 46px; font-size: 1rem; padding: 11px 10px; }
+      .mode-row, .check-item { min-height: 48px; padding: 11px 12px; }
+      .res-row { font-size: .96rem; padding: 8px 0; }
+      .hole-win-item { padding: 8px 10px; font-size: .92rem; }
+      .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
+    <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
+    <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
+  </div>
+
+  <div id="setting" class="content active">
+    <div id="global-warning" class="warning-box"></div>
+    <div class="card">
+      <h2>1. 球場與今日比賽模式</h2>
+      <div class="grid-3" style="margin-bottom:12px;">
+        <div>
+          <label><small>球場名稱</small></label>
+          <input type="text" id="courseName" placeholder="請輸入球場名稱">
+        </div>
+        <div>
+          <label><small>已儲存球場</small></label>
+          <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
+        </div>
+        <div>
+          <label><small>起始洞</small></label>
+          <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()">
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:12px;">
+        <div>
+          <label><small>點 / 元</small></label>
+          <input type="number" id="pointVal" value="1">
+        </div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="grid-4" style="margin-bottom:18px;">
+        <div><label><small>Birdie 倍率</small></label><input type="number" id="mB" value="2"></div>
+        <div><label><small>Eagle4 倍率</small></label><input type="number" id="mE4" value="5"></div>
+        <div><label><small>Eagle5 倍率</small></label><input type="number" id="mE5" value="3"></div>
+        <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
+      </div>
+      <div class="mode-stack">
+        <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
+          <input type="checkbox" id="modeVegas" checked>
+          <span>Vegas</span>
+        </div>
+        <div class="mode-row mode-child" id="modeRowExt" onclick="toggleMainMode('extMode')">
+          <input type="checkbox" id="extMode">
+          <span>平手遞延</span>
+        </div>
+        <div class="mode-row active" id="modeRowMatch" onclick="toggleMainMode('modeMatch')">
+          <input type="checkbox" id="modeMatch" checked>
+          <span>比洞</span>
+        </div>
+        <div class="mode-row active" id="modeRowPar" onclick="toggleMainMode('modePar')">
+          <input type="checkbox" id="modePar" checked>
+          <span>抓PAR</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="player-config-area"></div>
+
+  </div>
+
+  <div id="scoring" class="content">
+    <div id="scoring-warning" class="warning-box"></div>
+    <div id="scoring-danger" class="danger-box"></div>
+    <div class="card" id="course-save-area">
+      <h2>1. 球場資料</h2>
+      <div class="small-note">球洞 PAR 與 HDCP 輸入完成後，可直接在這裡儲存或刪除目前球場資料。</div>
+      <div class="action-row">
+        <button class="action-btn" onclick="saveCourseProfile()">儲存球場資料</button>
+        <button class="action-btn danger" onclick="deleteCourseProfile()">刪除球場資料</button>
+      </div>
+    </div>
+
+    <div id="vegas-rank-area" class="card"></div>
+
+    <div class="table-wrapper">
+      <table id="mainTable">
+        <thead>
+          <tr id="rowH"></tr>
+          <tr id="rowP"></tr>
+          <tr id="rowHd"></tr>
+        </thead>
+        <tbody id="playerRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="result" class="content">
+    <div class="result-grid">
+      <div class="result-stack">
+        <div class="final-area jpg-capture" id="result-capture"><div class="export-wrap"><button class="action-btn secondary" onclick="exportResultAsJpg()">輸出 JPG</button></div><h2>💰 總結算</h2><div id="final-money"></div></div>
+        <div class="card"><h2>🏆 Match 比洞矩陣</h2><div id="match-output"></div></div>
+      </div>
+      <div class="result-stack">
+        <div class="card"><h2>🎯 抓PAR 點數</h2><div id="par-output"></div></div>
+        <div class="card"><h2>🎲 Vegas 點數</h2><div id="vegas-output"></div></div>
+        <div class="card"><h2>📝 Vegas 每洞勝負</h2><div id="vegas-hole-output"></div></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="rank-picker-overlay" id="rankPickerOverlay" onclick="closeVegasRankPicker(event)">
+    <div class="rank-picker-sheet" onclick="event.stopPropagation()">
+      <div class="rank-picker-title" id="rankPickerTitle">請選擇排名</div>
+      <div id="rankPickerOptions"></div>
+    </div>
+  </div>
+
+  <script>
+    const playerIDs = [0,1,2,3];
+    const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
+    const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
+    let selectedAllOnce = false;
+
+    function openTab(t){
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(t).classList.add('active');
+      document.getElementById('tab-' + (t==='setting'?'set':t==='scoring'?'score':'res')).classList.add('active');
+      if (t === 'scoring') {
+          refreshSavedCourseSelect();
+      }
+    }
+
+    function nameOf(i){
+      return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
+    }
+
+
+    function applyNumericKeyboardHints(root=document){
+      if (!root) return;
+      root.querySelectorAll('input[type="number"]').forEach(el => {
+        const id = el.id || '';
+        const cls = el.className || '';
+        if (cls.includes('pair-score-input') || id.startsWith('pair-strokes-')) {
+          el.setAttribute('inputmode', 'decimal');
+          el.setAttribute('enterkeyhint', 'done');
+          return;
+        }
+        el.setAttribute('inputmode', 'numeric');
+        el.setAttribute('pattern', '[0-9]*');
+        el.setAttribute('enterkeyhint', 'done');
+      });
+    }
+
+    function attachSelectAllBehavior(root=document){
+      const inputs = root.querySelectorAll('input:not([type="checkbox"]), textarea');
+      inputs.forEach(el => {
+        if (el.dataset.selectReady === '1') return;
+        el.dataset.selectReady = '1';
+        const selectAll = () => {
+          try { el.select(); } catch(e) {}
+        };
+        el.addEventListener('focus', selectAll);
+        el.addEventListener('click', selectAll);
+        el.addEventListener('mouseup', e => e.preventDefault());
+      });
+    }
+
+    function normalizeCourseName(name){
+      return (name || '').replace(/\s+/g,' ').trim().toLowerCase();
+    }
+
+    function getPlayOrder(){
+      let start = parseInt(document.getElementById('startHole').value) || 1;
+      if (start < 1 || start > 18) start = 1;
+      const arr = [];
+      for (let i=0;i<18;i++) arr.push(((start - 1 + i) % 18) + 1);
+      return arr;
+    }
+
+    function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
+    function isParEnabled(){ return document.getElementById('modePar').checked; }
+    function isVegasEnabled(){ return document.getElementById('modeVegas').checked; }
+    function isExtEnabled(){ return document.getElementById('extMode').checked; }
+
+    function toggleMainMode(id){
+      const cb = document.getElementById(id);
+      if (id === 'extMode' && !isVegasEnabled()) return;
+      cb.checked = !cb.checked;
+      applyModeStates(id);
+    }
+
+    function setPlayerSmallBoxState(playerId, suffix){
+      const cb = document.getElementById(`p${playerId}_${suffix}`);
+      const box = document.getElementById(`box_p${playerId}_${suffix}`);
+      if (!cb || !box) return;
+      const parentEnabled = suffix === 'm' ? isMatchEnabled() : isParEnabled();
+      box.classList.toggle('active', parentEnabled && cb.checked);
+      box.classList.toggle('disabled', !parentEnabled);
+    }
+
+    function setPlayerMatchSelected(playerId, checked){
+      const cb = document.getElementById(`p${playerId}_m`);
+      if (!cb) return;
+      cb.checked = checked;
+      setPlayerSmallBoxState(playerId, 'm');
+    }
+
+    function setPlayerParSelected(playerId, checked){
+      const cb = document.getElementById(`p${playerId}_p`);
+      if (!cb) return;
+      cb.checked = checked;
+      setPlayerSmallBoxState(playerId, 'p');
+    }
+
+    function normalizeMatchPairStates(){
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_').map(Number);
+        const aOn = !!document.getElementById(`p${a}_m`)?.checked;
+        const bOn = !!document.getElementById(`p${b}_m`)?.checked;
+        const shouldEnable = isMatchEnabled() && aOn && bOn;
+        if (shouldEnable) {
+          const current = document.getElementById(`pair-strokes-${a}-${b}`)?.value;
+          const value = current === '' || current === undefined ? 0 : current;
+          setPairState(a,b,true,value);
+        } else {
+          setPairState(a,b,false,'');
+        }
+      });
+      refreshAllPairDisabledState();
+    }
+
+    function resetAllMatchDefaults(){
+      playerIDs.forEach(i => setPlayerMatchSelected(i, true));
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_').map(Number);
+        setPairState(a,b,true,0);
+      });
+      refreshAllPairDisabledState();
+    }
+
+    function resetAllParDefaults(){
+      playerIDs.forEach(i => {
+        const cb = document.getElementById(`p${i}_p`);
+        const box = document.getElementById(`box_p${i}_p`);
+        if (!cb) return;
+        cb.checked = true;
+        box.classList.add('active');
+      });
+    }
+
+    function applyModeStates(changedMode = ''){
+      const vegas = isVegasEnabled();
+      const match = isMatchEnabled();
+      const par = isParEnabled();
+
+      setModeRow('modeRowVegas', vegas, false);
+      setModeRow('modeRowMatch', match, false);
+      setModeRow('modeRowPar', par, false);
+
+      if (!vegas) document.getElementById('extMode').checked = false;
+      setModeRow('modeRowExt', isExtEnabled(), !vegas);
+
+      playerIDs.forEach(i => {
+        syncPlayerSmallMode(i, 'm', match);
+        syncPlayerSmallMode(i, 'p', par);
+      });
+
+      if (changedMode === 'modeMatch' && match) resetAllMatchDefaults();
+      if (changedMode === 'modePar' && par) resetAllParDefaults();
+
+      document.getElementById('vegas-rank-area').style.display = vegas ? 'block' : 'none';
+      normalizeMatchPairStates();
+    }
+
+    function setModeRow(rowId, active, disabled){
+      const row = document.getElementById(rowId);
+      row.classList.toggle('active', active && !disabled);
+      row.classList.toggle('disabled', disabled);
+    }
+
+    function syncPlayerSmallMode(playerId, suffix, enabled){
+      const cb = document.getElementById(`p${playerId}_${suffix}`);
+      if (!cb) return;
+      if (!enabled) cb.checked = false;
+      cb.disabled = !enabled;
+      setPlayerSmallBoxState(playerId, suffix);
+    }
+
+    function togglePlayerSmallMode(playerId, suffix){
+      const parentOk = suffix === 'm' ? isMatchEnabled() : isParEnabled();
+      if (!parentOk) return;
+      const cb = document.getElementById(`p${playerId}_${suffix}`);
+      if (!cb || cb.disabled) return;
+      cb.checked = !cb.checked;
+      setPlayerSmallBoxState(playerId, suffix);
+      if (suffix === 'm') {
+        normalizeMatchPairStates();
+      }
+    }
+
+    function initUI(){
+      renderPlayerCards();
+      renderVegasRankInputs();
+      renderScoreboard();
+      applyModeStates();
+      refreshSavedCourseSelect();
+      attachSelectAllBehavior(document);
+      applyNumericKeyboardHints(document);
+      bindCourseAutoLoad();
+    }
+
+    function renderPlayerCards(){
+      let html = `<div class="grid-2">`;
+      playerIDs.forEach(i => {
+        html += `
+          <div class="card" style="margin-bottom:0; padding:15px;">
+            <input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()">
+            <div class="check-group" style="margin-top:10px;">
+              <div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i}, 'm')"><input type="checkbox" id="p${i}_m" checked>比洞</div>
+              <div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i}, 'p')"><input type="checkbox" id="p${i}_p" checked>抓PAR</div>
+            </div>
+            <div style="margin-top:12px; border-top:2px dashed #e6ece4; padding-top:10px;">
+              <div class="small-note" style="margin-bottom:8px;">比洞設定：勾選代表有比。輸入正數 = 目前這位玩家讓對手；負數 = 對手讓目前這位玩家；空白視為平打 0 洞。</div>
+              ${playerIDs.filter(j => j !== i).map(j => `
+                <div class="pair-row">
+                  <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
+                  <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
+                  <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
+                </div>
+              `).join('')}
+            </div>
+          </div>`;
+      });
+      html += `</div>`;
+      document.getElementById('player-config-area').innerHTML = html;
+      attachSelectAllBehavior(document.getElementById('player-config-area'));
+      applyNumericKeyboardHints(document.getElementById('player-config-area'));
+      refreshAllPairDisabledState();
+    }
+
+    function renderVegasRankInputs(){
+      let html = `<h2>2. Vegas 起始洞排名</h2>`;
+      html += `<div class="small-note" style="margin-bottom:12px;">請依起始洞開球距離輸入第1名到第4名，系統會自動以 1+4、2+3 分組。</div>`;
+      html += `<div class="rank-grid">`;
+      playerIDs.forEach(i => {
+        html += `<div><label><small id="vr-name-${i}">${nameOf(i)}</small></label>
+          <input type="hidden" id="vegasRank${i}" value="">
+          <button type="button" class="vegas-rank-btn" id="vegasRankBtn${i}" onclick="openVegasRankPicker(${i})">請選擇</button>
+        </div>`;
+      });
+      html += `</div><div class="center-note" id="vegasStartPreview">起始洞分組：尚未設定</div>`;
+      document.getElementById('vegas-rank-area').innerHTML = html;
+    }
+
+    function updateNames(){
+      playerIDs.forEach(i => {
+        const nm = nameOf(i);
+        const ids = [
+          `tag-${i}`,
+          `pair-title-${i}`,
+          `vr-name-${i}`
+        ];
+        ids.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = nm; });
+        playerIDs.forEach(j => {
+          const pnm = document.getElementById(`pair-name-${i}-${j}`);
+          if (pnm) pnm.innerText = nameOf(j);
+        });
+      });
+      updateVegasPreview();
+    }
+
+    function refreshAllPairDisabledState(){
+      playerIDs.forEach(i => {
+        playerIDs.forEach(j => {
+          if (i===j) return;
+          const toggle = document.getElementById(`pair-toggle-${i}-${j}`);
+          const input = document.getElementById(`pair-strokes-${i}-${j}`);
+          const active = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
+          const playerEnabled = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+          if (!toggle || !input) return;
+          toggle.classList.toggle('disabled', !playerEnabled);
+          toggle.classList.toggle('active', playerEnabled && active);
+          input.disabled = !playerEnabled || !active;
+        });
+      });
+    }
+
+    function setPairState(i,j,checked,value,fromSync=false){
+      const cb = document.getElementById(`pair-check-${i}-${j}`);
+      const tg = document.getElementById(`pair-toggle-${i}-${j}`);
+      const inp = document.getElementById(`pair-strokes-${i}-${j}`);
+      if (!cb || !tg || !inp) return;
+      const pairEnabled = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      cb.checked = checked && pairEnabled;
+      tg.classList.toggle('active', cb.checked);
+      tg.classList.toggle('disabled', !pairEnabled);
+      inp.disabled = !cb.checked;
+      inp.value = cb.checked ? (value ?? '') : '';
+      if (!fromSync) {
+        const mirroredValue = cb.checked ? (value === '' || value === null || value === undefined ? '' : String(-1 * Number(value || 0))) : '';
+        setPairState(j,i,cb.checked,mirroredValue,true);
+      }
+    }
+
+    function togglePair(i,j){
+      const playersReady = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      if (!playersReady) return;
+      const cb = document.getElementById(`pair-check-${i}-${j}`);
+      const currentValue = document.getElementById(`pair-strokes-${i}-${j}`).value;
+      if (cb.checked) setPairState(i,j,false,'');
+      else setPairState(i,j,true,currentValue === '' ? 0 : currentValue);
+      refreshAllPairDisabledState();
+    }
+
+    function handlePairStrokeInput(i,j){
+      const playersReady = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      if (!playersReady) return;
+      const input = document.getElementById(`pair-strokes-${i}-${j}`);
+      const raw = input.value;
+      setPairState(i,j,true,raw === '' ? 0 : raw);
+      refreshAllPairDisabledState();
+    }
+
+    function bindCourseAutoLoad(){
+      const courseInput = document.getElementById('courseName');
+      courseInput.addEventListener('input', () => {
+          const name = courseInput.value.trim();
+        if (!name) return;
+        const all = getSavedCourses();
+        const key = normalizeCourseName(name);
+        if (all[key]) {
+          applyCourseData(all[key]);
+          refreshSavedCourseSelect(key);
+          showWarning('已自動帶入已儲存球場資料。', 'global');
+        }
+      });
+    }
+
+    function getSavedCourses(){
+      try { return JSON.parse(localStorage.getItem('golfSavedCoursesV21') || '{}'); }
+      catch(e){ return {}; }
+    }
+
+    function setSavedCourses(data){
+      localStorage.setItem('golfSavedCoursesV21', JSON.stringify(data));
+    }
+
+    function refreshSavedCourseSelect(selectedKey=''){
+      const sel = document.getElementById('savedCourseSelect');
+      if (!sel) return;
+      const all = getSavedCourses();
+      const keys = Object.keys(all).sort((a,b) => (all[a].name || '').localeCompare(all[b].name || ''));
+      let html = `<option value="">請選擇已儲存球場</option>`;
+      keys.forEach(k => {
+        html += `<option value="${k}">${all[k].name}</option>`;
+      });
+      sel.innerHTML = html;
+      if (selectedKey && all[selectedKey]) sel.value = selectedKey;
+    }
+
+    function gatherCourseData(){
+      const par = {}, hdcp = {};
+      for (let h=1; h<=18; h++) {
+        par[h] = document.getElementById(`cell_P_${h}`)?.value ?? '';
+        hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value ?? '';
+      }
+      return { name: (document.getElementById('courseName').value || '').trim(), par, hdcp };
+    }
+
+    function applyCourseData(data){
+      if (!data) return;
+      document.getElementById('courseName').value = data.name || '';
+      for (let h=1; h<=18; h++) {
+        if (document.getElementById(`cell_P_${h}`)) document.getElementById(`cell_P_${h}`).value = data.par?.[h] ?? '';
+        if (document.getElementById(`cell_Hd_${h}`)) document.getElementById(`cell_Hd_${h}`).value = data.hdcp?.[h] ?? '';
+      }
+      updateParTotals();
+      playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
+    }
+
+    function handleSavedCourseSelect(){
+      const key = document.getElementById('savedCourseSelect').value;
+      if (!key) return;
+      const all = getSavedCourses();
+      if (!all[key]) return;
+      applyCourseData(all[key]);
+      showWarning('已載入球場資料。', 'global');
+    }
+
+    function saveCourseProfile(){
+      const data = gatherCourseData();
+      if (!data.name) {
+        alert('請先輸入球場名稱。');
+        return;
+      }
+      const all = getSavedCourses();
+      const key = normalizeCourseName(data.name);
+      all[key] = data;
+      setSavedCourses(all);
+      refreshSavedCourseSelect(key);
+      showWarning('球場資料已儲存。', 'scoring');
+    }
+
+    function deleteCourseProfile(){
+      const name = (document.getElementById('courseName').value || '').trim();
+      if (!name) { alert('目前沒有可刪除的球場名稱。'); return; }
+      const key = normalizeCourseName(name);
+      const all = getSavedCourses();
+      if (!all[key]) { alert('找不到已儲存的同名球場資料。'); return; }
+      if (!confirm(`確定要刪除「${all[key].name}」的球場資料嗎？`)) return;
+      delete all[key];
+      setSavedCourses(all);
+      refreshSavedCourseSelect('');
+      showWarning('球場資料已刪除。', 'scoring');
+    }
+
+    function renderScoreboard(){
+      const order = getPlayOrder();
+      let rowH = `<th class="sticky-col">Hole</th>`;
+      let rowP = `<th class="sticky-col">PAR</th>`;
+      let rowHd = `<th class="sticky-col">HDCP</th>`;
+
+      order.forEach((hole, idx) => {
+        rowH += `<td>${hole}</td>`;
+        rowP += `<td><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
+        rowHd += `<td><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
+        if (idx === 8) {
+          rowH += `<th>OUT</th>`;
+          rowP += `<td id="out_P">0</td>`;
+          rowHd += `<td>-</td>`;
+        }
+        if (idx === 17) {
+          rowH += `<th>IN</th><th>TOT</th>`;
+          rowP += `<td id="in_P">0</td><td id="tot_P">0</td>`;
+          rowHd += `<td>-</td><td>-</td>`;
+        }
+      });
+      document.getElementById('rowH').innerHTML = rowH;
+      document.getElementById('rowP').innerHTML = rowP;
+      document.getElementById('rowHd').innerHTML = rowHd;
+
+      let body = '';
+      playerIDs.forEach(p => {
+        body += `<tr><th class="sticky-col" id="tag-${p}">${nameOf(p)}</th>`;
+        order.forEach((hole, idx) => {
+          body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
+          if (idx === 8) body += `<td id="out_${p}">0</td>`;
+          if (idx === 17) body += `<td id="in_${p}">0</td><td id="tot_${p}">0</td>`;
+        });
+        body += `</tr>`;
+      });
+      document.getElementById('playerRows').innerHTML = body;
+      attachSelectAllBehavior(document.getElementById('mainTable'));
+      applyNumericKeyboardHints(document.getElementById('mainTable'));
+      updateNames();
+      updateParTotals();
+    }
+
+    function handleCourseInput(orderIdx, type, hole){
+      updateParTotals();
+      if (type === 'P') {
+        document.getElementById(`cell_Hd_${hole}`).focus();
+      }
+    }
+
+    function updateParTotals(){
+      let out = 0, inn = 0;
+      for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
+      for (let h=10; h<=18; h++) inn += parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
+      const op = document.getElementById('out_P');
+      const ip = document.getElementById('in_P');
+      const tp = document.getElementById('tot_P');
+      if (op) op.innerText = out;
+      if (ip) ip.innerText = inn;
+      if (tp) tp.innerText = out + inn;
+    }
+
+    function drawMark(player, hole, jump=true){
+      const el = document.getElementById(`cell_${player}_${hole}`);
+      const score = parseFloat(el?.value) || 0;
+      const par = parseFloat(document.getElementById(`cell_P_${hole}`)?.value) || 0;
+      const mark = document.getElementById(`mark_${player}_${hole}`);
+      if (!mark) return;
+      mark.className = '';
+      if (score > 0 && par > 0) {
+        const diff = score - par;
+        if (diff === -1) mark.className = 'mark-circle';
+        else if (diff <= -2 || score === 1) mark.className = 'mark-double-circle';
+        else if (diff === 1) mark.className = 'mark-square';
+        else if (diff >= 2) mark.className = 'mark-double-square';
+      }
+      updatePlayerTotals(player);
+      if (jump) jumpPlayerCell(player, hole);
+    }
+
+    function jumpPlayerCell(player, hole){
+      const order = getPlayOrder();
+      const idx = order.indexOf(hole);
+      if (idx === -1) return;
+      if (player < playerIDs.length - 1) {
+        document.getElementById(`cell_${player+1}_${hole}`).focus();
+      } else if (idx < order.length - 1) {
+        document.getElementById(`cell_0_${order[idx+1]}`).focus();
+      }
+    }
+
+    function updatePlayerTotals(player){
+      let out=0, inn=0;
+      for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
+      for (let h=10; h<=18; h++) inn += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
+      document.getElementById(`out_${player}`).innerText = out;
+      document.getElementById(`in_${player}`).innerText = inn;
+      document.getElementById(`tot_${player}`).innerText = out + inn;
+    }
+
+    function getHoleInfo(hole){
+      return {
+        par: parseFloat(document.getElementById(`cell_P_${hole}`)?.value) || 0,
+        hdcp: parseInt(document.getElementById(`cell_Hd_${hole}`)?.value) || 0
+      };
+    }
+
+    function getPlayerScore(player, hole){
+      return parseFloat(document.getElementById(`cell_${player}_${hole}`)?.value) || 0;
+    }
+
+    function getGrossLabel(score, par){
+      if (!score || !par) return {points:0, type:'none'};
+      if (score === 1) return { points: parseFloat(document.getElementById('mHIO').value) || 0, type:'hio' };
+      const diff = score - par;
+      if (diff === 0) return { points: 1, type:'par' };
+      if (diff === -1) return { points: parseFloat(document.getElementById('mB').value) || 0, type:'birdie' };
+      if (diff <= -2) {
+        if (par === 4) return { points: parseFloat(document.getElementById('mE4').value) || 0, type:'eagle4' };
+        if (par === 5) return { points: parseFloat(document.getElementById('mE5').value) || 0, type:'eagle5' };
+        return { points: parseFloat(document.getElementById('mB').value) || 0, type:'birdie' };
+      }
+      return { points: 0, type:'none' };
+    }
+
+    function getMatchMultiplier(score, par){
+      const label = getGrossLabel(score, par);
+      return label.points > 0 ? label.points : 1;
+    }
+
+    function getActiveParPlayers(){
+      return playerIDs.filter(i => document.getElementById(`p${i}_p`).checked && isParEnabled());
+    }
+
+    function getPairMeta(i,j){
+      const checked = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
+      let value = document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '';
+      value = value === '' ? 0 : parseFloat(value);
+      return { checked, value };
+    }
+
+    function getStrokeAllowance(pairValue, hole){
+      const info = getHoleInfo(hole);
+      const par = info.par;
+      const hd = info.hdcp;
+      if (!pairValue) return 0;
+      const abs = Math.abs(pairValue);
+      if (pairValue > 0) {
+        return 0;
+      }
+      if (abs === 18) {
+        if (par === 5) return 2;
+        if (par === 4) return 1;
+        if (par === 3) return 0.5;
+        return 0;
+      }
+      if (hd > 0 && hd <= abs) return 1;
+      return 0;
+    }
+
+    function getNetScoreForPair(player, opponent, hole){
+      const meta = getPairMeta(player, opponent);
+      const gross = getPlayerScore(player, hole);
+      if (!gross) return 0;
+      const allowance = getStrokeAllowance(meta.value, hole);
+      return gross - allowance;
+    }
+
+    function buildMatchPairs(){
+      const pairs = [];
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_').map(Number);
+        const meta = getPairMeta(a,b);
+        if (!meta.checked) return;
+        const pa = document.getElementById(`p${a}_m`).checked;
+        const pb = document.getElementById(`p${b}_m`).checked;
+        if (!pa || !pb || !isMatchEnabled()) return;
+        pairs.push([a,b]);
+      });
+      return pairs;
+    }
+
+    function validateBeforeResult(){
+      const warnings = [];
+      const errors = [];
+      const hdcpNums = [];
+      for (let h=1; h<=18; h++) {
+        const v = parseInt(document.getElementById(`cell_Hd_${h}`)?.value);
+        if (!Number.isNaN(v)) hdcpNums.push(v);
+      }
+      const sorted = [...hdcpNums].sort((a,b)=>a-b);
+      const should = Array.from({length:18}, (_,i)=>i+1);
+      if (sorted.length !== 18 || sorted.some((v,i)=>v!==should[i])) {
+        warnings.push('球場 HDCP 建議為 1~18 且不可重複。');
+      }
+
+      const start = parseInt(document.getElementById('startHole').value);
+      if (!(start >= 1 && start <= 18)) errors.push('起始洞必須為 1~18。');
+
+      if (isVegasEnabled()) {
+        const ranks = playerIDs.map(i => document.getElementById(`vegasRank${i}`)?.value || '');
+        if (ranks.some(v => !v)) errors.push('Vegas 起始洞排名未填完整。');
+        const unique = new Set(ranks);
+        if (unique.size !== 4) errors.push('Vegas 起始洞排名不可重複。');
+      }
+
+      if (isMatchEnabled()) {
+        const pairs = buildMatchPairs();
+        pairs.forEach(([a,b]) => {
+          const input = document.getElementById(`pair-strokes-${a}-${b}`);
+          if (!input) return;
+          if (input.value === '') return; // 空白視為0
+          const n = Number(input.value);
+          if (Number.isNaN(n) || Math.abs(n) > 18) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的讓洞數必須介於 -18 到 18。`);
+        });
+      }
+
+      showWarning(warnings.join('\n'), 'scoring');
+      showDanger(errors.join('\n'), 'scoring');
+      return { warnings, errors };
+    }
+
+    function showWarning(msg, area='global'){
+      const map = { global:'global-warning', scoring:'scoring-warning' };
+      const el = document.getElementById(map[area] || 'global-warning');
+      if (!el) return;
+      if (!msg) { el.style.display='none'; el.innerText=''; return; }
+      el.style.display='block';
+      el.innerText = msg;
+    }
+
+    function showDanger(msg, area='scoring'){
+      const map = { scoring:'scoring-danger' };
+      const el = document.getElementById(map[area] || 'scoring-danger');
+      if (!el) return;
+      if (!msg) { el.style.display='none'; el.innerText=''; return; }
+      el.style.display='block';
+      el.innerText = msg;
+    }
+
+    function getVegasStartTeams(){
+      const mapping = {};
+      playerIDs.forEach(i => { mapping[parseInt(document.getElementById(`vegasRank${i}`).value)] = i; });
+      return [[mapping[1], mapping[4]], [mapping[2], mapping[3]]];
+    }
+
+
+    let currentVegasRankPickerPlayer = null;
+
+    function getVegasRankLabel(value){
+      return value ? `第${value}名` : '請選擇';
+    }
+
+    function openVegasRankPicker(playerId){
+      currentVegasRankPickerPlayer = playerId;
+      const title = document.getElementById('rankPickerTitle');
+      const options = document.getElementById('rankPickerOptions');
+      const current = document.getElementById(`vegasRank${playerId}`)?.value || '';
+      title.innerText = `${nameOf(playerId)} 的起始洞排名`;
+      const values = ['', '1', '2', '3', '4'];
+      options.innerHTML = values.map(v => {
+        const label = getVegasRankLabel(v);
+        const checked = v === current ? ' ✓' : '';
+        return `<button type="button" class="rank-picker-option" onclick="setVegasRank(${playerId}, '${v}')">${label}${checked}</button>`;
+      }).join('');
+      document.getElementById('rankPickerOverlay').classList.add('show');
+    }
+
+    function closeVegasRankPicker(event){
+      if (event && event.target !== document.getElementById('rankPickerOverlay')) return;
+      document.getElementById('rankPickerOverlay').classList.remove('show');
+      currentVegasRankPickerPlayer = null;
+    }
+
+    function setVegasRank(playerId, value){
+      const input = document.getElementById(`vegasRank${playerId}`);
+      const btn = document.getElementById(`vegasRankBtn${playerId}`);
+      if (input) input.value = value;
+      if (btn) btn.innerText = getVegasRankLabel(value);
+      closeVegasRankPicker();
+      updateVegasPreview();
+    }
+
+    function updateVegasPreview(){
+      const preview = document.getElementById('vegasStartPreview');
+      if (!preview) return;
+      if (!isVegasEnabled()) { preview.innerText = 'Vegas 未啟用'; return; }
+      const values = playerIDs.map(i => document.getElementById(`vegasRank${i}`)?.value || '');
+      if (values.some(v => !v) || new Set(values).size !== 4) {
+        preview.innerText = '起始洞分組：尚未設定';
+        return;
+      }
+      const [[a,b],[c,d]] = getVegasStartTeams();
+      preview.innerText = `起始洞分組：${nameOf(a)} + ${nameOf(b)} / ${nameOf(c)} + ${nameOf(d)}`;
+    }
+
+    function comparePlayersByBacktrack(a,b,currentOrderIndex,order){
+      for (let step = currentOrderIndex-1; step >= 0; step--) {
+        const hole = order[step];
+        const sa = getPlayerScore(a, hole);
+        const sb = getPlayerScore(b, hole);
+        if (sa !== sb) return sa - sb;
+      }
+      const ra = parseInt(document.getElementById(`vegasRank${a}`).value) || 99;
+      const rb = parseInt(document.getElementById(`vegasRank${b}`).value) || 99;
+      return ra - rb;
+    }
+
+    function rankPlayersForVegas(currentOrderIndex, order){
+      const arr = [...playerIDs];
+      const prevHole = order[currentOrderIndex-1];
+      arr.sort((a,b) => {
+        const sa = getPlayerScore(a, prevHole);
+        const sb = getPlayerScore(b, prevHole);
+        if (sa !== sb) return sa - sb;
+        return comparePlayersByBacktrack(a,b,currentOrderIndex,order);
+      });
+      return arr;
+    }
+
+    function formatSigned(value, suffix=''){
+      return `${value > 0 ? '+' : ''}${value}${suffix}`;
+    }
+
+    function escapeHtml(str=''){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function buildCollapseBlock(title, innerHtml, open=false){
+      const cls = open ? 'collapse-block open' : 'collapse-block';
+      return `<div class="${cls}"><button type="button" class="collapse-head" onclick="this.parentNode.classList.toggle('open')">${title}</button><div class="collapse-body">${innerHtml}</div></div>`;
+    }
+
+    function splitLogsByNine(logs){
+      return {
+        front: logs.filter(x => x.hole >= 1 && x.hole <= 9),
+        back: logs.filter(x => x.hole >= 10 && x.hole <= 18)
+      };
+    }
+
+    function buildMatchDetails(order, names){
+      const pairs = buildMatchPairs();
+      return pairs.map(([a,b]) => {
+        const logs = [];
+        let front = 0;
+        let back = 0;
+        order.forEach(hole => {
+          const grossA = getPlayerScore(a, hole);
+          const grossB = getPlayerScore(b, hole);
+          if (!grossA || !grossB) return;
+          const netA = getNetScoreForPair(a,b,hole);
+          const netB = getNetScoreForPair(b,a,hole);
+          const holePar = getHoleInfo(hole).par;
+          let delta = 0;
+          let text = `第 ${hole} 洞　平手 0`;
+          if (netA < netB) {
+            delta = getMatchMultiplier(grossA, holePar);
+            text = `第 ${hole} 洞　${names[a]} 贏 ${names[b]} ${formatSigned(delta)}`;
+          } else if (netB < netA) {
+            delta = -getMatchMultiplier(grossB, holePar);
+            text = `第 ${hole} 洞　${names[b]} 贏 ${names[a]} ${formatSigned(Math.abs(delta))}`;
+          }
+          if (hole <= 9) front += delta; else back += delta;
+          logs.push({ hole, delta, text });
+        });
+        return { a, b, front, back, total: front + back, logs };
+      });
+    }
+
+    function buildInlineStyleCss(){
+      let css = '';
+      Array.from(document.styleSheets || []).forEach(sheet => {
+        try {
+          Array.from(sheet.cssRules || []).forEach(rule => {
+            css += rule.cssText + '\n';
+          });
+        } catch (e) {}
+      });
+      css += `
+*{box-sizing:border-box;} body{margin:0 !important;} .export-wrap{display:none !important;} table{border-collapse:collapse;} input,select,button{font-family:inherit;}`;
+      return css;
+    }
+
+    function inlineFormValues(root){
+      root.querySelectorAll('input, textarea, select').forEach(el => {
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'select') {
+          const span = document.createElement('span');
+          span.textContent = el.options[el.selectedIndex]?.text || '';
+          span.setAttribute('style', window.getComputedStyle(el).cssText + ';display:flex;align-items:center;justify-content:center;white-space:pre-wrap;');
+          el.replaceWith(span);
+          return;
+        }
+        if (el.type === 'checkbox') {
+          const span = document.createElement('span');
+          span.textContent = el.checked ? '☑' : '☐';
+          span.setAttribute('style', window.getComputedStyle(el).cssText + ';display:inline-flex;align-items:center;justify-content:center;');
+          el.replaceWith(span);
+          return;
+        }
+        el.setAttribute('value', el.value || '');
+        if (tag === 'textarea') el.textContent = el.value || '';
+      });
+    }
+
+    function exportResultAsJpg(){
+      const target = document.getElementById('result-capture');
+      if (!target) return;
+
+      const clone = target.cloneNode(true);
+      inlineFormValues(clone);
+
+      const rect = target.getBoundingClientRect();
+      const width = Math.ceil(rect.width);
+      const height = Math.ceil(target.scrollHeight || rect.height);
+      const css = buildInlineStyleCss();
+      const svgNs = 'http://www.w3.org/2000/svg';
+      const xhtmlNs = 'http://www.w3.org/1999/xhtml';
+      const svg = document.createElementNS(svgNs, 'svg');
+      svg.setAttribute('xmlns', svgNs);
+      svg.setAttribute('width', width);
+      svg.setAttribute('height', height);
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+      const foreignObject = document.createElementNS(svgNs, 'foreignObject');
+      foreignObject.setAttribute('x', '0');
+      foreignObject.setAttribute('y', '0');
+      foreignObject.setAttribute('width', '100%');
+      foreignObject.setAttribute('height', '100%');
+
+      const wrapper = document.createElementNS(xhtmlNs, 'div');
+      wrapper.setAttribute('xmlns', xhtmlNs);
+      wrapper.setAttribute('style', `width:${width}px;height:${height}px;background:#2f6b3f;margin:0;padding:0;overflow:hidden;`);
+
+      const style = document.createElementNS(xhtmlNs, 'style');
+      style.textContent = css;
+      wrapper.appendChild(style);
+      wrapper.appendChild(clone);
+      foreignObject.appendChild(wrapper);
+      svg.appendChild(foreignObject);
+
+      const svgText = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+        ctx.fillStyle = '#2f6b3f';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        URL.revokeObjectURL(url);
+        const link = document.createElement('a');
+        const now = new Date();
+        const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+        link.download = `golf_result_${stamp}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        alert('JPG 匯出失敗，這支手機瀏覽器可能不支援離線匯出。你可以先用手機截圖，之後我再幫你改成 GitHub 版更穩。');
+      };
+      img.src = url;
+    }
+
+    function calculateFinal(){
+      const validation = validateBeforeResult();
+      if (validation.errors.length) {
+        openTab('scoring');
+        return;
+      }
+
+      const names = playerIDs.map(i => nameOf(i));
+      const pointValue = parseFloat(document.getElementById('pointVal').value) || 0;
+      const order = getPlayOrder();
+      updateVegasPreview();
+
+      // Match
+      const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
+      const matchPoints = [0,0,0,0];
+      const matchPairs = buildMatchPairs();
+      matchPairs.forEach(([a,b]) => {
+        let aScore = 0;
+        let bScore = 0;
+        order.forEach(hole => {
+          const grossA = getPlayerScore(a, hole);
+          const grossB = getPlayerScore(b, hole);
+          if (!grossA || !grossB) return;
+          const netA = getNetScoreForPair(a,b,hole);
+          const netB = getNetScoreForPair(b,a,hole);
+          const holePar = getHoleInfo(hole).par;
+          if (netA < netB) {
+            const pts = getMatchMultiplier(grossA, holePar);
+            aScore += pts; bScore -= pts;
+            matchPoints[a] += pts; matchPoints[b] -= pts;
+          } else if (netB < netA) {
+            const pts = getMatchMultiplier(grossB, holePar);
+            bScore += pts; aScore -= pts;
+            matchPoints[b] += pts; matchPoints[a] -= pts;
+          }
+        });
+        matchMatrix[a][b] = aScore;
+        matchMatrix[b][a] = bScore;
+      });
+
+      // Par
+      const parPoints = [0,0,0,0];
+      if (isParEnabled()) {
+        order.forEach(hole => {
+          const par = getHoleInfo(hole).par;
+          if (!par) return;
+          const participants = getActiveParPlayers();
+          if (!participants.length) return;
+          const labels = participants.map(p => ({ p, val: getGrossLabel(getPlayerScore(p,hole), par).points }));
+          const max = Math.max(...labels.map(x => x.val));
+          if (max <= 0) return;
+          const winners = labels.filter(x => x.val === max);
+          if (winners.length !== 1) return;
+          const winner = winners[0];
+          labels.forEach(item => {
+            if (item.p === winner.p) return;
+            const diff = winner.val - item.val;
+            parPoints[winner.p] += diff;
+            parPoints[item.p] -= diff;
+          });
+        });
+      }
+
+      // Vegas
+      const vegasPoints = [0,0,0,0];
+      const vegasHoleWins = [];
+      if (isVegasEnabled()) {
+        let currentTeams = getVegasStartTeams();
+        let carry = 1;
+        order.forEach((hole, idx) => {
+          if (idx > 0) {
+            const prevTie = vegasHoleWins[vegasHoleWins.length-1]?.tie === true;
+            if (!prevTie) {
+              const ranked = rankPlayersForVegas(idx, order);
+              currentTeams = [[ranked[0], ranked[3]], [ranked[1], ranked[2]]];
+            }
+          }
+          const [teamA, teamB] = currentTeams;
+          const sumA = teamA.reduce((acc,p) => acc + getPlayerScore(p,hole), 0);
+          const sumB = teamB.reduce((acc,p) => acc + getPlayerScore(p,hole), 0);
+          if (!sumA || !sumB) return;
+          if (sumA === sumB) {
+            vegasHoleWins.push({ hole, tie: true, teams: currentTeams.map(t => [...t]), carry, carryAbandoned: idx === order.length - 1 });
+            if (isExtEnabled()) carry += 1;
+            return;
+          }
+          const used = isExtEnabled() ? carry : 1;
+          const winner = sumA < sumB ? teamA : teamB;
+          const loser = sumA < sumB ? teamB : teamA;
+          winner.forEach(p => vegasPoints[p] += used);
+          loser.forEach(p => vegasPoints[p] -= used);
+          vegasHoleWins.push({ hole, tie: false, winner: [...winner], teams: currentTeams.map(t => [...t]), points: used });
+          carry = 1;
+        });
+      }
+
+      const totalPoints = playerIDs.map(i => matchPoints[i] + parPoints[i] + vegasPoints[i]);
+
+      const matchDetails = buildMatchDetails(order, names);
+      renderMatchOutput(matchMatrix, matchPairs, names, matchDetails);
+      renderParOutput(parPoints, names);
+      renderVegasOutput(vegasPoints, names);
+      renderVegasHoleOutput(vegasHoleWins, names);
+      renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names);
+      openTab('result');
+    }
+
+    function renderMatchOutput(matrix, pairs, names, details){
+      if (!isMatchEnabled()) {
+        document.getElementById('match-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
+        return;
+      }
+      let html = `<table class="res-table"><tr><th></th>${playerIDs.map(i => `<th>${names[i]}</th>`).join('')}</tr>`;
+      playerIDs.forEach(i => {
+        html += `<tr><th>${names[i]}</th>`;
+        playerIDs.forEach(j => {
+          if (i===j) { html += `<td>-</td>`; return; }
+          if (matrix[i][j] === null) { html += `<td>-</td>`; return; }
+          html += `<td class="${matrix[i][j] > 0 ? 'red-text' : matrix[i][j] < 0 ? '' : 'muted'}">${matrix[i][j] > 0 ? '+' : ''}${matrix[i][j]}</td>`;
+        });
+        html += `</tr>`;
+      });
+      html += `</table>`;
+      if (details && details.length) {
+        details.forEach((item, idx) => {
+          const split = splitLogsByNine(item.logs);
+          const frontHtml = `<div class="section-summary">前 9 洞：${names[item.a]} ${formatSigned(item.front)} / ${names[item.b]} ${formatSigned(-item.front)}</div>` +
+            (split.front.length ? `<div class="hole-win-log">${split.front.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">前 9 洞沒有完整紀錄</div>`);
+          const backHtml = `<div class="section-summary">後 9 洞：${names[item.a]} ${formatSigned(item.back)} / ${names[item.b]} ${formatSigned(-item.back)}</div>` +
+            (split.back.length ? `<div class="hole-win-log">${split.back.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">後 9 洞沒有完整紀錄</div>`);
+          const title = `${names[item.a]} vs ${names[item.b]}｜前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}｜總計 ${formatSigned(item.total)}`;
+          html += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
+        });
+      }
+      document.getElementById('match-output').innerHTML = html;
+    }
+
+    function renderSortedRows(values, names, enabledPlayers=null){
+      const arr = playerIDs.map(i => ({ i, name:names[i], pts: values[i] }));
+      const filtered = enabledPlayers ? arr.filter(x => enabledPlayers.includes(x.i)) : arr;
+      filtered.sort((a,b) => b.pts - a.pts || a.i - b.i);
+      return filtered.map(x => `<div class="res-row"><span>${x.name}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
+    }
+
+    function renderParOutput(points, names){
+      if (!isParEnabled()) {
+        document.getElementById('par-output').innerHTML = `<div class="center-note">本日未啟用抓PAR</div>`;
+        return;
+      }
+      const active = getActiveParPlayers();
+      if (!active.length) {
+        document.getElementById('par-output').innerHTML = `<div class="center-note">沒有玩家參與抓PAR</div>`;
+        return;
+      }
+      document.getElementById('par-output').innerHTML = renderSortedRows(points, names, active);
+    }
+
+    function renderVegasOutput(points, names){
+      if (!isVegasEnabled()) {
+        document.getElementById('vegas-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
+        return;
+      }
+      document.getElementById('vegas-output').innerHTML = renderSortedRows(points, names, playerIDs);
+    }
+
+    function renderVegasHoleOutput(logs, names){
+      if (!isVegasEnabled()) {
+        document.getElementById('vegas-hole-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
+        return;
+      }
+      if (!logs.length) {
+        document.getElementById('vegas-hole-output').innerHTML = `<div class="center-note">本日沒有 Vegas 勝負紀錄</div>`;
+        return;
+      }
+      const split = splitLogsByNine(logs);
+      const buildSection = (title, sectionLogs, open=false) => {
+        const tieCount = sectionLogs.filter(x => x.tie).length;
+        const decided = sectionLogs.filter(x => !x.tie);
+        const pointTotal = decided.reduce((sum, x) => sum + (x.points || 0), 0);
+        const summary = `<div class="section-summary">${title}：勝負洞 ${decided.length} 洞，平手 ${tieCount} 洞，累計結算點數 ${pointTotal}</div>`;
+        const items = sectionLogs.map(item => {
+          if (item.tie) {
+            const label = isExtEnabled() && !item.carryAbandoned ? '平手 0（遞延）' : '平手 0';
+            return `<div class="hole-win-item">第 ${item.hole} 洞　${label}</div>`;
+          }
+          return `<div class="hole-win-item">第 ${item.hole} 洞　${item.winner.map(p => names[p]).join('、')} +${item.points}</div>`;
+        }).join('');
+        return buildCollapseBlock(`${title} 明細`, summary + `<div class="hole-win-log">${items}</div>`, open);
+      };
+      document.getElementById('vegas-hole-output').innerHTML = buildSection('前 9 洞', split.front, true) + buildSection('後 9 洞', split.back, false);
+    }
+
+    function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names){
+      const rows = playerIDs.map(i => ({
+        i,
+        name:names[i],
+        match: matchPoints[i],
+        par: parPoints[i],
+        vegas: vegasPoints[i],
+        total: totalPoints[i],
+        money: Math.round(totalPoints[i] * pointValue)
+      })).sort((a,b) => b.total - a.total || a.i - b.i);
+      let html = `<table class="summary-table"><tr><th>玩家</th><th>Match</th><th>抓PAR</th><th>Vegas</th><th>總點數</th><th>金額</th></tr>`;
+      rows.forEach(r => {
+        const matchCls = r.match > 0 ? 'red-text' : r.match < 0 ? '' : 'muted';
+        const parCls = r.par > 0 ? 'red-text' : r.par < 0 ? '' : 'muted';
+        const vegasCls = r.vegas > 0 ? 'red-text' : r.vegas < 0 ? '' : 'muted';
+        const totalCls = r.total > 0 ? 'red-text' : r.total < 0 ? '' : 'muted';
+        const moneyCls = r.money > 0 ? 'red-text' : r.money < 0 ? '' : 'muted';
+        html += `<tr>
+          <td>${r.name}</td>
+          <td class="${matchCls}">${r.match>0?'+':''}${r.match}</td>
+          <td class="${parCls}">${r.par>0?'+':''}${r.par}</td>
+          <td class="${vegasCls}">${r.vegas>0?'+':''}${r.vegas}</td>
+          <td class="${totalCls}">${r.total>0?'+':''}${r.total}</td>
+          <td class="${moneyCls}">${r.money>0?'+':''}${r.money} 元</td>
+        </tr>`;
+      });
+      html += `</table>`;
+      document.getElementById('final-money').innerHTML = html;
+    }
+
+    window.onload = () => {
+      initUI();
+    };
+  </script>
+</body>
+</html>
