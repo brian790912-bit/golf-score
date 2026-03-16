@@ -381,6 +381,35 @@
     }
     .rank-picker-option:last-child { border-bottom: none; }
 
+
+    .player-extra.hidden { display: none; }
+    .matrix-table { min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .matrix-table th, .matrix-table td { height: auto; padding: 9px 10px; font-size: .96rem; }
+    .matrix-table th { background: #f3f7f1; color: var(--primary-dark); }
+    .matrix-table td.total-col, .matrix-table th.total-col { background: #eef5ec; }
+    .matrix-note { margin-top: 8px; font-size: .88rem; color: #667561; }
+    .capture-section { margin-top: 14px; }
+    .capture-section .capture-title { font-size: 1.02rem; font-weight: 900; margin: 0 0 8px; color: #fff; }
+    .capture-section .capture-card { background: rgba(255,255,255,.96); border-radius: 14px; padding: 10px; }
+    .export-preview-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; z-index: 4000;
+      align-items: center; justify-content: center; padding: 18px;
+    }
+    .export-preview-overlay.show { display: flex; }
+    .export-preview-sheet {
+      width: min(720px, 100%); max-height: 92vh; background: #fff; border-radius: 18px; overflow: hidden;
+      box-shadow: 0 24px 48px rgba(0,0,0,.24);
+    }
+    .export-preview-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px 16px; border-bottom: 1px solid #e5ece3; font-size: .96rem; color: var(--primary-dark);
+    }
+    .export-preview-close {
+      border: none; background: #eef5ec; color: var(--primary-dark); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 900;
+    }
+    .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
+    .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
+
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
     }
@@ -496,18 +525,35 @@
   <div id="result" class="content">
     <div class="result-grid">
       <div class="result-stack">
-        <div class="final-area jpg-capture" id="result-capture"><div class="export-wrap"><button class="action-btn secondary" onclick="exportResultAsJpg()">輸出 JPG</button></div><h2>💰 總結算</h2><div id="final-money"></div></div>
-        <div class="card"><h2>🏆 Match 比洞矩陣</h2><div id="match-output"></div></div>
+        <div class="final-area jpg-capture" id="result-capture">
+          <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
+          <h2>💰 總結算</h2>
+          <div id="final-money"></div>
+          <div id="capture-par-wrap"></div>
+          <div id="capture-vegas-wrap"></div>
+          <div id="capture-match-wrap"></div>
+        </div>
       </div>
       <div class="result-stack">
-        <div class="card"><h2>🎯 抓PAR 點數</h2><div id="par-output"></div></div>
+        <div class="card"><h2>🎯 抓PAR 矩陣</h2><div id="par-output"></div></div>
         <div class="card"><h2>🎲 Vegas 點數</h2><div id="vegas-output"></div></div>
+        <div class="card"><h2>🏆 Match 比洞矩陣</h2><div id="match-output"></div></div>
+        <div class="card"><h2>📝 Match 每組結果</h2><div id="match-detail-output"></div></div>
         <div class="card"><h2>📝 Vegas 每洞勝負</h2><div id="vegas-hole-output"></div></div>
       </div>
     </div>
   </div>
 
-  
+  <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
+    <div class="export-preview-sheet" onclick="event.stopPropagation()">
+      <div class="export-preview-head">
+        <span>長按圖片即可儲存</span>
+        <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
+      </div>
+      <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
+    </div>
+  </div>
+
   <div class="rank-picker-overlay" id="rankPickerOverlay" onclick="closeVegasRankPicker(event)">
     <div class="rank-picker-sheet" onclick="event.stopPropagation()">
       <div class="rank-picker-title" id="rankPickerTitle">請選擇排名</div>
@@ -535,6 +581,25 @@
       return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
     }
 
+    function getActivePlayers(){
+      const active = [];
+      for (const i of playerIDs) {
+        const name = (document.getElementById('name'+i)?.value || '').trim();
+        if (!name) break;
+        active.push(i);
+      }
+      return active;
+    }
+
+    function isPlayerActive(playerId){
+      return getActivePlayers().includes(playerId);
+    }
+
+    function getActiveNames(){
+      const names = {};
+      getActivePlayers().forEach(i => { names[i] = nameOf(i); });
+      return names;
+    }
 
     function applyNumericKeyboardHints(root=document){
       if (!root) return;
@@ -557,9 +622,7 @@
       inputs.forEach(el => {
         if (el.dataset.selectReady === '1') return;
         el.dataset.selectReady = '1';
-        const selectAll = () => {
-          try { el.select(); } catch(e) {}
-        };
+        const selectAll = () => { try { el.select(); } catch(e) {} };
         el.addEventListener('focus', selectAll);
         el.addEventListener('click', selectAll);
         el.addEventListener('mouseup', e => e.preventDefault());
@@ -585,6 +648,7 @@
 
     function toggleMainMode(id){
       const cb = document.getElementById(id);
+      if (!cb || cb.disabled) return;
       if (id === 'extMode' && !isVegasEnabled()) return;
       cb.checked = !cb.checked;
       applyModeStates(id);
@@ -594,9 +658,11 @@
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       const box = document.getElementById(`box_p${playerId}_${suffix}`);
       if (!cb || !box) return;
+      const activePlayers = getActivePlayers();
+      const playerEnabled = activePlayers.includes(playerId);
       const parentEnabled = suffix === 'm' ? isMatchEnabled() : isParEnabled();
-      box.classList.toggle('active', parentEnabled && cb.checked);
-      box.classList.toggle('disabled', !parentEnabled);
+      box.classList.toggle('active', playerEnabled && parentEnabled && cb.checked);
+      box.classList.toggle('disabled', !playerEnabled || !parentEnabled);
     }
 
     function setPlayerMatchSelected(playerId, checked){
@@ -616,8 +682,9 @@
     function normalizeMatchPairStates(){
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
-        const aOn = !!document.getElementById(`p${a}_m`)?.checked;
-        const bOn = !!document.getElementById(`p${b}_m`)?.checked;
+        const activePlayers = getActivePlayers();
+        const aOn = activePlayers.includes(a) && !!document.getElementById(`p${a}_m`)?.checked;
+        const bOn = activePlayers.includes(b) && !!document.getElementById(`p${b}_m`)?.checked;
         const shouldEnable = isMatchEnabled() && aOn && bOn;
         if (shouldEnable) {
           const current = document.getElementById(`pair-strokes-${a}-${b}`)?.value;
@@ -631,7 +698,7 @@
     }
 
     function resetAllMatchDefaults(){
-      playerIDs.forEach(i => setPlayerMatchSelected(i, true));
+      getActivePlayers().forEach(i => setPlayerMatchSelected(i, true));
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
         setPairState(a,b,true,0);
@@ -640,41 +707,75 @@
     }
 
     function resetAllParDefaults(){
-      playerIDs.forEach(i => {
+      getActivePlayers().forEach(i => {
         const cb = document.getElementById(`p${i}_p`);
-        const box = document.getElementById(`box_p${i}_p`);
         if (!cb) return;
         cb.checked = true;
-        box.classList.add('active');
+        setPlayerSmallBoxState(i, 'p');
+      });
+    }
+
+    function applyPlayerConfigVisibility(){
+      const activePlayers = getActivePlayers();
+      const activeCount = activePlayers.length;
+      playerIDs.forEach(i => {
+        const extra = document.getElementById(`player-extra-${i}`);
+        if (extra) extra.classList.toggle('hidden', i >= activeCount);
+        playerIDs.forEach(j => {
+          if (i === j) return;
+          const row = document.getElementById(`pair-row-${i}-${j}`);
+          if (row) row.style.display = activePlayers.includes(i) && activePlayers.includes(j) ? '' : 'none';
+        });
       });
     }
 
     function applyModeStates(changedMode = ''){
-      const vegas = isVegasEnabled();
-      const match = isMatchEnabled();
-      const par = isParEnabled();
+      const activePlayers = getActivePlayers();
+      const activeCount = activePlayers.length;
+      const canCompete = activeCount >= 2;
+      const canVegas = activeCount === 4;
 
-      setModeRow('modeRowVegas', vegas, false);
-      setModeRow('modeRowMatch', match, false);
-      setModeRow('modeRowPar', par, false);
+      const modeMatch = document.getElementById('modeMatch');
+      const modePar = document.getElementById('modePar');
+      const modeVegas = document.getElementById('modeVegas');
+      const extMode = document.getElementById('extMode');
 
-      if (!vegas) document.getElementById('extMode').checked = false;
-      setModeRow('modeRowExt', isExtEnabled(), !vegas);
+      if (!canCompete) {
+        modeMatch.checked = false;
+        modePar.checked = false;
+      }
+      if (!canVegas) {
+        modeVegas.checked = false;
+        extMode.checked = false;
+      }
+
+      setModeRow('modeRowVegas', modeVegas.checked, !canVegas);
+      setModeRow('modeRowMatch', modeMatch.checked, !canCompete);
+      setModeRow('modeRowPar', modePar.checked, !canCompete);
+      setModeRow('modeRowExt', extMode.checked, !modeVegas.checked);
+
+      modeVegas.disabled = !canVegas;
+      modeMatch.disabled = !canCompete;
+      modePar.disabled = !canCompete;
+      extMode.disabled = !modeVegas.checked;
 
       playerIDs.forEach(i => {
-        syncPlayerSmallMode(i, 'm', match);
-        syncPlayerSmallMode(i, 'p', par);
+        syncPlayerSmallMode(i, 'm', canCompete && modeMatch.checked && activePlayers.includes(i));
+        syncPlayerSmallMode(i, 'p', canCompete && modePar.checked && activePlayers.includes(i));
       });
 
-      if (changedMode === 'modeMatch' && match) resetAllMatchDefaults();
-      if (changedMode === 'modePar' && par) resetAllParDefaults();
+      if (changedMode === 'modeMatch' && modeMatch.checked) resetAllMatchDefaults();
+      if (changedMode === 'modePar' && modePar.checked) resetAllParDefaults();
 
-      document.getElementById('vegas-rank-area').style.display = vegas ? 'block' : 'none';
+      document.getElementById('vegas-rank-area').style.display = modeVegas.checked ? 'block' : 'none';
+      applyPlayerConfigVisibility();
       normalizeMatchPairStates();
+      renderVegasRankInputs();
     }
 
     function setModeRow(rowId, active, disabled){
       const row = document.getElementById(rowId);
+      if (!row) return;
       row.classList.toggle('active', active && !disabled);
       row.classList.toggle('disabled', disabled);
     }
@@ -688,15 +789,14 @@
     }
 
     function togglePlayerSmallMode(playerId, suffix){
+      const activePlayers = getActivePlayers();
       const parentOk = suffix === 'm' ? isMatchEnabled() : isParEnabled();
-      if (!parentOk) return;
+      if (!parentOk || !activePlayers.includes(playerId)) return;
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       if (!cb || cb.disabled) return;
       cb.checked = !cb.checked;
       setPlayerSmallBoxState(playerId, suffix);
-      if (suffix === 'm') {
-        normalizeMatchPairStates();
-      }
+      if (suffix === 'm') normalizeMatchPairStates();
     }
 
     function initUI(){
@@ -716,19 +816,21 @@
         html += `
           <div class="card" style="margin-bottom:0; padding:15px;">
             <input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()">
-            <div class="check-group" style="margin-top:10px;">
-              <div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i}, 'm')"><input type="checkbox" id="p${i}_m" checked>比洞</div>
-              <div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i}, 'p')"><input type="checkbox" id="p${i}_p" checked>抓PAR</div>
-            </div>
-            <div style="margin-top:12px; border-top:2px dashed #e6ece4; padding-top:10px;">
-              <div class="small-note" style="margin-bottom:8px;">比洞設定：勾選代表有比。輸入正數 = 目前這位玩家讓對手；負數 = 對手讓目前這位玩家；空白視為平打 0 洞。</div>
-              ${playerIDs.filter(j => j !== i).map(j => `
-                <div class="pair-row">
-                  <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
-                  <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
-                  <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
-                </div>
-              `).join('')}
+            <div class="player-extra" id="player-extra-${i}">
+              <div class="check-group" style="margin-top:10px;">
+                <div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i}, 'm')"><input type="checkbox" id="p${i}_m" checked>比洞</div>
+                <div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i}, 'p')"><input type="checkbox" id="p${i}_p" checked>抓PAR</div>
+              </div>
+              <div style="margin-top:12px; border-top:2px dashed #e6ece4; padding-top:10px;">
+                <div class="small-note" style="margin-bottom:8px;">比洞設定：勾選代表有比。輸入正數 = 目前這位玩家讓對手；負數 = 對手讓目前這位玩家；空白視為平打 0 洞。</div>
+                ${playerIDs.filter(j => j !== i).map(j => `
+                  <div class="pair-row" id="pair-row-${i}-${j}">
+                    <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
+                    <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
+                    <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
+                  </div>
+                `).join('')}
+              </div>
             </div>
           </div>`;
       });
@@ -736,48 +838,59 @@
       document.getElementById('player-config-area').innerHTML = html;
       attachSelectAllBehavior(document.getElementById('player-config-area'));
       applyNumericKeyboardHints(document.getElementById('player-config-area'));
+      applyPlayerConfigVisibility();
       refreshAllPairDisabledState();
     }
 
     function renderVegasRankInputs(){
+      const activePlayers = getActivePlayers();
+      if (activePlayers.length !== 4) {
+        document.getElementById('vegas-rank-area').style.display = 'none';
+        return;
+      }
       let html = `<h2>2. Vegas 起始洞排名</h2>`;
       html += `<div class="small-note" style="margin-bottom:12px;">請依起始洞開球距離輸入第1名到第4名，系統會自動以 1+4、2+3 分組。</div>`;
       html += `<div class="rank-grid">`;
-      playerIDs.forEach(i => {
+      activePlayers.forEach(i => {
+        const currentValue = document.getElementById(`vegasRank${i}`)?.value || '';
         html += `<div><label><small id="vr-name-${i}">${nameOf(i)}</small></label>
-          <input type="hidden" id="vegasRank${i}" value="">
-          <button type="button" class="vegas-rank-btn" id="vegasRankBtn${i}" onclick="openVegasRankPicker(${i})">請選擇</button>
+          <input type="hidden" id="vegasRank${i}" value="${currentValue}">
+          <button type="button" class="vegas-rank-btn" id="vegasRankBtn${i}" onclick="openVegasRankPicker(${i})">${getVegasRankLabel(currentValue)}</button>
         </div>`;
       });
       html += `</div><div class="center-note" id="vegasStartPreview">起始洞分組：尚未設定</div>`;
       document.getElementById('vegas-rank-area').innerHTML = html;
+      if (isVegasEnabled()) document.getElementById('vegas-rank-area').style.display = 'block';
+      updateVegasPreview();
     }
 
     function updateNames(){
       playerIDs.forEach(i => {
         const nm = nameOf(i);
-        const ids = [
-          `tag-${i}`,
-          `pair-title-${i}`,
-          `vr-name-${i}`
-        ];
-        ids.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = nm; });
+        ['tag-'+i, 'pair-title-'+i, 'vr-name-'+i].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerText = nm;
+        });
         playerIDs.forEach(j => {
           const pnm = document.getElementById(`pair-name-${i}-${j}`);
           if (pnm) pnm.innerText = nameOf(j);
         });
       });
+      applyPlayerConfigVisibility();
+      applyModeStates();
+      renderScoreboard();
       updateVegasPreview();
     }
 
     function refreshAllPairDisabledState(){
+      const activePlayers = getActivePlayers();
       playerIDs.forEach(i => {
         playerIDs.forEach(j => {
           if (i===j) return;
           const toggle = document.getElementById(`pair-toggle-${i}-${j}`);
           const input = document.getElementById(`pair-strokes-${i}-${j}`);
           const active = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
-          const playerEnabled = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+          const playerEnabled = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
           if (!toggle || !input) return;
           toggle.classList.toggle('disabled', !playerEnabled);
           toggle.classList.toggle('active', playerEnabled && active);
@@ -791,7 +904,8 @@
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
       const inp = document.getElementById(`pair-strokes-${i}-${j}`);
       if (!cb || !tg || !inp) return;
-      const pairEnabled = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      const activePlayers = getActivePlayers();
+      const pairEnabled = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
       cb.checked = checked && pairEnabled;
       tg.classList.toggle('active', cb.checked);
       tg.classList.toggle('disabled', !pairEnabled);
@@ -804,7 +918,8 @@
     }
 
     function togglePair(i,j){
-      const playersReady = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      const activePlayers = getActivePlayers();
+      const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
       if (!playersReady) return;
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const currentValue = document.getElementById(`pair-strokes-${i}-${j}`).value;
@@ -814,7 +929,8 @@
     }
 
     function handlePairStrokeInput(i,j){
-      const playersReady = isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      const activePlayers = getActivePlayers();
+      const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
       if (!playersReady) return;
       const input = document.getElementById(`pair-strokes-${i}-${j}`);
       const raw = input.value;
@@ -1001,31 +1117,28 @@
 
     function renderScoreboard(){
       const order = getPlayOrder();
+      const activePlayers = getActivePlayers();
+      const snapshot = { par: {}, hdcp: {}, scores: {} };
+      for (let h=1; h<=18; h++) {
+        snapshot.par[h] = document.getElementById(`cell_P_${h}`)?.value ?? '';
+        snapshot.hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value ?? '';
+        playerIDs.forEach(p => { snapshot.scores[`${p}_${h}`] = document.getElementById(`cell_${p}_${h}`)?.value ?? ''; });
+      }
       let rowH = `<th class="sticky-col">Hole</th>`;
       let rowP = `<th class="sticky-col">PAR</th>`;
       let rowHd = `<th class="sticky-col">HDCP</th>`;
-
       order.forEach((hole, idx) => {
         rowH += `<td>${hole}</td>`;
         rowP += `<td><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
         rowHd += `<td><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
-        if (idx === 8) {
-          rowH += `<th>OUT</th>`;
-          rowP += `<td id="out_P">0</td>`;
-          rowHd += `<td>-</td>`;
-        }
-        if (idx === 17) {
-          rowH += `<th>IN</th><th>TOT</th>`;
-          rowP += `<td id="in_P">0</td><td id="tot_P">0</td>`;
-          rowHd += `<td>-</td><td>-</td>`;
-        }
+        if (idx === 8) { rowH += `<th>OUT</th>`; rowP += `<td id="out_P">0</td>`; rowHd += `<td>-</td>`; }
+        if (idx === 17) { rowH += `<th>IN</th><th>TOT</th>`; rowP += `<td id="in_P">0</td><td id="tot_P">0</td>`; rowHd += `<td>-</td><td>-</td>`; }
       });
       document.getElementById('rowH').innerHTML = rowH;
       document.getElementById('rowP').innerHTML = rowP;
       document.getElementById('rowHd').innerHTML = rowHd;
-
       let body = '';
-      playerIDs.forEach(p => {
+      activePlayers.forEach(p => {
         body += `<tr><th class="sticky-col" id="tag-${p}">${nameOf(p)}</th>`;
         order.forEach((hole, idx) => {
           body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
@@ -1037,8 +1150,15 @@
       document.getElementById('playerRows').innerHTML = body;
       attachSelectAllBehavior(document.getElementById('mainTable'));
       applyNumericKeyboardHints(document.getElementById('mainTable'));
-      updateNames();
+      for (let h=1; h<=18; h++) {
+        const pCell = document.getElementById(`cell_P_${h}`); if (pCell) pCell.value = snapshot.par[h] ?? '';
+        const hCell = document.getElementById(`cell_Hd_${h}`); if (hCell) hCell.value = snapshot.hdcp[h] ?? '';
+        activePlayers.forEach(p => {
+          const scoreCell = document.getElementById(`cell_${p}_${h}`); if (scoreCell) scoreCell.value = snapshot.scores[`${p}_${h}`] ?? '';
+        });
+      }
       updateParTotals();
+      activePlayers.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
     }
 
     function handleCourseInput(orderIdx, type, hole){
@@ -1081,12 +1201,11 @@
     function jumpPlayerCell(player, hole){
       const order = getPlayOrder();
       const idx = order.indexOf(hole);
-      if (idx === -1) return;
-      if (player < playerIDs.length - 1) {
-        document.getElementById(`cell_${player+1}_${hole}`).focus();
-      } else if (idx < order.length - 1) {
-        document.getElementById(`cell_0_${order[idx+1]}`).focus();
-      }
+      const activePlayers = getActivePlayers();
+      const rowIdx = activePlayers.indexOf(player);
+      if (idx === -1 || rowIdx === -1) return;
+      if (rowIdx < activePlayers.length - 1) document.getElementById(`cell_${activePlayers[rowIdx+1]}_${hole}`)?.focus();
+      else if (idx < order.length - 1) document.getElementById(`cell_${activePlayers[0]}_${order[idx+1]}`)?.focus();
     }
 
     function updatePlayerTotals(player){
@@ -1129,7 +1248,7 @@
     }
 
     function getActiveParPlayers(){
-      return playerIDs.filter(i => document.getElementById(`p${i}_p`).checked && isParEnabled());
+      return getActivePlayers().filter(i => document.getElementById(`p${i}_p`)?.checked && isParEnabled());
     }
 
     function getPairMeta(i,j){
@@ -1168,12 +1287,14 @@
 
     function buildMatchPairs(){
       const pairs = [];
+      const activePlayers = getActivePlayers();
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
+        if (!activePlayers.includes(a) || !activePlayers.includes(b)) return;
         const meta = getPairMeta(a,b);
         if (!meta.checked) return;
-        const pa = document.getElementById(`p${a}_m`).checked;
-        const pb = document.getElementById(`p${b}_m`).checked;
+        const pa = !!document.getElementById(`p${a}_m`)?.checked;
+        const pb = !!document.getElementById(`p${b}_m`)?.checked;
         if (!pa || !pb || !isMatchEnabled()) return;
         pairs.push([a,b]);
       });
@@ -1198,7 +1319,7 @@
       if (!(start >= 1 && start <= 18)) errors.push('起始洞必須為 1~18。');
 
       if (isVegasEnabled()) {
-        const ranks = playerIDs.map(i => document.getElementById(`vegasRank${i}`)?.value || '');
+        const ranks = getActivePlayers().map(i => document.getElementById(`vegasRank${i}`)?.value || '');
         if (ranks.some(v => !v)) errors.push('Vegas 起始洞排名未填完整。');
         const unique = new Set(ranks);
         if (unique.size !== 4) errors.push('Vegas 起始洞排名不可重複。');
@@ -1240,7 +1361,7 @@
 
     function getVegasStartTeams(){
       const mapping = {};
-      playerIDs.forEach(i => { mapping[parseInt(document.getElementById(`vegasRank${i}`).value)] = i; });
+      getActivePlayers().forEach(i => { mapping[parseInt(document.getElementById(`vegasRank${i}`).value)] = i; });
       return [[mapping[1], mapping[4]], [mapping[2], mapping[3]]];
     }
 
@@ -1285,7 +1406,7 @@
       const preview = document.getElementById('vegasStartPreview');
       if (!preview) return;
       if (!isVegasEnabled()) { preview.innerText = 'Vegas 未啟用'; return; }
-      const values = playerIDs.map(i => document.getElementById(`vegasRank${i}`)?.value || '');
+      const values = getActivePlayers().map(i => document.getElementById(`vegasRank${i}`)?.value || '');
       if (values.some(v => !v) || new Set(values).size !== 4) {
         preview.innerText = '起始洞分組：尚未設定';
         return;
@@ -1307,7 +1428,7 @@
     }
 
     function rankPlayersForVegas(currentOrderIndex, order){
-      const arr = [...playerIDs];
+      const arr = [...getActivePlayers()];
       const prevHole = order[currentOrderIndex-1];
       arr.sort((a,b) => {
         const sa = getPlayerScore(a, prevHole);
@@ -1372,17 +1493,55 @@
       });
     }
 
+    function buildMatrixTable(title, matrix, totals, activePlayers, names, showPlus=false){
+      const numberText = (value) => {
+        if (value === null || value === undefined || Number.isNaN(value)) return '-';
+        if (value === 0) return '0';
+        return showPlus && value > 0 ? `+${value}` : String(value);
+      };
+      let html = `<table class="matrix-table"><tr><th></th>${activePlayers.map(i => `<th>${escapeHtml(names[i])}</th>`).join('')}<th class="total-col">總計</th></tr>`;
+      activePlayers.forEach(i => {
+        html += `<tr><th>${escapeHtml(names[i])}</th>`;
+        activePlayers.forEach(j => { html += `<td>${i === j ? '-' : numberText(matrix[i]?.[j] ?? 0)}</td>`; });
+        html += `<td class="total-col">${numberText(totals[i] ?? 0)}</td></tr>`;
+      });
+      html += `</table>`;
+      return html;
+    }
+
+    function buildParResults(order, activePlayers){
+      const matrix = playerIDs.map(() => playerIDs.map(() => 0));
+      const totals = [0,0,0,0];
+      if (!isParEnabled()) return { matrix, totals };
+      order.forEach(hole => {
+        const par = getHoleInfo(hole).par;
+        if (!par) return;
+        const participants = activePlayers.filter(p => document.getElementById(`p${p}_p`)?.checked);
+        if (!participants.length) return;
+        const labels = participants.map(p => ({ p, val: getGrossLabel(getPlayerScore(p,hole), par).points }));
+        const max = Math.max(...labels.map(x => x.val));
+        if (max <= 0) return;
+        const winners = labels.filter(x => x.val === max);
+        if (winners.length !== 1) return;
+        const winner = winners[0];
+        labels.forEach(item => {
+          if (item.p === winner.p) return;
+          const diff = winner.val - item.val;
+          matrix[winner.p][item.p] += diff;
+          matrix[item.p][winner.p] -= diff;
+          totals[winner.p] += diff;
+          totals[item.p] -= diff;
+        });
+      });
+      return { matrix, totals };
+    }
+
     function buildInlineStyleCss(){
       let css = '';
       Array.from(document.styleSheets || []).forEach(sheet => {
-        try {
-          Array.from(sheet.cssRules || []).forEach(rule => {
-            css += rule.cssText + '\n';
-          });
-        } catch (e) {}
+        try { Array.from(sheet.cssRules || []).forEach(rule => { css += rule.cssText + '\n'; }); } catch (e) {}
       });
-      css += `
-*{box-sizing:border-box;} body{margin:0 !important;} .export-wrap{display:none !important;} table{border-collapse:collapse;} input,select,button{font-family:inherit;}`;
+      css += `*{box-sizing:border-box;} body{margin:0 !important;} .export-wrap{display:none !important;} table{border-collapse:collapse;} input,select,button{font-family:inherit;}`;
       return css;
     }
 
@@ -1408,13 +1567,17 @@
       });
     }
 
-    function exportResultAsJpg(){
+    function closeExportPreview(event){
+      if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
+      document.getElementById('exportPreviewOverlay').classList.remove('show');
+      document.getElementById('exportPreviewImage').src = '';
+    }
+
+    function exportResultPreview(){
       const target = document.getElementById('result-capture');
       if (!target) return;
-
       const clone = target.cloneNode(true);
       inlineFormValues(clone);
-
       const rect = target.getBoundingClientRect();
       const width = Math.ceil(rect.width);
       const height = Math.ceil(target.scrollHeight || rect.height);
@@ -1426,24 +1589,20 @@
       svg.setAttribute('width', width);
       svg.setAttribute('height', height);
       svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
       const foreignObject = document.createElementNS(svgNs, 'foreignObject');
       foreignObject.setAttribute('x', '0');
       foreignObject.setAttribute('y', '0');
       foreignObject.setAttribute('width', '100%');
       foreignObject.setAttribute('height', '100%');
-
       const wrapper = document.createElementNS(xhtmlNs, 'div');
       wrapper.setAttribute('xmlns', xhtmlNs);
       wrapper.setAttribute('style', `width:${width}px;height:${height}px;background:#2f6b3f;margin:0;padding:0;overflow:hidden;`);
-
       const style = document.createElementNS(xhtmlNs, 'style');
       style.textContent = css;
       wrapper.appendChild(style);
       wrapper.appendChild(clone);
       foreignObject.appendChild(wrapper);
       svg.appendChild(foreignObject);
-
       const svgText = new XMLSerializer().serializeToString(svg);
       const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
@@ -1459,16 +1618,12 @@
         ctx.fillRect(0, 0, width, height);
         ctx.drawImage(img, 0, 0, width, height);
         URL.revokeObjectURL(url);
-        const link = document.createElement('a');
-        const now = new Date();
-        const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-        link.download = `golf_result_${stamp}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
-        link.click();
+        document.getElementById('exportPreviewImage').src = canvas.toDataURL('image/png');
+        document.getElementById('exportPreviewOverlay').classList.add('show');
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        alert('JPG 匯出失敗，這支手機瀏覽器可能不支援離線匯出。你可以先用手機截圖，之後我再幫你改成 GitHub 版更穩。');
+        alert('圖片輸出失敗，請改用 Safari 網址版或先截圖。');
       };
       img.src = url;
     }
@@ -1479,13 +1634,12 @@
         openTab('scoring');
         return;
       }
-
-      const names = playerIDs.map(i => nameOf(i));
+      const activePlayers = getActivePlayers();
+      const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
       const pointValue = parseFloat(document.getElementById('pointVal').value) || 0;
       const order = getPlayOrder();
       updateVegasPreview();
 
-      // Match
       const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
       const matchPoints = [0,0,0,0];
       const matchPairs = buildMatchPairs();
@@ -1501,45 +1655,24 @@
           const holePar = getHoleInfo(hole).par;
           if (netA < netB) {
             const pts = getMatchMultiplier(grossA, holePar);
-            aScore += pts; bScore -= pts;
-            matchPoints[a] += pts; matchPoints[b] -= pts;
+            aScore += pts; bScore -= pts; matchPoints[a] += pts; matchPoints[b] -= pts;
           } else if (netB < netA) {
             const pts = getMatchMultiplier(grossB, holePar);
-            bScore += pts; aScore -= pts;
-            matchPoints[b] += pts; matchPoints[a] -= pts;
+            bScore += pts; aScore -= pts; matchPoints[b] += pts; matchPoints[a] -= pts;
           }
         });
         matchMatrix[a][b] = aScore;
         matchMatrix[b][a] = bScore;
       });
+      activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
 
-      // Par
-      const parPoints = [0,0,0,0];
-      if (isParEnabled()) {
-        order.forEach(hole => {
-          const par = getHoleInfo(hole).par;
-          if (!par) return;
-          const participants = getActiveParPlayers();
-          if (!participants.length) return;
-          const labels = participants.map(p => ({ p, val: getGrossLabel(getPlayerScore(p,hole), par).points }));
-          const max = Math.max(...labels.map(x => x.val));
-          if (max <= 0) return;
-          const winners = labels.filter(x => x.val === max);
-          if (winners.length !== 1) return;
-          const winner = winners[0];
-          labels.forEach(item => {
-            if (item.p === winner.p) return;
-            const diff = winner.val - item.val;
-            parPoints[winner.p] += diff;
-            parPoints[item.p] -= diff;
-          });
-        });
-      }
+      const parResult = buildParResults(order, activePlayers);
+      const parPoints = parResult.totals;
+      const parMatrix = parResult.matrix;
 
-      // Vegas
       const vegasPoints = [0,0,0,0];
       const vegasHoleWins = [];
-      if (isVegasEnabled()) {
+      if (isVegasEnabled() && activePlayers.length === 4) {
         let currentTeams = getVegasStartTeams();
         let carry = 1;
         order.forEach((hole, idx) => {
@@ -1569,73 +1702,67 @@
         });
       }
 
-      const totalPoints = playerIDs.map(i => matchPoints[i] + parPoints[i] + vegasPoints[i]);
+      const totalPoints = [0,0,0,0];
+      activePlayers.forEach(i => { totalPoints[i] = matchPoints[i] + parPoints[i] + vegasPoints[i]; });
 
       const matchDetails = buildMatchDetails(order, names);
-      renderMatchOutput(matchMatrix, matchPairs, names, matchDetails);
-      renderParOutput(parPoints, names);
-      renderVegasOutput(vegasPoints, names);
+      renderMatchOutput(matchMatrix, matchPoints, names, activePlayers);
+      renderMatchDetailOutput(matchDetails, names);
+      renderParOutput(parMatrix, parPoints, names, activePlayers);
+      renderVegasOutput(vegasPoints, names, activePlayers);
       renderVegasHoleOutput(vegasHoleWins, names);
-      renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names);
+      renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers);
+      renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers);
       openTab('result');
     }
 
-    function renderMatchOutput(matrix, pairs, names, details){
+    function renderMatchOutput(matrix, totals, names, activePlayers){
       if (!isMatchEnabled()) {
         document.getElementById('match-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
         return;
       }
-      let html = `<table class="res-table"><tr><th></th>${playerIDs.map(i => `<th>${names[i]}</th>`).join('')}</tr>`;
-      playerIDs.forEach(i => {
-        html += `<tr><th>${names[i]}</th>`;
-        playerIDs.forEach(j => {
-          if (i===j) { html += `<td>-</td>`; return; }
-          if (matrix[i][j] === null) { html += `<td>-</td>`; return; }
-          html += `<td class="${matrix[i][j] > 0 ? 'red-text' : matrix[i][j] < 0 ? '' : 'muted'}">${matrix[i][j] > 0 ? '+' : ''}${matrix[i][j]}</td>`;
-        });
-        html += `</tr>`;
-      });
-      html += `</table>`;
-      if (details && details.length) {
-        details.forEach((item, idx) => {
-          const split = splitLogsByNine(item.logs);
-          const frontHtml = `<div class="section-summary">前 9 洞：${names[item.a]} ${formatSigned(item.front)} / ${names[item.b]} ${formatSigned(-item.front)}</div>` +
-            (split.front.length ? `<div class="hole-win-log">${split.front.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">前 9 洞沒有完整紀錄</div>`);
-          const backHtml = `<div class="section-summary">後 9 洞：${names[item.a]} ${formatSigned(item.back)} / ${names[item.b]} ${formatSigned(-item.back)}</div>` +
-            (split.back.length ? `<div class="hole-win-log">${split.back.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">後 9 洞沒有完整紀錄</div>`);
-          const title = `${names[item.a]} vs ${names[item.b]}｜前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}｜總計 ${formatSigned(item.total)}`;
-          html += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
-        });
+      document.getElementById('match-output').innerHTML = buildMatrixTable('Match', matrix, totals, activePlayers, names, false);
+    }
+
+    function renderMatchDetailOutput(details, names){
+      if (!isMatchEnabled()) {
+        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
+        return;
       }
-      document.getElementById('match-output').innerHTML = html;
+      if (!details.length) {
+        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日沒有比洞對戰明細</div>`;
+        return;
+      }
+      let html = '';
+      details.forEach((item, idx) => {
+        const split = splitLogsByNine(item.logs);
+        const frontHtml = `<div class="section-summary">前 9 洞：${names[item.a]} ${formatSigned(item.front)} / ${names[item.b]} ${formatSigned(-item.front)}</div>` + (split.front.length ? `<div class="hole-win-log">${split.front.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">前 9 洞沒有完整紀錄</div>`);
+        const backHtml = `<div class="section-summary">後 9 洞：${names[item.a]} ${formatSigned(item.back)} / ${names[item.b]} ${formatSigned(-item.back)}</div>` + (split.back.length ? `<div class="hole-win-log">${split.back.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">後 9 洞沒有完整紀錄</div>`);
+        const title = `${names[item.a]} vs ${names[item.b]}｜前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}｜總計 ${formatSigned(item.total)}`;
+        html += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
+      });
+      document.getElementById('match-detail-output').innerHTML = html;
     }
 
-    function renderSortedRows(values, names, enabledPlayers=null){
-      const arr = playerIDs.map(i => ({ i, name:names[i], pts: values[i] }));
-      const filtered = enabledPlayers ? arr.filter(x => enabledPlayers.includes(x.i)) : arr;
-      filtered.sort((a,b) => b.pts - a.pts || a.i - b.i);
-      return filtered.map(x => `<div class="res-row"><span>${x.name}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
-    }
-
-    function renderParOutput(points, names){
+    function renderParOutput(matrix, totals, names, activePlayers){
       if (!isParEnabled()) {
         document.getElementById('par-output').innerHTML = `<div class="center-note">本日未啟用抓PAR</div>`;
         return;
       }
-      const active = getActiveParPlayers();
-      if (!active.length) {
+      const participants = getActiveParPlayers();
+      if (!participants.length) {
         document.getElementById('par-output').innerHTML = `<div class="center-note">沒有玩家參與抓PAR</div>`;
         return;
       }
-      document.getElementById('par-output').innerHTML = renderSortedRows(points, names, active);
+      document.getElementById('par-output').innerHTML = buildMatrixTable('抓PAR', matrix, totals, participants, names, false) + `<div class="matrix-note">右側總計就是每位玩家抓PAR點數的來源。</div>`;
     }
 
-    function renderVegasOutput(points, names){
+    function renderVegasOutput(points, names, activePlayers){
       if (!isVegasEnabled()) {
         document.getElementById('vegas-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
         return;
       }
-      document.getElementById('vegas-output').innerHTML = renderSortedRows(points, names, playerIDs);
+      document.getElementById('vegas-output').innerHTML = renderSortedRows(points, names, activePlayers);
     }
 
     function renderVegasHoleOutput(logs, names){
@@ -1653,43 +1780,25 @@
         const decided = sectionLogs.filter(x => !x.tie);
         const pointTotal = decided.reduce((sum, x) => sum + (x.points || 0), 0);
         const summary = `<div class="section-summary">${title}：勝負洞 ${decided.length} 洞，平手 ${tieCount} 洞，累計結算點數 ${pointTotal}</div>`;
-        const items = sectionLogs.map(item => {
-          if (item.tie) {
-            const label = isExtEnabled() && !item.carryAbandoned ? '平手 0（遞延）' : '平手 0';
-            return `<div class="hole-win-item">第 ${item.hole} 洞　${label}</div>`;
-          }
-          return `<div class="hole-win-item">第 ${item.hole} 洞　${item.winner.map(p => names[p]).join('、')} +${item.points}</div>`;
-        }).join('');
+        const items = sectionLogs.map(item => item.tie ? `<div class="hole-win-item">第 ${item.hole} 洞　0</div>` : `<div class="hole-win-item">第 ${item.hole} 洞　${item.winner.map(p => names[p]).join('、')} ${item.points}</div>`).join('');
         return buildCollapseBlock(`${title} 明細`, summary + `<div class="hole-win-log">${items}</div>`, open);
       };
       document.getElementById('vegas-hole-output').innerHTML = buildSection('前 9 洞', split.front, true) + buildSection('後 9 洞', split.back, false);
     }
 
-    function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names){
-      const rows = playerIDs.map(i => ({
-        i,
-        name:names[i],
-        match: matchPoints[i],
-        par: parPoints[i],
-        vegas: vegasPoints[i],
-        total: totalPoints[i],
-        money: Math.round(totalPoints[i] * pointValue)
-      })).sort((a,b) => b.total - a.total || a.i - b.i);
-      let html = `<table class="summary-table"><tr><th>玩家</th><th>Match</th><th>抓PAR</th><th>Vegas</th><th>總點數</th><th>金額</th></tr>`;
+    function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
+      document.getElementById('capture-par-wrap').innerHTML = isParEnabled() ? `<div class="capture-section"><div class="capture-title">抓PAR矩陣</div><div class="capture-card">${buildMatrixTable('抓PAR', parMatrix, parPoints, getActiveParPlayers(), names, false)}</div></div>` : '';
+      document.getElementById('capture-vegas-wrap').innerHTML = isVegasEnabled() ? `<div class="capture-section"><div class="capture-title">Vegas點數</div><div class="capture-card">${renderSortedRows(vegasPoints, names, activePlayers)}</div></div>` : '';
+      document.getElementById('capture-match-wrap').innerHTML = isMatchEnabled() ? `<div class="capture-section"><div class="capture-title">Match矩陣</div><div class="capture-card">${buildMatrixTable('Match', matchMatrix, matchPoints, activePlayers, names, false)}</div></div>` : '';
+    }
+
+    function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers){
+      const rows = activePlayers.map(i => ({ i, name:names[i], match: matchPoints[i], par: parPoints[i], vegas: vegasPoints[i], total: totalPoints[i], money: Math.round(totalPoints[i] * pointValue) })).sort((a,b) => b.total - a.total || a.i - b.i);
+      let html = `<table class="summary-table"><tr><th>玩家</th>${isMatchEnabled()?'<th>Match</th>':''}${isParEnabled()?'<th>抓PAR</th>':''}${isVegasEnabled()?'<th>Vegas</th>':''}<th>總點數</th><th>金額</th></tr>`;
       rows.forEach(r => {
-        const matchCls = r.match > 0 ? 'red-text' : r.match < 0 ? '' : 'muted';
-        const parCls = r.par > 0 ? 'red-text' : r.par < 0 ? '' : 'muted';
-        const vegasCls = r.vegas > 0 ? 'red-text' : r.vegas < 0 ? '' : 'muted';
         const totalCls = r.total > 0 ? 'red-text' : r.total < 0 ? '' : 'muted';
         const moneyCls = r.money > 0 ? 'red-text' : r.money < 0 ? '' : 'muted';
-        html += `<tr>
-          <td>${r.name}</td>
-          <td class="${matchCls}">${r.match>0?'+':''}${r.match}</td>
-          <td class="${parCls}">${r.par>0?'+':''}${r.par}</td>
-          <td class="${vegasCls}">${r.vegas>0?'+':''}${r.vegas}</td>
-          <td class="${totalCls}">${r.total>0?'+':''}${r.total}</td>
-          <td class="${moneyCls}">${r.money>0?'+':''}${r.money} 元</td>
-        </tr>`;
+        html += `<tr><td>${r.name}</td>${isMatchEnabled()?`<td>${r.match}</td>`:''}${isParEnabled()?`<td>${r.par}</td>`:''}${isVegasEnabled()?`<td>${r.vegas}</td>`:''}<td class="${totalCls}">${r.total > 0 ? '+' : ''}${r.total}</td><td class="${moneyCls}">${r.money > 0 ? '+' : ''}${r.money} 元</td></tr>`;
       });
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
