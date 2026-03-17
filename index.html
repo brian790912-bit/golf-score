@@ -169,11 +169,18 @@
     .name-card label { display:block; margin-bottom: 6px; }
     .table-wrapper { overflow: auto; -webkit-overflow-scrolling: touch; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); max-height: calc(100vh - 220px); }
     .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 64px; }
-    .scoreboard-vertical table { min-width: 620px; width: max-content; table-layout: fixed; }
-    .scoreboard-vertical .sticky-col { width: var(--info-col-w); min-width: var(--info-col-w); max-width: var(--info-col-w); }
+    .scoreboard-vertical table { width: auto !important; min-width: auto !important; table-layout: fixed; }
+    .scoreboard-vertical .sticky-col,
     .scoreboard-vertical .sticky-hole,
     .scoreboard-vertical .sticky-par,
-    .scoreboard-vertical .sticky-hdcp { position: sticky; min-width: var(--info-col-w); max-width: var(--info-col-w); }
+    .scoreboard-vertical .sticky-hdcp {
+      width: var(--info-col-w) !important;
+      min-width: var(--info-col-w) !important;
+      max-width: var(--info-col-w) !important;
+    }
+    .scoreboard-vertical .sticky-hole,
+    .scoreboard-vertical .sticky-par,
+    .scoreboard-vertical .sticky-hdcp { position: sticky; }
     .scoreboard-vertical .sticky-hole { left: 0; z-index: 64; background: #f8fbf7; }
     .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #fff; }
     .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #fff; }
@@ -181,9 +188,16 @@
     .scoreboard-vertical thead .sticky-hole { z-index: 76; }
     .scoreboard-vertical thead .sticky-par { z-index: 75; }
     .scoreboard-vertical thead .sticky-hdcp { z-index: 74; }
-    .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp) { min-width: 90px; }
+    .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp),
     .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
-    .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 90px; }
+    .scoreboard-vertical tbody th:not(.sticky-hole) {
+      width: 76px !important;
+      min-width: 76px !important;
+      max-width: 76px !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .scoreboard-vertical td.sticky-par,
     .scoreboard-vertical td.sticky-hdcp { padding: 3px; }
     .scoreboard-vertical td.sticky-par input,
@@ -527,11 +541,15 @@
       .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
 
       .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 50px; }
-      .scoreboard-vertical table { min-width: 560px; }
+      .scoreboard-vertical table { width: auto !important; min-width: auto !important; }
       .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
       .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp),
       .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
-      .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 76px; }
+      .scoreboard-vertical tbody th:not(.sticky-hole) {
+        width: 72px !important;
+        min-width: 72px !important;
+        max-width: 72px !important;
+      }
       .scoreboard-vertical td.sticky-par,
       .scoreboard-vertical td.sticky-hdcp { padding: 2px; }
       .scoreboard-vertical td.sticky-par input,
