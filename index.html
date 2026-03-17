@@ -169,8 +169,9 @@
     .name-card label { display:block; margin-bottom: 6px; }
     .table-wrapper { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
     .scoreboard-vertical { --sticky-top: 58px; --info-col-w: 64px; --player-col-w: 76px; }
-    .scoreboard-vertical.table-wrapper { position: relative; overflow-x: auto; overflow-y: visible; }
+    .scoreboard-vertical.table-wrapper { position: relative; overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; }
     .scoreboard-vertical table { min-width: calc(var(--info-col-w) * 3 + var(--player-col-w) * 2); width: max-content; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+    .scoreboard-vertical thead tr:not(#rowH) { display: none; }
     .scoreboard-vertical .sticky-col { width: var(--info-col-w); min-width: var(--info-col-w); max-width: var(--info-col-w); }
     .scoreboard-vertical .sticky-hole,
     .scoreboard-vertical .sticky-par,
@@ -179,6 +180,7 @@
     .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #fff; }
     .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #fff; }
     .scoreboard-vertical thead th { position: -webkit-sticky; position: sticky; top: var(--sticky-top); z-index: 70; background: #f8fbf7; box-shadow: 0 1px 0 #dbe5d8; }
+    .scoreboard-vertical thead th.player-head { background:#f8fbf7; }
     .scoreboard-vertical thead .sticky-hole { z-index: 86; }
     .scoreboard-vertical thead .sticky-par { z-index: 85; }
     .scoreboard-vertical thead .sticky-hdcp { z-index: 84; }
@@ -628,7 +630,7 @@
       if (!wrapper) return;
       const nav = document.querySelector('.tab-nav');
       const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 56;
-      wrapper.style.setProperty('--sticky-top', `${Math.max(54, navHeight)}px`);
+      wrapper.style.setProperty('--sticky-top', `${Math.max(52, navHeight)}px`);
     }
 
     function getActivePlayers(){
@@ -1208,8 +1210,11 @@
       let rowH = `<th class="sticky-col sticky-hole">Hole</th><th class="sticky-par">PAR</th><th class="sticky-hdcp">HDCP</th>`;
       activePlayers.forEach(p => { rowH += `<th class="player-head" id="tag-${p}" title="${escapeHtml(nameOf(p))}">${nameOf(p)}</th>`; });
       document.getElementById('rowH').innerHTML = rowH;
+      document.getElementById('rowH').style.display = '';
       document.getElementById('rowP').innerHTML = '';
+      document.getElementById('rowP').style.display = 'none';
       document.getElementById('rowHd').innerHTML = '';
+      document.getElementById('rowHd').style.display = 'none';
 
       let body = '';
       order.forEach((hole, idx) => {
@@ -1943,6 +1948,9 @@
 
     window.onload = () => {
       initUI();
+      applyScoreboardStickyTop();
+      window.addEventListener('resize', applyScoreboardStickyTop);
+      window.addEventListener('orientationchange', applyScoreboardStickyTop);
     };
   </script>
 </body>
