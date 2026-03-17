@@ -168,30 +168,26 @@
     .name-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(31,66,40,.04); }
     .name-card label { display:block; margin-bottom: 6px; }
     .table-wrapper { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
-    .scoreboard-vertical { --sticky-top: 58px; --info-col-w: 64px; --player-col-w: 76px; }
-    .scoreboard-vertical.table-wrapper { position: relative; overflow: auto; max-height: calc(100vh - 220px); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-    .scoreboard-vertical table { min-width: calc(var(--info-col-w) * 3 + var(--player-col-w) * 2); width: max-content; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
-    .scoreboard-vertical thead tr:not(#rowH) { display: none; }
+    .scoreboard-vertical { --sticky-top: 78px; --info-col-w: 64px; }
+    .scoreboard-vertical table { min-width: 620px; width: max-content; table-layout: fixed; }
     .scoreboard-vertical .sticky-col { width: var(--info-col-w); min-width: var(--info-col-w); max-width: var(--info-col-w); }
     .scoreboard-vertical .sticky-hole,
     .scoreboard-vertical .sticky-par,
-    .scoreboard-vertical .sticky-hdcp { position: -webkit-sticky; position: sticky; min-width: var(--info-col-w); max-width: var(--info-col-w); }
+    .scoreboard-vertical .sticky-hdcp { position: sticky; min-width: var(--info-col-w); max-width: var(--info-col-w); }
     .scoreboard-vertical .sticky-hole { left: 0; z-index: 64; background: #f8fbf7; }
     .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #fff; }
     .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #fff; }
-    .scoreboard-vertical thead th { position: -webkit-sticky; position: sticky; top: 0; z-index: 70; background: #f8fbf7; box-shadow: 0 1px 0 #dbe5d8; }
-    .scoreboard-vertical thead th.player-head { background:#f8fbf7; }
-    .scoreboard-vertical thead .sticky-hole { z-index: 86; }
-    .scoreboard-vertical thead .sticky-par { z-index: 85; }
-    .scoreboard-vertical thead .sticky-hdcp { z-index: 84; }
-    .scoreboard-vertical thead th.player-head,
-    .scoreboard-vertical td.player-col,
-    .scoreboard-vertical .summary-row td.player-col { width: var(--player-col-w); min-width: var(--player-col-w); max-width: var(--player-col-w); }
-    .scoreboard-vertical thead th.player-head { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .scoreboard-vertical thead th { position: sticky; top: var(--sticky-top); z-index: 70; background: #f8fbf7; }
+    .scoreboard-vertical thead .sticky-hole { z-index: 76; }
+    .scoreboard-vertical thead .sticky-par { z-index: 75; }
+    .scoreboard-vertical thead .sticky-hdcp { z-index: 74; }
+    .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp) { min-width: 90px; }
+    .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
+    .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 90px; }
     .scoreboard-vertical td.sticky-par,
     .scoreboard-vertical td.sticky-hdcp { padding: 3px; }
     .scoreboard-vertical td.sticky-par input,
-    .scoreboard-vertical td.sticky-hdcp input { min-height: 42px; height: 42px; padding: 0 2px; font-size: 1.02rem; border-radius: 10px; }
+    .scoreboard-vertical td.sticky-hdcp input { min-height: 42px; height: 42px; padding: 0 4px; font-size: 1.02rem; border-radius: 10px; }
     .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { background:#f6faf5; color:var(--primary-dark); }
     table { border-collapse: collapse; text-align: center; width: 100%; min-width: 1900px; table-layout: fixed; }
     th, td {
@@ -322,20 +318,95 @@
     .result-stack { display: grid; gap: 12px; }
     #result .card { overflow: hidden; }
 
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      margin: 0 0 10px auto;
+      border-radius: 999px;
+      background: rgba(47,107,63,.08);
+      color: var(--primary-dark);
+      border: 1px solid rgba(47,107,63,.12);
+      font-size: .8rem;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .result-version-inline {
+      display: flex;
+      justify-content: flex-end;
+      margin: -2px 0 8px;
+    }
     .collapse-block { border: 1px solid #dde7db; border-radius: 14px; overflow: hidden; background: #fff; margin-top: 10px; }
     .collapse-head {
       width: 100%; border: none; background: #f4f8f3; color: var(--primary-dark);
       font-size: .98rem; font-weight: 900; padding: 13px 14px; text-align: left; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
     }
-    .collapse-head::after { content: '＋'; font-size: 1.1rem; }
-    .collapse-block.open .collapse-head::after { content: '－'; }
+    .collapse-head.major { background: linear-gradient(180deg, #edf6ee, #e7f1e8); }
+    .collapse-head.minor { background: #f8fbf7; font-size: .94rem; padding: 11px 12px; }
+    .collapse-title { flex: 1; }
+    .collapse-icon {
+      flex: 0 0 auto;
+      font-size: 1.02rem;
+      color: var(--primary-dark);
+      line-height: 1;
+      min-width: 16px;
+      text-align: right;
+    }
+    .collapse-head.minor .collapse-icon { font-size: .94rem; color: #61705f; }
     .collapse-body { display: none; padding: 10px; border-top: 1px solid #e3ece1; background: #fff; }
-    .collapse-block.open .collapse-body { display: block; }
+    .collapse-block.open > .collapse-body { display: block; }
     .section-summary {
       background: #eef5ec; border: 1px solid #dbe7d8; border-radius: 12px; padding: 10px 12px;
       font-size: .93rem; color: var(--text); margin-bottom: 8px; line-height: 1.5;
     }
+    .detail-summary-card {
+      background: linear-gradient(180deg, #2f6b3f 0%, #2a5a38 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 8px 18px rgba(24,49,31,.12);
+    }
+    .detail-summary-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .detail-summary-title { font-size: 1rem; font-weight: 900; }
+    .detail-summary-total { font-size: .94rem; font-weight: 900; }
+    .detail-summary-sub { font-size: .86rem; opacity: .94; }
+    .detail-section {
+      border: 1px solid #e0e9de;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fcfdfc;
+      margin-top: 8px;
+    }
+    .detail-section-title {
+      background: #f2f7f1;
+      color: var(--primary-dark);
+      font-size: .9rem;
+      font-weight: 900;
+      padding: 9px 11px;
+      border-bottom: 1px solid #e2ebe0;
+    }
+    .hole-win-log { display: block; }
+    .hole-win-item {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #ecf1ea;
+      border-radius: 0;
+      padding: 9px 11px;
+      font-size: .94rem;
+      color: var(--text);
+    }
+    .hole-win-item:last-child { border-bottom: none; }
+    .hole-win-item strong { color: var(--primary-dark); }
     .export-wrap { margin-bottom: 10px; display: flex; justify-content: flex-end; }
     .jpg-capture { background: #fff; border-radius: 18px; }
 
@@ -455,21 +526,21 @@
       .hole-win-item { padding: 8px 10px; font-size: .92rem; }
       .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
 
-      .scoreboard-vertical { --sticky-top: 56px; --info-col-w: 48px; --player-col-w: 62px; max-height: calc(100vh - 170px); }
-      .scoreboard-vertical table { min-width: calc(var(--info-col-w) * 3 + var(--player-col-w) * 2); }
-      .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .84rem; }
+      .scoreboard-vertical { --sticky-top: 72px; --info-col-w: 50px; }
+      .scoreboard-vertical table { min-width: 560px; }
+      .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
+      .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp),
+      .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
+      .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 76px; }
       .scoreboard-vertical td.sticky-par,
       .scoreboard-vertical td.sticky-hdcp { padding: 2px; }
       .scoreboard-vertical td.sticky-par input,
-      .scoreboard-vertical td.sticky-hdcp input { min-height: 34px; height: 34px; padding: 0 1px; font-size: .92rem; border-radius: 8px; }
-      .scoreboard-vertical .score-cell input { font-size: 1.02rem; }
+      .scoreboard-vertical td.sticky-hdcp input { min-height: 34px; height: 34px; padding: 0 2px; font-size: .95rem; border-radius: 8px; }
+      .scoreboard-vertical .score-cell input { font-size: 1.05rem; }
       .scoreboard-vertical .mark-circle, .scoreboard-vertical .mark-square { width: 28px; height: 28px; border-width: 2px; }
       .scoreboard-vertical .mark-double-circle, .scoreboard-vertical .mark-double-square { width: 32px; height: 32px; border-width: 4px; }
-      .scoreboard-vertical thead th { font-size: .76rem; }
-      .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { font-size: .76rem; }
-      .scoreboard-vertical thead th.player-head,
-      .scoreboard-vertical td.player-col,
-      .scoreboard-vertical .summary-row td.player-col { width: var(--player-col-w); min-width: var(--player-col-w); max-width: var(--player-col-w); }
+      .scoreboard-vertical thead th { font-size: .78rem; }
+      .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { font-size: .78rem; }
     }
   </style>
 </head>
@@ -481,6 +552,7 @@
   </div>
 
   <div id="setting" class="content active">
+    <div class="version-badge">Golf Score Beta 1.3</div>
     <div id="global-warning" class="warning-box"></div>
     <div class="card">
       <h2>1. 球場與今日比賽模式</h2>
@@ -538,6 +610,7 @@
   </div>
 
   <div id="scoring" class="content">
+    <div class="version-badge">Golf Score Beta 1.3</div>
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area">
@@ -568,11 +641,13 @@
   </div>
 
   <div id="result" class="content">
+    <div class="version-badge">Golf Score Beta 1.3</div>
     <div class="result-grid">
       <div class="result-stack">
         <div class="final-area jpg-capture" id="result-capture">
           <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
           <h2>💰 總結算</h2>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.3</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -604,6 +679,7 @@
   </div>
 
   <script>
+    const APP_VERSION = 'Golf Score Beta 1.3';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -616,21 +692,11 @@
       document.getElementById('tab-' + (t==='setting'?'set':t==='scoring'?'score':'res')).classList.add('active');
       if (t === 'scoring') {
           refreshSavedCourseSelect();
-          setTimeout(applyScoreboardStickyTop, 0);
       }
     }
 
     function nameOf(i){
       return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
-    }
-
-
-    function applyScoreboardStickyTop(){
-      const wrapper = document.querySelector('.scoreboard-vertical');
-      if (!wrapper) return;
-      const nav = document.querySelector('.tab-nav');
-      const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 56;
-      wrapper.style.setProperty('--sticky-top', `${Math.max(52, navHeight)}px`);
     }
 
     function getActivePlayers(){
@@ -861,8 +927,6 @@
       attachSelectAllBehavior(document);
       applyNumericKeyboardHints(document);
       bindCourseAutoLoad();
-      applyScoreboardStickyTop();
-      window.addEventListener('resize', applyScoreboardStickyTop);
     }
 
     function renderPlayerCards(){
@@ -1208,13 +1272,10 @@
       const wrapper = document.querySelector('.table-wrapper');
       if (wrapper) wrapper.classList.add('scoreboard-vertical');
       let rowH = `<th class="sticky-col sticky-hole">Hole</th><th class="sticky-par">PAR</th><th class="sticky-hdcp">HDCP</th>`;
-      activePlayers.forEach(p => { rowH += `<th class="player-head" id="tag-${p}" title="${escapeHtml(nameOf(p))}">${nameOf(p)}</th>`; });
+      activePlayers.forEach(p => { rowH += `<th id="tag-${p}">${nameOf(p)}</th>`; });
       document.getElementById('rowH').innerHTML = rowH;
-      document.getElementById('rowH').style.display = '';
       document.getElementById('rowP').innerHTML = '';
-      document.getElementById('rowP').style.display = 'none';
       document.getElementById('rowHd').innerHTML = '';
-      document.getElementById('rowHd').style.display = 'none';
 
       let body = '';
       order.forEach((hole, idx) => {
@@ -1223,20 +1284,20 @@
         body += `<td class="sticky-par"><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
         body += `<td class="sticky-hdcp"><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
         activePlayers.forEach(p => {
-          body += `<td class="score-cell player-col"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
+          body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
         });
         body += `</tr>`;
         if (idx === 8) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">前9小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td class="player-col" id="out_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
         if (idx === 17) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">後9小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td class="player-col" id="in_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td class="player-col" id="tot_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
           body += `</tr>`;
         }
       });
@@ -1256,7 +1317,6 @@
         for (let h=1; h<=18; h++) drawMark(p,h,false);
       });
       updateNames();
-      applyScoreboardStickyTop();
     }
 
     function handleCourseInput(orderIdx, type, hole){
@@ -1550,9 +1610,18 @@
         .replace(/'/g, '&#39;');
     }
 
-    function buildCollapseBlock(title, innerHtml, open=false){
-      const cls = open ? 'collapse-block open' : 'collapse-block';
-      return `<div class="${cls}"><button type="button" class="collapse-head" onclick="this.parentNode.classList.toggle('open')">${title}</button><div class="collapse-body">${innerHtml}</div></div>`;
+    function toggleCollapse(button){
+      const block = button.closest('.collapse-block');
+      if (!block) return;
+      const isOpen = block.classList.toggle('open');
+      const icon = button.querySelector('.collapse-icon');
+      if (icon) icon.textContent = isOpen ? '˄' : '˅';
+    }
+
+    function buildCollapseBlock(title, innerHtml, open=false, level='minor'){
+      const cls = `collapse-block ${level} ${open ? 'open' : ''}`.trim();
+      const icon = open ? '˄' : '˅';
+      return `<div class="${cls}"><button type="button" class="collapse-head ${level}" onclick="toggleCollapse(this)"><span class="collapse-title">${title}</span><span class="collapse-icon">${icon}</span></button><div class="collapse-body">${innerHtml}</div></div>`;
     }
 
     function splitLogsByNine(logs){
@@ -1877,14 +1946,17 @@
         return;
       }
       let inner = '';
-      details.forEach((item, idx) => {
+      details.forEach((item) => {
         const split = splitLogsByNine(item.logs);
-        const frontHtml = `<div class="section-summary">前 9 洞：${names[item.a]} ${formatSigned(item.front)} / ${names[item.b]} ${formatSigned(-item.front)}</div>` + (split.front.length ? `<div class="hole-win-log">${split.front.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">前 9 洞沒有完整紀錄</div>`);
-        const backHtml = `<div class="section-summary">後 9 洞：${names[item.a]} ${formatSigned(item.back)} / ${names[item.b]} ${formatSigned(-item.back)}</div>` + (split.back.length ? `<div class="hole-win-log">${split.back.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">後 9 洞沒有完整紀錄</div>`);
-        const title = `${names[item.a]} vs ${names[item.b]}｜前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}｜總計 ${formatSigned(item.total)}`;
-        inner += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
+        const buildLogItems = (logs) => logs.length
+          ? `<div class="hole-win-log">${logs.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>`
+          : `<div class="center-note">沒有完整紀錄</div>`;
+        const frontInner = `<div class="detail-section"><div class="detail-section-title">前 9 洞</div>${buildLogItems(split.front)}</div>`;
+        const backInner = `<div class="detail-section"><div class="detail-section-title">後 9 洞</div>${buildLogItems(split.back)}</div>`;
+        const summary = `<div class="detail-summary-card"><div class="detail-summary-top"><div class="detail-summary-title">${escapeHtml(names[item.a])} vs ${escapeHtml(names[item.b])}</div><div class="detail-summary-total">總計 ${formatSigned(item.total)}</div></div><div class="detail-summary-sub">前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}</div></div>`;
+        inner += buildCollapseBlock(summary, frontInner + backInner, false, 'minor');
       });
-      document.getElementById('match-detail-output').innerHTML = buildCollapseBlock('展開／收起比洞明細', inner, false);
+      document.getElementById('match-detail-output').innerHTML = buildCollapseBlock('展開／收起比洞明細', inner, false, 'major');
     }
 
     function renderParOutput(matrix, totals, names, activePlayers){
@@ -1918,16 +1990,18 @@
         return;
       }
       const split = splitLogsByNine(logs);
-      const buildSection = (title, sectionLogs, open=false) => {
+      const buildSection = (title, sectionLogs) => {
         const tieCount = sectionLogs.filter(x => x.tie).length;
         const decided = sectionLogs.filter(x => !x.tie);
         const pointTotal = decided.reduce((sum, x) => sum + (x.points || 0), 0);
         const summary = `<div class="section-summary">${title}：勝負洞 ${decided.length} 洞，平手 ${tieCount} 洞，累計結算點數 ${pointTotal}</div>`;
-        const items = sectionLogs.map(item => item.tie ? `<div class="hole-win-item">第 ${item.hole} 洞　0</div>` : `<div class="hole-win-item">第 ${item.hole} 洞　${item.winner.map(p => names[p]).join('、')} ${item.points}</div>`).join('');
-        return buildCollapseBlock(`${title} 明細`, summary + `<div class="hole-win-log">${items}</div>`, open);
+        const items = sectionLogs.length
+          ? `<div class="hole-win-log">${sectionLogs.map(item => item.tie ? `<div class="hole-win-item">第 ${item.hole} 洞　平手 0</div>` : `<div class="hole-win-item">第 ${item.hole} 洞　<strong>${item.winner.map(p => escapeHtml(names[p])).join('、')}</strong> +${item.points}</div>`).join('')}</div>`
+          : `<div class="center-note">沒有完整紀錄</div>`;
+        return buildCollapseBlock(`${title} 明細`, summary + items, false, 'minor');
       };
-      const inner = buildSection('前 9 洞', split.front, true) + buildSection('後 9 洞', split.back, false);
-      document.getElementById('vegas-hole-output').innerHTML = buildCollapseBlock('展開／收起 Vegas 明細', inner, false);
+      const inner = buildSection('前 9 洞', split.front) + buildSection('後 9 洞', split.back);
+      document.getElementById('vegas-hole-output').innerHTML = buildCollapseBlock('展開／收起 Vegas 明細', inner, false, 'major');
     }
 
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
@@ -1948,9 +2022,6 @@
 
     window.onload = () => {
       initUI();
-      applyScoreboardStickyTop();
-      window.addEventListener('resize', applyScoreboardStickyTop);
-      window.addEventListener('orientationchange', applyScoreboardStickyTop);
     };
   </script>
 </body>
