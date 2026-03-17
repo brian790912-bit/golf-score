@@ -164,7 +164,17 @@
     .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 14px; }
+    .name-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(31,66,40,.04); }
+    .name-card label { display:block; margin-bottom: 6px; }
     .table-wrapper { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .scoreboard-vertical table { min-width: 760px; table-layout: auto; }
+    .scoreboard-vertical .sticky-col { width: 74px; }
+    .scoreboard-vertical .sticky-hole { position: sticky; left: 0; z-index: 64; background: #f8fbf7; min-width: 74px; }
+    .scoreboard-vertical .sticky-par { position: sticky; left: 74px; z-index: 63; background: #fff; min-width: 96px; }
+    .scoreboard-vertical .sticky-hdcp { position: sticky; left: 170px; z-index: 62; background: #fff; min-width: 96px; }
+    .scoreboard-vertical thead .sticky-hole, .scoreboard-vertical thead .sticky-par, .scoreboard-vertical thead .sticky-hdcp { background: #f8fbf7; }
+    .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { background:#f6faf5; color:var(--primary-dark); }
     table { border-collapse: collapse; text-align: center; width: 100%; min-width: 1900px; table-layout: fixed; }
     th, td {
       border: 1px solid #e4ebe2;
@@ -414,7 +424,7 @@
       .result-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 860px) {
-      .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid { grid-template-columns: 1fr; }
+      .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid { grid-template-columns: 1fr; }
       .pair-row { grid-template-columns: 42px 1fr 88px; }
       .tab-btn { font-size: .95rem; padding: 15px 6px; }
       .content { padding: 10px; }
@@ -457,17 +467,18 @@
       <div class="grid-3" style="margin-bottom:12px;">
         <div>
           <label><small>點 / 元</small></label>
-          <input type="number" id="pointVal" value="1">
+          <input type="number" id="pointVal" value="100">
         </div>
         <div></div>
         <div></div>
       </div>
       <div class="grid-4" style="margin-bottom:18px;">
         <div><label><small>Birdie 倍率</small></label><input type="number" id="mB" value="2"></div>
-        <div><label><small>Eagle4 倍率</small></label><input type="number" id="mE4" value="5"></div>
-        <div><label><small>Eagle5 倍率</small></label><input type="number" id="mE5" value="3"></div>
+        <div><label><small>4 Par Eagle 倍率</small></label><input type="number" id="mE4" value="5"></div>
+        <div><label><small>5 Par Eagle 倍率</small></label><input type="number" id="mE5" value="3"></div>
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
+      <div id="player-name-area"></div>
       <div class="mode-stack">
         <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
           <input type="checkbox" id="modeVegas" checked>
@@ -529,9 +540,6 @@
           <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
           <h2>💰 總結算</h2>
           <div id="final-money"></div>
-          <div id="capture-par-wrap"></div>
-          <div id="capture-vegas-wrap"></div>
-          <div id="capture-match-wrap"></div>
         </div>
       </div>
       <div class="result-stack">
@@ -804,6 +812,7 @@
       renderVegasRankInputs();
       renderScoreboard();
       applyModeStates();
+      lastActivePlayersSignature = getActivePlayers().join(',');
       refreshSavedCourseSelect();
       attachSelectAllBehavior(document);
       applyNumericKeyboardHints(document);
@@ -811,11 +820,18 @@
     }
 
     function renderPlayerCards(){
+      let nameHtml = `<div class="card" style="padding:15px;"><h2>2. 玩家名稱</h2><div class="name-grid">`;
+      playerIDs.forEach(i => {
+        nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()"></div>`;
+      });
+      nameHtml += `</div></div>`;
+      document.getElementById('player-name-area').innerHTML = nameHtml;
+
       let html = `<div class="grid-2">`;
       playerIDs.forEach(i => {
         html += `
           <div class="card" style="margin-bottom:0; padding:15px;">
-            <input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()">
+            <div style="font-size:1.02rem; font-weight:900; color:var(--primary-dark); margin-bottom:4px;" id="pair-title-${i}">${nameOf(i)}</div>
             <div class="player-extra" id="player-extra-${i}">
               <div class="check-group" style="margin-top:10px;">
                 <div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i}, 'm')"><input type="checkbox" id="p${i}_m" checked>比洞</div>
@@ -836,6 +852,8 @@
       });
       html += `</div>`;
       document.getElementById('player-config-area').innerHTML = html;
+      attachSelectAllBehavior(document.getElementById('player-name-area'));
+      applyNumericKeyboardHints(document.getElementById('player-name-area'));
       attachSelectAllBehavior(document.getElementById('player-config-area'));
       applyNumericKeyboardHints(document.getElementById('player-config-area'));
       applyPlayerConfigVisibility();
@@ -864,7 +882,10 @@
       updateVegasPreview();
     }
 
-    function updateNames(){
+    let lastActivePlayersSignature = '';
+    let pendingHeavyNameRefresh = null;
+
+    function syncNameLabelsOnly(){
       playerIDs.forEach(i => {
         const nm = nameOf(i);
         ['tag-'+i, 'pair-title-'+i, 'vr-name-'+i].forEach(id => {
@@ -876,10 +897,24 @@
           if (pnm) pnm.innerText = nameOf(j);
         });
       });
-      applyPlayerConfigVisibility();
-      applyModeStates();
-      renderScoreboard();
       updateVegasPreview();
+    }
+
+    function updateNames(forceHeavy=false){
+      syncNameLabelsOnly();
+      const activeSignature = getActivePlayers().join(',');
+      if (!forceHeavy && activeSignature === lastActivePlayersSignature) {
+        return;
+      }
+      lastActivePlayersSignature = activeSignature;
+      if (pendingHeavyNameRefresh) clearTimeout(pendingHeavyNameRefresh);
+      pendingHeavyNameRefresh = setTimeout(() => {
+        applyPlayerConfigVisibility();
+        applyModeStates();
+        renderVegasRankInputs();
+        renderScoreboard();
+        pendingHeavyNameRefresh = null;
+      }, 0);
     }
 
     function refreshAllPairDisabledState(){
@@ -1124,28 +1159,37 @@
         snapshot.hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value ?? '';
         playerIDs.forEach(p => { snapshot.scores[`${p}_${h}`] = document.getElementById(`cell_${p}_${h}`)?.value ?? ''; });
       }
-      let rowH = `<th class="sticky-col">Hole</th>`;
-      let rowP = `<th class="sticky-col">PAR</th>`;
-      let rowHd = `<th class="sticky-col">HDCP</th>`;
-      order.forEach((hole, idx) => {
-        rowH += `<td>${hole}</td>`;
-        rowP += `<td><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
-        rowHd += `<td><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
-        if (idx === 8) { rowH += `<th>OUT</th>`; rowP += `<td id="out_P">0</td>`; rowHd += `<td>-</td>`; }
-        if (idx === 17) { rowH += `<th>IN</th><th>TOT</th>`; rowP += `<td id="in_P">0</td><td id="tot_P">0</td>`; rowHd += `<td>-</td><td>-</td>`; }
-      });
+      const wrapper = document.querySelector('.table-wrapper');
+      if (wrapper) wrapper.classList.add('scoreboard-vertical');
+      let rowH = `<th class="sticky-col sticky-hole">Hole</th><th class="sticky-par">PAR</th><th class="sticky-hdcp">HDCP</th>`;
+      activePlayers.forEach(p => { rowH += `<th id="tag-${p}">${nameOf(p)}</th>`; });
       document.getElementById('rowH').innerHTML = rowH;
-      document.getElementById('rowP').innerHTML = rowP;
-      document.getElementById('rowHd').innerHTML = rowHd;
+      document.getElementById('rowP').innerHTML = '';
+      document.getElementById('rowHd').innerHTML = '';
+
       let body = '';
-      activePlayers.forEach(p => {
-        body += `<tr><th class="sticky-col" id="tag-${p}">${nameOf(p)}</th>`;
-        order.forEach((hole, idx) => {
+      order.forEach((hole, idx) => {
+        body += `<tr>`;
+        body += `<th class="sticky-col sticky-hole">${hole}</th>`;
+        body += `<td class="sticky-par"><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
+        body += `<td class="sticky-hdcp"><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
+        activePlayers.forEach(p => {
           body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
-          if (idx === 8) body += `<td id="out_${p}">0</td>`;
-          if (idx === 17) body += `<td id="in_${p}">0</td><td id="tot_${p}">0</td>`;
         });
         body += `</tr>`;
+        if (idx === 8) {
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">前9小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">-</td>`;
+          activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
+          body += `</tr>`;
+        }
+        if (idx === 17) {
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">後9小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">-</td>`;
+          activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
+          body += `</tr>`;
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
+          activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
+          body += `</tr>`;
+        }
       });
       document.getElementById('playerRows').innerHTML = body;
       attachSelectAllBehavior(document.getElementById('mainTable'));
@@ -1158,7 +1202,11 @@
         });
       }
       updateParTotals();
-      activePlayers.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
+      activePlayers.forEach(p => {
+        updatePlayerTotals(p);
+        for (let h=1; h<=18; h++) drawMark(p,h,false);
+      });
+      updateNames();
     }
 
     function handleCourseInput(orderIdx, type, hole){
@@ -1464,6 +1512,13 @@
       };
     }
 
+
+    function renderSortedRows(values, names, activePlayers){
+      const arr = activePlayers.map(i => ({ i, name:names[i], pts: values[i] ?? 0 }));
+      arr.sort((a,b) => b.pts - a.pts || a.i - b.i);
+      return arr.map(x => `<div class="res-row"><span>${escapeHtml(x.name)}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
+    }
+
     function buildMatchDetails(order, names){
       const pairs = buildMatchPairs();
       return pairs.map(([a,b]) => {
@@ -1574,58 +1629,96 @@
     }
 
     function exportResultPreview(){
-      const target = document.getElementById('result-capture');
-      if (!target) return;
-      const clone = target.cloneNode(true);
-      inlineFormValues(clone);
-      const rect = target.getBoundingClientRect();
-      const width = Math.ceil(rect.width);
-      const height = Math.ceil(target.scrollHeight || rect.height);
-      const css = buildInlineStyleCss();
-      const svgNs = 'http://www.w3.org/2000/svg';
-      const xhtmlNs = 'http://www.w3.org/1999/xhtml';
-      const svg = document.createElementNS(svgNs, 'svg');
-      svg.setAttribute('xmlns', svgNs);
-      svg.setAttribute('width', width);
-      svg.setAttribute('height', height);
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      const foreignObject = document.createElementNS(svgNs, 'foreignObject');
-      foreignObject.setAttribute('x', '0');
-      foreignObject.setAttribute('y', '0');
-      foreignObject.setAttribute('width', '100%');
-      foreignObject.setAttribute('height', '100%');
-      const wrapper = document.createElementNS(xhtmlNs, 'div');
-      wrapper.setAttribute('xmlns', xhtmlNs);
-      wrapper.setAttribute('style', `width:${width}px;height:${height}px;background:#2f6b3f;margin:0;padding:0;overflow:hidden;`);
-      const style = document.createElementNS(xhtmlNs, 'style');
-      style.textContent = css;
-      wrapper.appendChild(style);
-      wrapper.appendChild(clone);
-      foreignObject.appendChild(wrapper);
-      svg.appendChild(foreignObject);
-      const svgText = new XMLSerializer().serializeToString(svg);
-      const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+      try {
+        const table = document.querySelector('#final-money .summary-table');
+        if (!table) {
+          alert('請先到結算頁產生資料後，再輸出圖片。');
+          return;
+        }
+        const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+          Array.from(tr.children).map(td => (td.innerText || td.textContent || '').trim())
+        ).filter(r => r.length);
+        if (rows.length < 2) {
+          alert('目前沒有可輸出的結算資料。');
+          return;
+        }
+
+        const title = '高爾夫總結算';
+        const course = (document.getElementById('courseName')?.value || '').trim();
+        const subtitle = course ? `球場：${course}` : '球場：未填寫';
+        const stamp = new Date();
+        const stampText = `${stamp.getFullYear()}/${String(stamp.getMonth()+1).padStart(2,'0')}/${String(stamp.getDate()).padStart(2,'0')} ${String(stamp.getHours()).padStart(2,'0')}:${String(stamp.getMinutes()).padStart(2,'0')}`;
+
+        const colCount = Math.max(...rows.map(r => r.length));
+        const colWidths = [190, 120, 120, 120, 130, 150].slice(0, colCount);
+        while (colWidths.length < colCount) colWidths.push(120);
+        const rowHeight = 62;
+        const pad = 28;
+        const headTop = 150;
+        const tableWidth = colWidths.reduce((a,b)=>a+b,0);
+        const width = tableWidth + pad * 2;
+        const height = headTop + rows.length * rowHeight + 36;
+
         const canvas = document.createElement('canvas');
+        const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
         canvas.width = Math.round(width * scale);
         canvas.height = Math.round(height * scale);
         const ctx = canvas.getContext('2d');
         ctx.scale(scale, scale);
+
         ctx.fillStyle = '#2f6b3f';
         ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
-        URL.revokeObjectURL(url);
-        document.getElementById('exportPreviewImage').src = canvas.toDataURL('image/png');
+
+        ctx.fillStyle = '#ffffff';
+        const cardX = 16;
+        const cardY = 16;
+        const cardW = width - 32;
+        const cardH = height - 32;
+        const radius = 20;
+        ctx.beginPath();
+        ctx.moveTo(cardX + radius, cardY);
+        ctx.arcTo(cardX + cardW, cardY, cardX + cardW, cardY + cardH, radius);
+        ctx.arcTo(cardX + cardW, cardY + cardH, cardX, cardY + cardH, radius);
+        ctx.arcTo(cardX, cardY + cardH, cardX, cardY, radius);
+        ctx.arcTo(cardX, cardY, cardX + cardW, cardY, radius);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#1e4d2b';
+        ctx.font = '900 34px sans-serif';
+        ctx.fillText(title, pad + 8, 62);
+        ctx.font = '700 20px sans-serif';
+        ctx.fillStyle = '#4f6456';
+        ctx.fillText(subtitle, pad + 8, 95);
+        ctx.fillText(`輸出時間：${stampText}`, pad + 8, 122);
+
+        let y = headTop;
+        rows.forEach((row, rowIndex) => {
+          let x = pad;
+          row.forEach((cell, colIndex) => {
+            const w = colWidths[colIndex] || 120;
+            ctx.fillStyle = rowIndex === 0 ? '#2f6b3f' : '#ffffff';
+            ctx.fillRect(x, y, w, rowHeight);
+            ctx.strokeStyle = '#d6e2d3';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, y, w, rowHeight);
+            ctx.fillStyle = rowIndex === 0 ? '#ffffff' : '#18311f';
+            ctx.font = rowIndex === 0 ? '900 19px sans-serif' : '800 21px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(cell, x + w / 2, y + rowHeight / 2);
+            x += w;
+          });
+          y += rowHeight;
+        });
+
+        const img = document.getElementById('exportPreviewImage');
+        img.src = canvas.toDataURL('image/png');
         document.getElementById('exportPreviewOverlay').classList.add('show');
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        alert('圖片輸出失敗，請改用 Safari 網址版或先截圖。');
-      };
-      img.src = url;
+      } catch (err) {
+        console.error(err);
+        alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
+      }
     }
 
     function calculateFinal(){
@@ -1733,15 +1826,15 @@
         document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日沒有比洞對戰明細</div>`;
         return;
       }
-      let html = '';
+      let inner = '';
       details.forEach((item, idx) => {
         const split = splitLogsByNine(item.logs);
         const frontHtml = `<div class="section-summary">前 9 洞：${names[item.a]} ${formatSigned(item.front)} / ${names[item.b]} ${formatSigned(-item.front)}</div>` + (split.front.length ? `<div class="hole-win-log">${split.front.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">前 9 洞沒有完整紀錄</div>`);
         const backHtml = `<div class="section-summary">後 9 洞：${names[item.a]} ${formatSigned(item.back)} / ${names[item.b]} ${formatSigned(-item.back)}</div>` + (split.back.length ? `<div class="hole-win-log">${split.back.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>` : `<div class="center-note">後 9 洞沒有完整紀錄</div>`);
         const title = `${names[item.a]} vs ${names[item.b]}｜前9 ${formatSigned(item.front)}｜後9 ${formatSigned(item.back)}｜總計 ${formatSigned(item.total)}`;
-        html += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
+        inner += buildCollapseBlock(title, frontHtml + backHtml, idx === 0);
       });
-      document.getElementById('match-detail-output').innerHTML = html;
+      document.getElementById('match-detail-output').innerHTML = buildCollapseBlock('展開／收起比洞明細', inner, false);
     }
 
     function renderParOutput(matrix, totals, names, activePlayers){
@@ -1783,13 +1876,12 @@
         const items = sectionLogs.map(item => item.tie ? `<div class="hole-win-item">第 ${item.hole} 洞　0</div>` : `<div class="hole-win-item">第 ${item.hole} 洞　${item.winner.map(p => names[p]).join('、')} ${item.points}</div>`).join('');
         return buildCollapseBlock(`${title} 明細`, summary + `<div class="hole-win-log">${items}</div>`, open);
       };
-      document.getElementById('vegas-hole-output').innerHTML = buildSection('前 9 洞', split.front, true) + buildSection('後 9 洞', split.back, false);
+      const inner = buildSection('前 9 洞', split.front, true) + buildSection('後 9 洞', split.back, false);
+      document.getElementById('vegas-hole-output').innerHTML = buildCollapseBlock('展開／收起 Vegas 明細', inner, false);
     }
 
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
-      document.getElementById('capture-par-wrap').innerHTML = isParEnabled() ? `<div class="capture-section"><div class="capture-title">抓PAR矩陣</div><div class="capture-card">${buildMatrixTable('抓PAR', parMatrix, parPoints, getActiveParPlayers(), names, false)}</div></div>` : '';
-      document.getElementById('capture-vegas-wrap').innerHTML = isVegasEnabled() ? `<div class="capture-section"><div class="capture-title">Vegas點數</div><div class="capture-card">${renderSortedRows(vegasPoints, names, activePlayers)}</div></div>` : '';
-      document.getElementById('capture-match-wrap').innerHTML = isMatchEnabled() ? `<div class="capture-section"><div class="capture-title">Match矩陣</div><div class="capture-card">${buildMatrixTable('Match', matchMatrix, matchPoints, activePlayers, names, false)}</div></div>` : '';
+      return;
     }
 
     function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers){
