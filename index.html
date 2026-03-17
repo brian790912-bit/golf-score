@@ -168,26 +168,28 @@
     .name-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(31,66,40,.04); }
     .name-card label { display:block; margin-bottom: 6px; }
     .table-wrapper { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
-    .scoreboard-vertical { --sticky-top: 78px; --info-col-w: 64px; }
-    .scoreboard-vertical table { min-width: 620px; width: max-content; table-layout: fixed; }
+    .scoreboard-vertical { --sticky-top: 58px; --info-col-w: 64px; --player-col-w: 76px; }
+    .scoreboard-vertical.table-wrapper { position: relative; overflow-x: auto; overflow-y: visible; }
+    .scoreboard-vertical table { min-width: calc(var(--info-col-w) * 3 + var(--player-col-w) * 2); width: max-content; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
     .scoreboard-vertical .sticky-col { width: var(--info-col-w); min-width: var(--info-col-w); max-width: var(--info-col-w); }
     .scoreboard-vertical .sticky-hole,
     .scoreboard-vertical .sticky-par,
-    .scoreboard-vertical .sticky-hdcp { position: sticky; min-width: var(--info-col-w); max-width: var(--info-col-w); }
+    .scoreboard-vertical .sticky-hdcp { position: -webkit-sticky; position: sticky; min-width: var(--info-col-w); max-width: var(--info-col-w); }
     .scoreboard-vertical .sticky-hole { left: 0; z-index: 64; background: #f8fbf7; }
     .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #fff; }
     .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #fff; }
-    .scoreboard-vertical thead th { position: sticky; top: var(--sticky-top); z-index: 70; background: #f8fbf7; }
-    .scoreboard-vertical thead .sticky-hole { z-index: 76; }
-    .scoreboard-vertical thead .sticky-par { z-index: 75; }
-    .scoreboard-vertical thead .sticky-hdcp { z-index: 74; }
-    .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp) { min-width: 90px; }
-    .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
-    .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 90px; }
+    .scoreboard-vertical thead th { position: -webkit-sticky; position: sticky; top: var(--sticky-top); z-index: 70; background: #f8fbf7; box-shadow: 0 1px 0 #dbe5d8; }
+    .scoreboard-vertical thead .sticky-hole { z-index: 86; }
+    .scoreboard-vertical thead .sticky-par { z-index: 85; }
+    .scoreboard-vertical thead .sticky-hdcp { z-index: 84; }
+    .scoreboard-vertical thead th.player-head,
+    .scoreboard-vertical td.player-col,
+    .scoreboard-vertical .summary-row td.player-col { width: var(--player-col-w); min-width: var(--player-col-w); max-width: var(--player-col-w); }
+    .scoreboard-vertical thead th.player-head { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .scoreboard-vertical td.sticky-par,
     .scoreboard-vertical td.sticky-hdcp { padding: 3px; }
     .scoreboard-vertical td.sticky-par input,
-    .scoreboard-vertical td.sticky-hdcp input { min-height: 42px; height: 42px; padding: 0 4px; font-size: 1.02rem; border-radius: 10px; }
+    .scoreboard-vertical td.sticky-hdcp input { min-height: 42px; height: 42px; padding: 0 2px; font-size: 1.02rem; border-radius: 10px; }
     .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { background:#f6faf5; color:var(--primary-dark); }
     table { border-collapse: collapse; text-align: center; width: 100%; min-width: 1900px; table-layout: fixed; }
     th, td {
@@ -451,21 +453,21 @@
       .hole-win-item { padding: 8px 10px; font-size: .92rem; }
       .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
 
-      .scoreboard-vertical { --sticky-top: 72px; --info-col-w: 50px; }
-      .scoreboard-vertical table { min-width: 560px; }
-      .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
-      .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp),
-      .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
-      .scoreboard-vertical tbody th:not(.sticky-hole) { min-width: 76px; }
+      .scoreboard-vertical { --sticky-top: 56px; --info-col-w: 48px; --player-col-w: 62px; }
+      .scoreboard-vertical table { min-width: calc(var(--info-col-w) * 3 + var(--player-col-w) * 2); }
+      .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .84rem; }
       .scoreboard-vertical td.sticky-par,
       .scoreboard-vertical td.sticky-hdcp { padding: 2px; }
       .scoreboard-vertical td.sticky-par input,
-      .scoreboard-vertical td.sticky-hdcp input { min-height: 34px; height: 34px; padding: 0 2px; font-size: .95rem; border-radius: 8px; }
-      .scoreboard-vertical .score-cell input { font-size: 1.05rem; }
+      .scoreboard-vertical td.sticky-hdcp input { min-height: 34px; height: 34px; padding: 0 1px; font-size: .92rem; border-radius: 8px; }
+      .scoreboard-vertical .score-cell input { font-size: 1.02rem; }
       .scoreboard-vertical .mark-circle, .scoreboard-vertical .mark-square { width: 28px; height: 28px; border-width: 2px; }
       .scoreboard-vertical .mark-double-circle, .scoreboard-vertical .mark-double-square { width: 32px; height: 32px; border-width: 4px; }
-      .scoreboard-vertical thead th { font-size: .78rem; }
-      .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { font-size: .78rem; }
+      .scoreboard-vertical thead th { font-size: .76rem; }
+      .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { font-size: .76rem; }
+      .scoreboard-vertical thead th.player-head,
+      .scoreboard-vertical td.player-col,
+      .scoreboard-vertical .summary-row td.player-col { width: var(--player-col-w); min-width: var(--player-col-w); max-width: var(--player-col-w); }
     }
   </style>
 </head>
@@ -612,11 +614,21 @@
       document.getElementById('tab-' + (t==='setting'?'set':t==='scoring'?'score':'res')).classList.add('active');
       if (t === 'scoring') {
           refreshSavedCourseSelect();
+          setTimeout(applyScoreboardStickyTop, 0);
       }
     }
 
     function nameOf(i){
       return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
+    }
+
+
+    function applyScoreboardStickyTop(){
+      const wrapper = document.querySelector('.scoreboard-vertical');
+      if (!wrapper) return;
+      const nav = document.querySelector('.tab-nav');
+      const navHeight = nav ? Math.ceil(nav.getBoundingClientRect().height) : 56;
+      wrapper.style.setProperty('--sticky-top', `${Math.max(54, navHeight)}px`);
     }
 
     function getActivePlayers(){
@@ -847,6 +859,8 @@
       attachSelectAllBehavior(document);
       applyNumericKeyboardHints(document);
       bindCourseAutoLoad();
+      applyScoreboardStickyTop();
+      window.addEventListener('resize', applyScoreboardStickyTop);
     }
 
     function renderPlayerCards(){
@@ -1192,7 +1206,7 @@
       const wrapper = document.querySelector('.table-wrapper');
       if (wrapper) wrapper.classList.add('scoreboard-vertical');
       let rowH = `<th class="sticky-col sticky-hole">Hole</th><th class="sticky-par">PAR</th><th class="sticky-hdcp">HDCP</th>`;
-      activePlayers.forEach(p => { rowH += `<th id="tag-${p}">${nameOf(p)}</th>`; });
+      activePlayers.forEach(p => { rowH += `<th class="player-head" id="tag-${p}" title="${escapeHtml(nameOf(p))}">${nameOf(p)}</th>`; });
       document.getElementById('rowH').innerHTML = rowH;
       document.getElementById('rowP').innerHTML = '';
       document.getElementById('rowHd').innerHTML = '';
@@ -1204,20 +1218,20 @@
         body += `<td class="sticky-par"><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
         body += `<td class="sticky-hdcp"><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
         activePlayers.forEach(p => {
-          body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
+          body += `<td class="score-cell player-col"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
         });
         body += `</tr>`;
         if (idx === 8) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">前9小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td class="player-col" id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
         if (idx === 17) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">後9小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td class="player-col" id="in_${p}">0</td>`; });
           body += `</tr>`;
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
+          activePlayers.forEach(p => { body += `<td class="player-col" id="tot_${p}">0</td>`; });
           body += `</tr>`;
         }
       });
@@ -1237,6 +1251,7 @@
         for (let h=1; h<=18; h++) drawMark(p,h,false);
       });
       updateNames();
+      applyScoreboardStickyTop();
     }
 
     function handleCourseInput(orderIdx, type, hole){
