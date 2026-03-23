@@ -571,7 +571,7 @@
   </div>
 
   <div id="setting" class="content active">
-    <div class="version-badge">Golf Score Beta 1.3</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="global-warning" class="warning-box"></div>
     <div class="card">
       <h2>1. 球場與今日比賽模式</h2>
@@ -629,7 +629,7 @@
   </div>
 
   <div id="scoring" class="content">
-    <div class="version-badge">Golf Score Beta 1.3</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area">
@@ -660,13 +660,13 @@
   </div>
 
   <div id="result" class="content">
-    <div class="version-badge">Golf Score Beta 1.3</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div class="result-grid">
       <div class="result-stack">
         <div class="final-area jpg-capture" id="result-capture">
           <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.3</div></div>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.4</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -698,7 +698,7 @@
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.3';
+    const APP_VERSION = 'Golf Score Beta 1.4';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -776,6 +776,12 @@
       const arr = [];
       for (let i=0;i<18;i++) arr.push(((start - 1 + i) % 18) + 1);
       return arr;
+    }
+
+    function getNineSummaryInsertIndexes(order){
+      const frontLastIdx = Math.max(...order.map((hole, idx) => hole <= 9 ? idx : -1));
+      const backLastIdx = Math.max(...order.map((hole, idx) => hole >= 10 ? idx : -1));
+      return { frontLastIdx, backLastIdx };
     }
 
     function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
@@ -1281,6 +1287,7 @@
 
     function renderScoreboard(){
       const order = getPlayOrder();
+      const { frontLastIdx, backLastIdx } = getNineSummaryInsertIndexes(order);
       const activePlayers = getActivePlayers();
       const snapshot = { par: {}, hdcp: {}, scores: {} };
       for (let h=1; h<=18; h++) {
@@ -1306,15 +1313,20 @@
           body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
         });
         body += `</tr>`;
-        if (idx === 8) {
+
+        if (idx === frontLastIdx) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">前9小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">-</td>`;
           activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
-        if (idx === 17) {
+
+        if (idx === backLastIdx) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">後9小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">-</td>`;
           activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
+        }
+
+        if (idx === order.length - 1) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
           activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
           body += `</tr>`;
