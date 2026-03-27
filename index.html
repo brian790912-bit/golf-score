@@ -271,11 +271,11 @@
     .player-pair-title { font-size: 1.02rem; color: var(--primary-dark); margin-bottom: 10px; }
     .pair-row {
       display: grid;
-      grid-template-columns: 42px 1fr;
+      grid-template-columns: auto 1fr 96px;
       gap: 8px;
-      align-items: start;
-      margin-bottom: 10px;
-      padding-bottom: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
       border-bottom: 1px dashed #e2e9e0;
     }
     .pair-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
@@ -290,24 +290,12 @@
       cursor: pointer;
       user-select: none;
       background: #fff;
-      margin-top: 2px;
     }
     .pair-toggle.active { background: var(--primary-soft); border-color: var(--primary); }
     .pair-toggle.disabled { background: #f1f3f0; border-color: #e1e6df; cursor: not-allowed; }
-    .pair-config { display: grid; gap: 8px; }
     .pair-name { text-align: left; font-size: .98rem; }
-    .pair-mode-select { min-height: 44px; padding: 10px 8px; font-size: .96rem; }
-    .pair-order-wrap, .pair-par-wrap { display: none; }
-    .pair-order-wrap.show, .pair-par-wrap.show { display: grid; }
-    .pair-order-wrap { grid-template-columns: 1fr; }
-    .pair-par-wrap {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .pair-mini label { display:block; margin-bottom: 4px; }
-    .pair-mini small { display:block; margin-bottom: 4px; color:#5f6d5d; font-size:.78rem; }
-    .pair-input, .pair-select { min-height: 42px; padding: 9px 8px; font-size: .94rem; }
-    .pair-config select:disabled, .pair-config input:disabled { background: #f4f5f3; color: #aaa; }
+    .pair-score-input { padding: 10px 8px; font-size: .98rem; min-height: 44px; }
+    .pair-score-input:disabled { background: #f4f5f3; color: #aaa; }
     .rank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .action-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
     button.action-btn {
@@ -434,32 +422,6 @@
     .hole-win-item:last-child { border-bottom: none; }
     .hole-win-item strong { color: var(--primary-dark); }
     .export-wrap { margin-bottom: 10px; display: flex; justify-content: flex-end; }
-    .export-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .export-option {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border: 2px solid #cfdbcf;
-      border-radius: 12px;
-      background: #fff;
-      font-size: .96rem;
-      font-weight: 900;
-      color: var(--text);
-      user-select: none;
-    }
-    .export-option input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-right: 0;
-      pointer-events: auto;
-    }
     .jpg-capture { background: #fff; border-radius: 18px; }
 
     .vegas-rank-btn {
@@ -559,14 +521,14 @@
       border: none; background: #eef5ec; color: var(--primary-dark); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 900;
     }
     .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
-    .export-preview-body img { width: auto; max-width: none; height: auto; display: block; border-radius: 12px; }
+    .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
 
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 860px) {
       .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid { grid-template-columns: 1fr; }
-      .pair-row { grid-template-columns: 42px 1fr; }
+      .pair-row { grid-template-columns: 42px 1fr 88px; }
       .tab-btn { font-size: .95rem; padding: 15px 6px; }
       .content { padding: 10px; }
       .card { padding: 13px; border-radius: 16px; margin-bottom: 10px; }
@@ -609,7 +571,7 @@
   </div>
 
   <div id="setting" class="content active">
-    <div class="version-badge">Golf Score Beta 1.5</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="global-warning" class="warning-box"></div>
     <div class="card">
       <h2>1. 球場與今日比賽模式</h2>
@@ -642,9 +604,6 @@
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
       <div id="player-name-area"></div>
-      <div class="action-row" style="margin:12px 0 18px;">
-        <button class="action-btn danger" type="button" onclick="startNewGame()">新球局</button>
-      </div>
       <div class="mode-stack">
         <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
           <input type="checkbox" id="modeVegas" checked>
@@ -670,7 +629,7 @@
   </div>
 
   <div id="scoring" class="content">
-    <div class="version-badge">Golf Score Beta 1.5</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area">
@@ -701,17 +660,13 @@
   </div>
 
   <div id="result" class="content">
-    <div class="version-badge">Golf Score Beta 1.5</div>
+    <div class="version-badge">Golf Score Beta 1.4</div>
     <div class="result-grid">
       <div class="result-stack">
         <div class="final-area jpg-capture" id="result-capture">
-          <div class="export-options">
-            <label class="export-option"><input type="checkbox" id="exportIncludeResult" checked>結果</label>
-            <label class="export-option"><input type="checkbox" id="exportIncludeScorecard" checked>成績卡</label>
-            <button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button>
-          </div>
+          <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.5</div></div>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.4</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -729,10 +684,7 @@
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
         <span>長按圖片即可儲存</span>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <button type="button" class="action-btn secondary" style="padding:10px 14px; min-height:auto; box-shadow:none;" onclick="downloadExportImage()">下載圖片</button>
-          <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
-        </div>
+        <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
       </div>
       <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
     </div>
@@ -746,7 +698,7 @@
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.5';
+    const APP_VERSION = 'Golf Score Beta 1.4';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -760,7 +712,6 @@
       if (t === 'scoring') {
           refreshSavedCourseSelect();
       }
-      scheduleAutoSave();
     }
 
     function nameOf(i){
@@ -792,7 +743,7 @@
       root.querySelectorAll('input[type="number"]').forEach(el => {
         const id = el.id || '';
         const cls = el.className || '';
-        if (cls.includes('pair-score-input') || cls.includes('pair-input') || id.startsWith('pair-strokes-') || id.startsWith('pair-order-')) {
+        if (cls.includes('pair-score-input') || id.startsWith('pair-strokes-')) {
           el.setAttribute('inputmode', 'decimal');
           el.setAttribute('enterkeyhint', 'done');
           return;
@@ -878,12 +829,12 @@
         const aOn = activePlayers.includes(a) && !!document.getElementById(`p${a}_m`)?.checked;
         const bOn = activePlayers.includes(b) && !!document.getElementById(`p${b}_m`)?.checked;
         const shouldEnable = isMatchEnabled() && aOn && bOn;
-        const currentChecked = !!document.getElementById(`pair-check-${a}-${b}`)?.checked;
-        const currentConfig = readPairConfig(a,b);
         if (shouldEnable) {
-          setPairState(a,b,currentChecked,currentConfig);
+          const current = document.getElementById(`pair-strokes-${a}-${b}`)?.value;
+          const value = current === '' || current === undefined ? 0 : current;
+          setPairState(a,b,true,value);
         } else {
-          setPairState(a,b,false,currentConfig);
+          setPairState(a,b,false,'');
         }
       });
       refreshAllPairDisabledState();
@@ -893,7 +844,7 @@
       getActivePlayers().forEach(i => setPlayerMatchSelected(i, true));
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
-        setPairState(a,b,true,{ mode:'order', orderHoles:0, par3:0, par4:0, par5:0 });
+        setPairState(a,b,true,0);
       });
       refreshAllPairDisabledState();
     }
@@ -991,10 +942,6 @@
       if (suffix === 'm') normalizeMatchPairStates();
     }
 
-    function buildHandicapStepOptions(selected='0'){
-      return ['0','0.5','1','1.5','2'].map(v => `<option value="${v}" ${String(selected)===String(v)?'selected':''}>${v}</option>`).join('');
-    }
-
     function initUI(){
       renderPlayerCards();
       renderVegasRankInputs();
@@ -1005,8 +952,6 @@
       attachSelectAllBehavior(document);
       applyNumericKeyboardHints(document);
       bindCourseAutoLoad();
-      bindAutoSave();
-      restoreAppState();
     }
 
     function renderPlayerCards(){
@@ -1032,33 +977,8 @@
                 ${playerIDs.filter(j => j !== i).map(j => `
                   <div class="pair-row" id="pair-row-${i}-${j}">
                     <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
-                    <div class="pair-config">
-                      <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
-                      <select class="pair-mode-select" id="pair-mode-${i}-${j}" onchange="handlePairConfigChange(${i},${j})">
-                        <option value="order">洞序讓桿</option>
-                        <option value="par">洞型讓桿</option>
-                      </select>
-                      <div class="pair-order-wrap show" id="pair-order-wrap-${i}-${j}">
-                        <div class="pair-mini">
-                          <label><small>洞序讓幾洞（讓18洞 = 每洞1桿）</small></label>
-                          <input class="pair-input" type="number" id="pair-order-${i}-${j}" min="-18" max="18" step="1" value="0" oninput="handlePairConfigChange(${i},${j})">
-                        </div>
-                      </div>
-                      <div class="pair-par-wrap" id="pair-par-wrap-${i}-${j}">
-                        <div class="pair-mini">
-                          <label><small>Par 3</small></label>
-                          <input class="pair-input" type="number" id="pair-par3-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
-                        </div>
-                        <div class="pair-mini">
-                          <label><small>Par 4</small></label>
-                          <input class="pair-input" type="number" id="pair-par4-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
-                        </div>
-                        <div class="pair-mini">
-                          <label><small>Par 5</small></label>
-                          <input class="pair-input" type="number" id="pair-par5-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
-                        </div>
-                      </div>
-                    </div>
+                    <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
+                    <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
                   </div>
                 `).join('')}
               </div>
@@ -1129,7 +1049,6 @@
         renderVegasRankInputs();
         renderScoreboard();
         pendingHeavyNameRefresh = null;
-        scheduleAutoSave();
       }, 0);
     }
 
@@ -1139,99 +1058,33 @@
         playerIDs.forEach(j => {
           if (i===j) return;
           const toggle = document.getElementById(`pair-toggle-${i}-${j}`);
-          const input = document.getElementById(`pair-order-${i}-${j}`);
-          const modeSelect = document.getElementById(`pair-mode-${i}-${j}`);
-          const par3 = document.getElementById(`pair-par3-${i}-${j}`);
-          const par4 = document.getElementById(`pair-par4-${i}-${j}`);
-          const par5 = document.getElementById(`pair-par5-${i}-${j}`);
+          const input = document.getElementById(`pair-strokes-${i}-${j}`);
           const active = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
           const playerEnabled = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
-          if (!toggle) return;
+          if (!toggle || !input) return;
           toggle.classList.toggle('disabled', !playerEnabled);
           toggle.classList.toggle('active', playerEnabled && active);
-          [input, modeSelect, par3, par4, par5].forEach(el => { if (el) el.disabled = !playerEnabled || !active; });
-          updatePairModeVisibility(i,j);
+          input.disabled = !playerEnabled || !active;
         });
       });
     }
 
-    function invertPairConfig(config={}){
-      const normalized = normalizePairConfig(config);
-      return {
-        mode: normalized.mode,
-        orderHoles: -normalized.orderHoles,
-        par3: -normalized.par3,
-        par4: -normalized.par4,
-        par5: -normalized.par5
-      };
-    }
-
-    function setPairState(i,j,checked,config={},fromSync=false){
+    function setPairState(i,j,checked,value,fromSync=false){
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
-      const orderInput = document.getElementById(`pair-order-${i}-${j}`);
-      const modeSelect = document.getElementById(`pair-mode-${i}-${j}`);
-      const par3 = document.getElementById(`pair-par3-${i}-${j}`);
-      const par4 = document.getElementById(`pair-par4-${i}-${j}`);
-      const par5 = document.getElementById(`pair-par5-${i}-${j}`);
-      if (!cb || !tg || !orderInput || !modeSelect || !par3 || !par4 || !par5) return;
+      const inp = document.getElementById(`pair-strokes-${i}-${j}`);
+      if (!cb || !tg || !inp) return;
       const activePlayers = getActivePlayers();
       const pairEnabled = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
-      const normalized = normalizePairConfig(config);
       cb.checked = checked && pairEnabled;
-      modeSelect.value = normalized.mode;
-      orderInput.value = String(normalized.orderHoles);
-      par3.value = String(normalized.par3);
-      par4.value = String(normalized.par4);
-      par5.value = String(normalized.par5);
       tg.classList.toggle('active', cb.checked);
-      updatePairModeVisibility(i,j);
-      [orderInput, modeSelect, par3, par4, par5].forEach(el => { el.disabled = !cb.checked; });
+      tg.classList.toggle('disabled', !pairEnabled);
+      inp.disabled = !cb.checked;
+      inp.value = cb.checked ? (value ?? '') : '';
       if (!fromSync) {
-        setPairState(j,i,cb.checked,invertPairConfig(normalized),true);
+        const mirroredValue = cb.checked ? (value === '' || value === null || value === undefined ? '' : String(-1 * Number(value || 0))) : '';
+        setPairState(j,i,cb.checked,mirroredValue,true);
       }
-    }
-
-    function normalizePairConfig(config={}){
-      const mode = config.mode === 'par' ? 'par' : 'order';
-      let orderHoles = parseInt(config.orderHoles, 10);
-      if (Number.isNaN(orderHoles)) orderHoles = 0;
-      if (orderHoles < -18) orderHoles = -18;
-      if (orderHoles > 18) orderHoles = 18;
-      const clampStep = (v, fallback) => {
-        const n = parseFloat(v);
-        if (Number.isNaN(n)) return fallback;
-        return Math.max(-2, Math.min(2, Math.round(n * 2) / 2));
-      };
-      return {
-        mode,
-        orderHoles,
-        par3: clampStep(config.par3, 0),
-        par4: clampStep(config.par4, 0),
-        par5: clampStep(config.par5, 0)
-      };
-    }
-
-    function updatePairModeVisibility(i,j){
-      const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value || 'order';
-      document.getElementById(`pair-order-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'order');
-      document.getElementById(`pair-par-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'par');
-    }
-
-    function readPairConfig(i,j){
-      return normalizePairConfig({
-        mode: document.getElementById(`pair-mode-${i}-${j}`)?.value || 'order',
-        orderHoles: document.getElementById(`pair-order-${i}-${j}`)?.value || 0,
-        par3: document.getElementById(`pair-par3-${i}-${j}`)?.value || 0,
-        par4: document.getElementById(`pair-par4-${i}-${j}`)?.value || 0,
-        par5: document.getElementById(`pair-par5-${i}-${j}`)?.value || 0
-      });
-    }
-
-    function handlePairConfigChange(i,j){
-      setPairState(i,j,true,readPairConfig(i,j));
-      refreshAllPairDisabledState();
-      scheduleAutoSave();
     }
 
     function togglePair(i,j){
@@ -1239,15 +1092,20 @@
       const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
       if (!playersReady) return;
       const cb = document.getElementById(`pair-check-${i}-${j}`);
-      const config = readPairConfig(i,j);
-      if (cb.checked) setPairState(i,j,false,config);
-      else setPairState(i,j,true,config);
+      const currentValue = document.getElementById(`pair-strokes-${i}-${j}`).value;
+      if (cb.checked) setPairState(i,j,false,'');
+      else setPairState(i,j,true,currentValue === '' ? 0 : currentValue);
       refreshAllPairDisabledState();
-      scheduleAutoSave();
     }
 
     function handlePairStrokeInput(i,j){
-      handlePairConfigChange(i,j);
+      const activePlayers = getActivePlayers();
+      const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      if (!playersReady) return;
+      const input = document.getElementById(`pair-strokes-${i}-${j}`);
+      const raw = input.value;
+      setPairState(i,j,true,raw === '' ? 0 : raw);
+      refreshAllPairDisabledState();
     }
 
     function bindCourseAutoLoad(){
@@ -1261,7 +1119,6 @@
           applyCourseData(all[key]);
           refreshSavedCourseSelect(key);
           showWarning('已自動帶入已儲存球場資料。', 'global');
-          scheduleAutoSave();
         }
       });
     }
@@ -1346,7 +1203,6 @@
           setSavedCourses(merged);
           refreshSavedCourseSelect();
           showWarning(`已匯入 ${keys.length} 個球場資料。`, 'scoring');
-          scheduleAutoSave();
         } catch (err) {
           alert('匯入失敗，請確認你選的是本系統匯出的 JSON 檔案。');
         } finally {
@@ -1391,7 +1247,6 @@
       }
       updateParTotals();
       playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
-      scheduleAutoSave();
     }
 
     function handleSavedCourseSelect(){
@@ -1401,7 +1256,6 @@
       if (!all[key]) return;
       applyCourseData(all[key]);
       showWarning('已載入球場資料。', 'global');
-      scheduleAutoSave();
     }
 
     function saveCourseProfile(){
@@ -1416,7 +1270,6 @@
       setSavedCourses(all);
       refreshSavedCourseSelect(key);
       showWarning('球場資料已儲存。', 'scoring');
-      scheduleAutoSave();
     }
 
     function deleteCourseProfile(){
@@ -1430,7 +1283,6 @@
       setSavedCourses(all);
       refreshSavedCourseSelect('');
       showWarning('球場資料已刪除。', 'scoring');
-      scheduleAutoSave();
     }
 
     function renderScoreboard(){
@@ -1590,26 +1442,27 @@
 
     function getPairMeta(i,j){
       const checked = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
-      return { checked, config: readPairConfig(i,j) };
+      let value = document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '';
+      value = value === '' ? 0 : parseFloat(value);
+      return { checked, value };
     }
 
-    function getStrokeAllowance(config, hole){
+    function getStrokeAllowance(pairValue, hole){
       const info = getHoleInfo(hole);
       const par = info.par;
       const hd = info.hdcp;
-      if (!config) return 0;
-      if (config.mode === 'par') {
-        if (par === 3) return parseFloat(config.par3) || 0;
-        if (par === 4) return parseFloat(config.par4) || 0;
-        if (par === 5) return parseFloat(config.par5) || 0;
+      if (!pairValue) return 0;
+      const abs = Math.abs(pairValue);
+      if (pairValue > 0) {
         return 0;
       }
-      const holes = parseFloat(config.orderHoles) || 0;
-      if (holes === 0) return 0;
-      const sign = holes < 0 ? -1 : 1;
-      const absHoles = Math.abs(holes);
-      if (absHoles >= 18) return 1 * sign;
-      if (hd > 0 && hd <= absHoles) return 1 * sign;
+      if (abs === 18) {
+        if (par === 5) return 2;
+        if (par === 4) return 1;
+        if (par === 3) return 0.5;
+        return 0;
+      }
+      if (hd > 0 && hd <= abs) return 1;
       return 0;
     }
 
@@ -1617,7 +1470,7 @@
       const meta = getPairMeta(player, opponent);
       const gross = getPlayerScore(player, hole);
       if (!gross) return 0;
-      const allowance = getStrokeAllowance(meta.config, hole);
+      const allowance = getStrokeAllowance(meta.value, hole);
       return gross - allowance;
     }
 
@@ -1919,492 +1772,43 @@
       });
     }
 
-
-    const APP_STATE_KEY = 'golfAppStateV15';
-    let autoSaveTimer = null;
-    let isRestoringState = false;
-
-    function serializeAppState(){
-      const state = {
-        version: APP_VERSION,
-        activeTab: document.querySelector('.content.active')?.id || 'setting',
-        basic: {
-          courseName: document.getElementById('courseName')?.value || '',
-          startHole: document.getElementById('startHole')?.value || '1',
-          pointVal: document.getElementById('pointVal')?.value || '100',
-          mB: document.getElementById('mB')?.value || '2',
-          mE4: document.getElementById('mE4')?.value || '5',
-          mE5: document.getElementById('mE5')?.value || '3',
-          mHIO: document.getElementById('mHIO')?.value || '10'
-        },
-        modes: {
-          modeVegas: !!document.getElementById('modeVegas')?.checked,
-          extMode: !!document.getElementById('extMode')?.checked,
-          modeMatch: !!document.getElementById('modeMatch')?.checked,
-          modePar: !!document.getElementById('modePar')?.checked
-        },
-        players: {},
-        scores: { par:{}, hdcp:{}, player:{} },
-        pairs: {},
-        vegasRanks: {},
-        exportOptions: {
-          result: !!document.getElementById('exportIncludeResult')?.checked,
-          scorecard: !!document.getElementById('exportIncludeScorecard')?.checked
-        }
-      };
-      playerIDs.forEach(i => {
-        state.players[i] = {
-          name: document.getElementById(`name${i}`)?.value || '',
-          match: !!document.getElementById(`p${i}_m`)?.checked,
-          par: !!document.getElementById(`p${i}_p`)?.checked
-        };
-        state.vegasRanks[i] = document.getElementById(`vegasRank${i}`)?.value || '';
-      });
-      for (let h=1; h<=18; h++) {
-        state.scores.par[h] = document.getElementById(`cell_P_${h}`)?.value || '';
-        state.scores.hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value || '';
-        playerIDs.forEach(p => {
-          state.scores.player[`${p}_${h}`] = document.getElementById(`cell_${p}_${h}`)?.value || '';
-        });
-      }
-      pairKeys.forEach(key => {
-        const [a,b] = key.split('_');
-        state.pairs[key] = { checked: !!document.getElementById(`pair-check-${a}-${b}`)?.checked, ...readPairConfig(Number(a), Number(b)) };
-      });
-      return state;
-    }
-
-    function saveAppState(){
-      if (isRestoringState) return;
-      try {
-        localStorage.setItem(APP_STATE_KEY, JSON.stringify(serializeAppState()));
-      } catch (err) {
-        console.error('saveAppState failed', err);
-      }
-    }
-
-    function scheduleAutoSave(){
-      if (isRestoringState) return;
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(saveAppState, 160);
-    }
-
-    function restoreAppState(){
-      let raw = null;
-      try { raw = JSON.parse(localStorage.getItem(APP_STATE_KEY) || 'null'); } catch (err) { raw = null; }
-      if (!raw) return;
-      isRestoringState = true;
-      try {
-        const basic = raw.basic || {};
-        ['courseName','startHole','pointVal','mB','mE4','mE5','mHIO'].forEach(id => {
-          if (document.getElementById(id) && basic[id] !== undefined) document.getElementById(id).value = basic[id];
-        });
-        playerIDs.forEach(i => {
-          if (document.getElementById(`name${i}`) && raw.players?.[i]?.name !== undefined) document.getElementById(`name${i}`).value = raw.players[i].name || '';
-        });
-        updateNames(true);
-        const modes = raw.modes || {};
-        ['modeVegas','extMode','modeMatch','modePar'].forEach(id => {
-          if (document.getElementById(id) && modes[id] !== undefined) document.getElementById(id).checked = !!modes[id];
-        });
-        applyModeStates();
-        playerIDs.forEach(i => {
-          if (raw.players?.[i]) {
-            if (document.getElementById(`p${i}_m`)) document.getElementById(`p${i}_m`).checked = !!raw.players[i].match;
-            if (document.getElementById(`p${i}_p`)) document.getElementById(`p${i}_p`).checked = !!raw.players[i].par;
-            setPlayerSmallBoxState(i, 'm');
-            setPlayerSmallBoxState(i, 'p');
-          }
-        });
-        applyModeStates();
-
-        for (let h=1; h<=18; h++) {
-          if (document.getElementById(`cell_P_${h}`)) document.getElementById(`cell_P_${h}`).value = raw.scores?.par?.[h] ?? '';
-          if (document.getElementById(`cell_Hd_${h}`)) document.getElementById(`cell_Hd_${h}`).value = raw.scores?.hdcp?.[h] ?? '';
-          playerIDs.forEach(p => {
-            if (document.getElementById(`cell_${p}_${h}`)) document.getElementById(`cell_${p}_${h}`).value = raw.scores?.player?.[`${p}_${h}`] ?? '';
-          });
-        }
-        updateParTotals();
-        playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
-
-        pairKeys.forEach(key => {
-          const [a,b] = key.split('_').map(Number);
-          const pair = raw.pairs?.[key] || {};
-          setPairState(a,b,!!pair.checked,pair);
-        });
-        refreshAllPairDisabledState();
-
-        playerIDs.forEach(i => {
-          if (document.getElementById(`vegasRank${i}`) && raw.vegasRanks?.[i] !== undefined) document.getElementById(`vegasRank${i}`).value = raw.vegasRanks[i] || '';
-        });
-        renderVegasRankInputs();
-
-        if (document.getElementById('exportIncludeResult') && raw.exportOptions) {
-          document.getElementById('exportIncludeResult').checked = raw.exportOptions.result !== false;
-          document.getElementById('exportIncludeScorecard').checked = !!raw.exportOptions.scorecard;
-        }
-        if (raw.activeTab && document.getElementById(raw.activeTab)) openTab(raw.activeTab);
-      } finally {
-        isRestoringState = false;
-      }
-      saveAppState();
-    }
-
-    function bindAutoSave(){
-      document.addEventListener('input', (event) => {
-        if (event.target?.id === 'courseName') return;
-        scheduleAutoSave();
-      });
-      document.addEventListener('change', scheduleAutoSave);
-      window.addEventListener('beforeunload', saveAppState);
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') saveAppState();
-      });
-    }
-
-    function startNewGame(){
-      if (!confirm('是否開始新球局？目前資料將清除。')) return;
-      isRestoringState = true;
-      try {
-        localStorage.removeItem(APP_STATE_KEY);
-        ['courseName','savedCourseSelect'].forEach(id => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          if (id === 'savedCourseSelect') el.selectedIndex = 0;
-          else el.value = '';
-        });
-        const defaults = { startHole:'1', pointVal:'100', mB:'2', mE4:'5', mE5:'3', mHIO:'10' };
-        Object.entries(defaults).forEach(([id,val]) => {
-          const el = document.getElementById(id);
-          if (el) el.value = val;
-        });
-        playerIDs.forEach(i => {
-          const nameEl = document.getElementById(`name${i}`);
-          if (nameEl) nameEl.value = '';
-        });
-        updateNames(true);
-        const modeDefaults = { modeVegas:true, extMode:false, modeMatch:true, modePar:true };
-        Object.entries(modeDefaults).forEach(([id,val]) => {
-          const el = document.getElementById(id);
-          if (el) el.checked = val;
-        });
-        applyModeStates();
-        playerIDs.forEach(i => {
-          const mEl = document.getElementById(`p${i}_m`);
-          const pEl = document.getElementById(`p${i}_p`);
-          if (mEl) mEl.checked = true;
-          if (pEl) pEl.checked = true;
-          setPlayerSmallBoxState(i, 'm');
-          setPlayerSmallBoxState(i, 'p');
-        });
-        pairKeys.forEach(key => {
-          const [a,b] = key.split('_').map(Number);
-          setPairState(a,b,true,{ mode:'order', orderHoles:0, par3:0, par4:0, par5:0 });
-        });
-        for (let h=1; h<=18; h++) {
-          const parEl = document.getElementById(`cell_P_${h}`);
-          const hdEl = document.getElementById(`cell_Hd_${h}`);
-          if (parEl) parEl.value = '';
-          if (hdEl) hdEl.value = '';
-          playerIDs.forEach(p => {
-            const scoreEl = document.getElementById(`cell_${p}_${h}`);
-            if (scoreEl) scoreEl.value = '';
-            drawMark(p,h,false);
-          });
-        }
-        updateParTotals();
-        playerIDs.forEach(i => {
-          const vr = document.getElementById(`vegasRank${i}`);
-          if (vr) vr.value = '';
-        });
-        renderVegasRankInputs();
-        const expR = document.getElementById('exportIncludeResult');
-        const expS = document.getElementById('exportIncludeScorecard');
-        if (expR) expR.checked = true;
-        if (expS) expS.checked = true;
-        openTab('setting');
-      } finally {
-        isRestoringState = false;
-      }
-      saveAppState();
-      renderAllResults();
-    }
-
-    let lastExportDataUrl = '';
-    let lastExportFilename = '';
-
     function closeExportPreview(event){
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
     }
 
-    function sanitizeFilenamePart(value, fallback='未命名'){
-      const cleaned = String(value || '')
-        .replace(/[\/:*?"<>|]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return cleaned || fallback;
-    }
-
-    function getExportFilename(includeResult, includeScorecard){
-      const coursePart = sanitizeFilenamePart(document.getElementById('courseName')?.value || '', 'golf_result');
-      const now = new Date();
-      const datePart = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-      let itemPart = '圖片';
-      if (includeResult && includeScorecard) itemPart = '結果+成績卡';
-      else if (includeResult) itemPart = '結果';
-      else if (includeScorecard) itemPart = '成績卡';
-      return `${coursePart}_${datePart}_${itemPart}.png`;
-    }
-
-    function downloadExportImage(){
-      if (!lastExportDataUrl) return;
-      const link = document.createElement('a');
-      link.href = lastExportDataUrl;
-      link.download = lastExportFilename || 'golf_result.png';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-
-    function gatherExportSummaryRows(){
-      const table = document.querySelector('#final-money .summary-table');
-      if (!table) return [];
-      return Array.from(table.querySelectorAll('tr')).map(tr =>
-        Array.from(tr.children).map(td => (td.innerText || td.textContent || '').trim())
-      ).filter(r => r.length);
-    }
-
-    function buildScorecardExportData(){
-      const activePlayers = getActivePlayers();
-      const holes = Array.from({length:18}, (_,i) => i + 1);
-      const data = [];
-
-      const sumByHoles = (getter) => holes.reduce((sum, hole) => sum + getter(hole), 0);
-      const frontHoles = holes.slice(0, 9);
-      const backHoles = holes.slice(9);
-
-      const makeRow = (label, values, summaryMode='sum') => {
-        let frontTotal = '';
-        let backTotal = '';
-        let total = '';
-        if (summaryMode === 'sum') {
-          frontTotal = String(frontHoles.reduce((sum, hole, idx) => sum + (parseFloat(values[idx]) || 0), 0) || 0);
-          backTotal = String(backHoles.reduce((sum, hole, idx) => sum + (parseFloat(values[idx + 9]) || 0), 0) || 0);
-          total = String((parseFloat(frontTotal) || 0) + (parseFloat(backTotal) || 0));
-        }
-        return [label, ...values.slice(0,9), frontTotal, ...values.slice(9), backTotal, total];
-      };
-
-      data.push(['姓名','1','2','3','4','5','6','7','8','9','OUT','10','11','12','13','14','15','16','17','18','IN','TOTAL']);
-      data.push(makeRow('Hole', holes.map(h => String(h)), 'none'));
-      data.push(makeRow('PAR', holes.map(h => {
-        const v = document.getElementById(`cell_P_${h}`)?.value || '';
-        return v === '' ? '' : String(parseFloat(v) || 0);
-      }), 'none'));
-      data.push(makeRow('HDCP', holes.map(h => {
-        const v = document.getElementById(`cell_Hd_${h}`)?.value || '';
-        return v === '' ? '' : String(parseInt(v) || 0);
-      }), 'none'));
-
-      activePlayers.forEach((playerId, idx) => {
-        const values = holes.map(h => {
-          const v = document.getElementById(`cell_${playerId}_${h}`)?.value || '';
-          return v === '' ? '' : String(v);
-        });
-        const frontTotal = frontHoles.reduce((sum, hole) => sum + (parseFloat(document.getElementById(`cell_${playerId}_${hole}`)?.value) || 0), 0);
-        const backTotal = backHoles.reduce((sum, hole) => sum + (parseFloat(document.getElementById(`cell_${playerId}_${hole}`)?.value) || 0), 0);
-        const total = frontTotal + backTotal;
-        data.push([
-          nameOf(playerId),
-          ...values.slice(0,9),
-          String(frontTotal || 0),
-          ...values.slice(9),
-          String(backTotal || 0),
-          String(total || 0)
-        ]);
-      });
-
-      return { rows: data, activePlayers };
-    }
-
-    function getScoreMarkType(score, par){
-      const scoreNum = parseFloat(score);
-      const parNum = parseFloat(par);
-      if (!scoreNum || !parNum) return '';
-      const diff = scoreNum - parNum;
-      if (diff === -1) return 'circle';
-      if (diff <= -2 || scoreNum === 1) return 'double-circle';
-      if (diff === 1) return 'square';
-      if (diff >= 2) return 'double-square';
-      return '';
-    }
-
-    function drawScoreMark(ctx, markType, centerX, centerY){
-      if (!markType) return;
-      const isCircle = markType.includes('circle');
-      const isDouble = markType.includes('double');
-      const color = isCircle ? '#c33232' : '#2f2f2f';
-      const size = isDouble ? 22 : 20;
-      ctx.save();
-      ctx.strokeStyle = color;
-      if (isDouble) {
-        ctx.lineWidth = 2;
-        if (isCircle) {
-          ctx.beginPath();
-          ctx.arc(centerX, centerY, size, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(centerX, centerY, size - 4, 0, Math.PI * 2);
-          ctx.stroke();
-        } else {
-          ctx.strokeRect(centerX - size, centerY - size, size * 2, size * 2);
-          ctx.strokeRect(centerX - size + 4, centerY - size + 4, (size - 4) * 2, (size - 4) * 2);
-        }
-      } else {
-        ctx.lineWidth = 2;
-        if (isCircle) {
-          ctx.beginPath();
-          ctx.arc(centerX, centerY, size, 0, Math.PI * 2);
-          ctx.stroke();
-        } else {
-          ctx.strokeRect(centerX - size, centerY - size, size * 2, size * 2);
-        }
-      }
-      ctx.restore();
-    }
-    function drawRoundedRect(ctx, x, y, w, h, r){
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    }
-
-    function measureTable(tableRows, widths, rowHeight){
-      return { width: widths.reduce((a,b)=>a+b,0), height: tableRows.length * rowHeight };
-    }
-
-    function drawTable(ctx, tableRows, x, y, widths, rowHeight, options={}){
-      const {
-        headerRows = 1,
-        infoRows = 0,
-        playerStartRow = null,
-        playerAlternate = false,
-        includeScoreMarks = false,
-        scorecardParValues = []
-      } = options;
-      let cy = y;
-      tableRows.forEach((row, rowIndex) => {
-        let cx = x;
-        row.forEach((cell, colIndex) => {
-          const w = widths[colIndex] || widths[widths.length - 1];
-          let bg = '#ffffff';
-          let fg = '#18311f';
-          if (rowIndex < headerRows) {
-            bg = '#2f6b3f';
-            fg = '#ffffff';
-          } else if (rowIndex < headerRows + infoRows) {
-            bg = '#eef5ec';
-          } else if (playerAlternate && playerStartRow !== null && rowIndex >= playerStartRow) {
-            bg = (rowIndex - playerStartRow) % 2 === 0 ? '#ffffff' : '#f7faf6';
-          }
-          if (colIndex === 0 && rowIndex >= headerRows) {
-            bg = rowIndex < headerRows + infoRows ? '#e5efe3' : '#f0f5ef';
-          }
-          if (rowIndex >= headerRows && [10, 20, 21].includes(colIndex)) {
-            bg = rowIndex < headerRows + infoRows ? '#dfeadb' : '#edf4ea';
-          }
-          ctx.fillStyle = bg;
-          ctx.fillRect(cx, cy, w, rowHeight);
-          ctx.strokeStyle = '#d6e2d3';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(cx, cy, w, rowHeight);
-          ctx.fillStyle = fg;
-          ctx.font = rowIndex < headerRows ? '900 18px sans-serif' : '800 18px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          const text = cell === undefined || cell === null ? '' : String(cell);
-          ctx.fillText(text, cx + w / 2, cy + rowHeight / 2);
-
-          if (includeScoreMarks && rowIndex >= (playerStartRow ?? 999) && colIndex >= 1 && colIndex <= 19 && text !== '') {
-            const holeIndex = colIndex <= 9 ? colIndex : colIndex - 1;
-            const parValue = scorecardParValues[holeIndex - 1];
-            const markType = getScoreMarkType(text, parValue);
-            drawScoreMark(ctx, markType, cx + w / 2, cy + rowHeight / 2);
-          }
-          cx += w;
-        });
-        cy += rowHeight;
-      });
-      return cy;
-    }
-
     function exportResultPreview(){
       try {
-        const includeResult = !!document.getElementById('exportIncludeResult')?.checked;
-        const includeScorecard = !!document.getElementById('exportIncludeScorecard')?.checked;
-        if (!includeResult && !includeScorecard) {
-          alert('請至少勾選一項輸出內容。');
-          return;
-        }
-        const summaryRows = includeResult ? gatherExportSummaryRows() : [];
-        if (includeResult && summaryRows.length < 2) {
+        const table = document.querySelector('#final-money .summary-table');
+        if (!table) {
           alert('請先到結算頁產生資料後，再輸出圖片。');
           return;
         }
-        const activePlayers = getActivePlayers();
-        if (includeScorecard && !activePlayers.length) {
-          alert('目前沒有可輸出的成績卡資料。');
+        const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+          Array.from(tr.children).map(td => (td.innerText || td.textContent || '').trim())
+        ).filter(r => r.length);
+        if (rows.length < 2) {
+          alert('目前沒有可輸出的結算資料。');
           return;
         }
 
+        const title = '高爾夫總結算';
         const course = (document.getElementById('courseName')?.value || '').trim();
+        const subtitle = course ? `球場：${course}` : '球場：未填寫';
         const stamp = new Date();
         const stampText = `${stamp.getFullYear()}/${String(stamp.getMonth()+1).padStart(2,'0')}/${String(stamp.getDate()).padStart(2,'0')} ${String(stamp.getHours()).padStart(2,'0')}:${String(stamp.getMinutes()).padStart(2,'0')}`;
 
+        const colCount = Math.max(...rows.map(r => r.length));
+        const colWidths = [190, 120, 120, 120, 130, 150].slice(0, colCount);
+        while (colWidths.length < colCount) colWidths.push(120);
+        const rowHeight = 62;
         const pad = 28;
-        const baseWidth = 1180;
-        let width = baseWidth;
-        const headerBottomY = 152;
-        let cursorY = headerBottomY + 56;
-        const blocks = [];
+        const headTop = 150;
+        const tableWidth = colWidths.reduce((a,b)=>a+b,0);
+        const width = tableWidth + pad * 2;
+        const height = headTop + rows.length * rowHeight + 36;
 
-        if (includeResult) {
-          const colCount = Math.max(...summaryRows.map(r => r.length));
-          const summaryWidths = [220, 130, 130, 130, 150, 170].slice(0, colCount);
-          while (summaryWidths.length < colCount) summaryWidths.push(130);
-          const rowHeight = 58;
-          const info = measureTable(summaryRows, summaryWidths, rowHeight);
-          width = Math.max(width, info.width + pad * 2);
-          blocks.push({ type:'table', title:'總結算', rows:summaryRows, widths:summaryWidths, rowHeight, options:{ headerRows:1 }, height: info.height + 56 });
-          cursorY += info.height + 76;
-        }
-
-        if (includeScorecard) {
-          const data = buildScorecardExportData();
-          const scoreWidths = [170].concat(Array(9).fill(78)).concat([92]).concat(Array(9).fill(78)).concat([92,108]);
-          const rowHeight = 56;
-          const info = measureTable(data.rows, scoreWidths, rowHeight);
-          width = Math.max(width, info.width + pad * 2);
-          const parValues = Array.from({length:18}, (_,i) => parseFloat(document.getElementById(`cell_P_${i+1}`)?.value) || 0);
-          blocks.push({
-            type:'scorecard',
-            title:'成績卡',
-            rows: data.rows,
-            widths: scoreWidths,
-            rowHeight,
-            options: { headerRows:1, infoRows:3, playerStartRow:4, playerAlternate:true, includeScoreMarks:true, scorecardParValues: parValues },
-            height: info.height + 56
-          });
-          cursorY += info.height + 76;
-        }
-
-        const height = Math.max(360, cursorY + 40);
         const canvas = document.createElement('canvas');
         const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
         canvas.width = Math.round(width * scale);
@@ -2414,41 +1818,59 @@
 
         ctx.fillStyle = '#2f6b3f';
         ctx.fillRect(0, 0, width, height);
+
         ctx.fillStyle = '#ffffff';
-        drawRoundedRect(ctx, 16, 16, width - 32, height - 32, 20);
+        const cardX = 16;
+        const cardY = 16;
+        const cardW = width - 32;
+        const cardH = height - 32;
+        const radius = 20;
+        ctx.beginPath();
+        ctx.moveTo(cardX + radius, cardY);
+        ctx.arcTo(cardX + cardW, cardY, cardX + cardW, cardY + cardH, radius);
+        ctx.arcTo(cardX + cardW, cardY + cardH, cardX, cardY + cardH, radius);
+        ctx.arcTo(cardX, cardY + cardH, cardX, cardY, radius);
+        ctx.arcTo(cardX, cardY, cardX + cardW, cardY, radius);
+        ctx.closePath();
         ctx.fill();
 
         ctx.fillStyle = '#1e4d2b';
         ctx.font = '900 34px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText('高爾夫總結算', pad + 8, 62);
+        ctx.fillText(title, pad + 8, 62);
         ctx.font = '700 20px sans-serif';
         ctx.fillStyle = '#4f6456';
-        ctx.fillText(course ? `球場：${course}` : '球場：未填寫', pad + 8, 95);
+        ctx.fillText(subtitle, pad + 8, 95);
         ctx.fillText(`輸出時間：${stampText}`, pad + 8, 122);
 
-        let y = headerBottomY + 56;
-        blocks.forEach(block => {
-          ctx.fillStyle = '#1e4d2b';
-          ctx.font = '900 24px sans-serif';
-          ctx.textAlign = 'left';
-          ctx.fillText(block.title, pad, y - 10);
-          drawTable(ctx, block.rows, pad, y + 10, block.widths, block.rowHeight, block.options || {});
-          y += block.height + 10;
+        let y = headTop;
+        rows.forEach((row, rowIndex) => {
+          let x = pad;
+          row.forEach((cell, colIndex) => {
+            const w = colWidths[colIndex] || 120;
+            ctx.fillStyle = rowIndex === 0 ? '#2f6b3f' : '#ffffff';
+            ctx.fillRect(x, y, w, rowHeight);
+            ctx.strokeStyle = '#d6e2d3';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, y, w, rowHeight);
+            ctx.fillStyle = rowIndex === 0 ? '#ffffff' : '#18311f';
+            ctx.font = rowIndex === 0 ? '900 19px sans-serif' : '800 21px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(cell, x + w / 2, y + rowHeight / 2);
+            x += w;
+          });
+          y += rowHeight;
         });
 
-        lastExportDataUrl = canvas.toDataURL('image/png');
-        lastExportFilename = getExportFilename(includeResult, includeScorecard);
         const img = document.getElementById('exportPreviewImage');
-        img.src = lastExportDataUrl;
-        img.alt = lastExportFilename;
+        img.src = canvas.toDataURL('image/png');
         document.getElementById('exportPreviewOverlay').classList.add('show');
-        scheduleAutoSave();
       } catch (err) {
         console.error(err);
         alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
       }
     }
+
     function calculateFinal(){
       const validation = validateBeforeResult();
       if (validation.errors.length) {
@@ -2627,7 +2049,6 @@
       });
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
-      scheduleAutoSave();
     }
 
     window.onload = () => {
