@@ -296,6 +296,28 @@
     .pair-name { text-align: left; font-size: .98rem; }
     .pair-score-input { padding: 10px 8px; font-size: .98rem; min-height: 44px; }
     .pair-score-input:disabled { background: #f4f5f3; color: #aaa; }
+    .pair-row {
+      grid-template-columns: 42px 1fr;
+      align-items: start;
+    }
+    .pair-main { display:grid; gap:8px; }
+    .pair-mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
+    .pair-mode-chip {
+      border: 2px solid #cfdbcf;
+      background:#fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: .9rem;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pair-mode-chip.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); }
+    .pair-input-wrap { display:none; }
+    .pair-input-wrap.show { display:block; }
+    .pair-special-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; }
+    .pair-special-grid input { min-height: 44px; padding: 10px 8px; font-size: .95rem; }
     .rank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .action-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
     button.action-btn {
@@ -523,12 +545,101 @@
     .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
     .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
 
+
+    .top-floating-bar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.94);
+      color: var(--primary-dark);
+      border: 1px solid rgba(47,107,63,.12);
+      box-shadow: 0 8px 18px rgba(24,49,31,.10);
+      font-size: .84rem;
+      font-weight: 900;
+      backdrop-filter: blur(10px);
+      margin-bottom: 10px;
+    }
+    .floating-btn {
+      border: none;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: .84rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(24,49,31,.12);
+    }
+    .section-grid-3 { display:grid; grid-template-columns: 2fr 1.3fr 1fr; gap:12px; }
+    .section-grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .inline-field { display:grid; grid-template-columns: 1fr 120px; gap:10px; align-items:end; }
+    .inline-field .mode-row { margin:0; }
+    .new-game-btn { width:100%; min-height:50px; border:none; border-radius:12px; background:linear-gradient(180deg, var(--primary), var(--primary-dark)); color:#fff; font-size:1rem; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(24,49,31,.12); }
+    .setting-section-title { margin-bottom:12px; }
+    .setting-subcard { background:#fff; border:1px solid var(--border); border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(31,66,40,.04); margin-bottom:14px; }
+    .export-option-grid {
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:10px;
+      margin:10px 0 12px;
+    }
+    .export-option {
+      background: #f4f8f2;
+      border: 2px solid #d6e2d3;
+      color: var(--primary-dark);
+      border-radius: 12px;
+      padding: 12px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      font-weight:900;
+      min-height: 48px;
+    }
+    .export-option input {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      pointer-events: none;
+    }
+    .export-option.active {
+      background: #e4efe2;
+      border-color: var(--primary);
+    }
+    .export-download-btn {
+      border:none;
+      background:linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color:#fff;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 860px) {
-      .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid { grid-template-columns: 1fr; }
-      .pair-row { grid-template-columns: 42px 1fr 88px; }
+      .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid, .section-grid-3, .section-grid-2, .inline-field { grid-template-columns: 1fr; }
+      .export-option-grid { grid-template-columns: 1fr; }
+      .top-floating-bar { top: 8px; left: 8px; right: 8px; }
+      .floating-btn, .top-floating-bar .version-badge { font-size: .76rem; }
+      .pair-row { grid-template-columns: 42px 1fr; }
+      .pair-special-grid { grid-template-columns: 1fr; }
       .tab-btn { font-size: .95rem; padding: 15px 6px; }
       .content { padding: 10px; }
       .card { padding: 13px; border-radius: 16px; margin-bottom: 10px; }
@@ -564,6 +675,7 @@
   </style>
 </head>
 <body>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.5</div></div>
   <div class="tab-nav">
     <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
     <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
@@ -571,11 +683,11 @@
   </div>
 
   <div id="setting" class="content active">
-    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="global-warning" class="warning-box"></div>
+
     <div class="card">
-      <h2>1. 球場與今日比賽模式</h2>
-      <div class="grid-3" style="margin-bottom:12px;">
+      <h2>1. 球場</h2>
+      <div class="section-grid-3">
         <div>
           <label><small>球場名稱</small></label>
           <input type="text" id="courseName" placeholder="請輸入球場名稱">
@@ -585,10 +697,14 @@
           <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
         </div>
         <div>
-          <label><small>起始洞</small></label>
-          <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()">
+          <label><small>新球局</small></label>
+          <button type="button" class="new-game-btn" onclick="startNewGame()">新球局</button>
         </div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>2. 點數 / 倍率</h2>
       <div class="grid-3" style="margin-bottom:12px;">
         <div>
           <label><small>點 / 元</small></label>
@@ -597,17 +713,28 @@
         <div></div>
         <div></div>
       </div>
-      <div class="grid-4" style="margin-bottom:18px;">
+      <div class="grid-4">
         <div><label><small>Birdie 倍率</small></label><input type="number" id="mB" value="2"></div>
         <div><label><small>4 Par Eagle 倍率</small></label><input type="number" id="mE4" value="5"></div>
         <div><label><small>5 Par Eagle 倍率</small></label><input type="number" id="mE5" value="3"></div>
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
-      <div id="player-name-area"></div>
+    </div>
+
+    <div id="player-name-area"></div>
+
+    <div class="card">
+      <h2>4. 比賽模式</h2>
       <div class="mode-stack">
-        <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
-          <input type="checkbox" id="modeVegas" checked>
-          <span>Vegas</span>
+        <div class="inline-field">
+          <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
+            <input type="checkbox" id="modeVegas" checked>
+            <span>Vegas</span>
+          </div>
+          <div>
+            <label><small>起始洞</small></label>
+            <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()">
+          </div>
         </div>
         <div class="mode-row mode-child" id="modeRowExt" onclick="toggleMainMode('extMode')">
           <input type="checkbox" id="extMode">
@@ -629,7 +756,6 @@
   </div>
 
   <div id="scoring" class="content">
-    <div class="version-badge">Golf Score Beta 1.4</div>
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area">
@@ -660,13 +786,19 @@
   </div>
 
   <div id="result" class="content">
-    <div class="version-badge">Golf Score Beta 1.4</div>
     <div class="result-grid">
       <div class="result-stack">
         <div class="final-area jpg-capture" id="result-capture">
-          <div class="export-wrap"><button class="action-btn secondary" onclick="exportResultPreview()">輸出圖片</button></div>
+          <div class="export-wrap" style="display:block; margin-bottom:12px;">
+            <div class="small-note" style="text-align:left; margin-bottom:8px; color:rgba(255,255,255,.9);">勾選要輸出的項目，可單獨輸出或合併成同一張圖片。</div>
+            <div class="export-option-grid">
+              <label class="export-option active" id="exportOptResult" onclick="toggleExportOption('result')"><input type="checkbox" id="exportIncludeResult" checked>結果</label>
+              <label class="export-option active" id="exportOptScorecard" onclick="toggleExportOption('scorecard')"><input type="checkbox" id="exportIncludeScorecard" checked>成績卡</label>
+              <button class="action-btn secondary" type="button" onclick="exportResultPreview()">輸出圖片</button>
+            </div>
+          </div>
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.4</div></div>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.5</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -683,8 +815,7 @@
   <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
-        <span>長按圖片即可儲存</span>
-        <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
+        <span id="exportPreviewTitle">長按或下載 PNG</span><div style="display:flex; gap:8px;"><button type="button" class="export-download-btn" onclick="downloadPreviewImage()">下載 PNG</button><button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button></div>
       </div>
       <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
     </div>
@@ -698,7 +829,7 @@
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.4';
+    const APP_VERSION = 'Golf Score Beta 1.5';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -845,6 +976,12 @@
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
         setPairState(a,b,true,0);
+        setPairHandicapMode(a,b,'general',true);
+        syncPairModeUI(a,b);
+        ['p3','p4','p5'].forEach(kind => {
+          const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
+          if (el) el.value = '';
+        });
       });
       refreshAllPairDisabledState();
     }
@@ -955,14 +1092,14 @@
     }
 
     function renderPlayerCards(){
-      let nameHtml = `<div class="card" style="padding:15px;"><h2>2. 玩家名稱</h2><div class="name-grid">`;
+      let nameHtml = `<div class="card" style="padding:15px;"><h2>3. 玩家名稱</h2><div class="name-grid">`;
       playerIDs.forEach(i => {
         nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()"></div>`;
       });
       nameHtml += `</div></div>`;
       document.getElementById('player-name-area').innerHTML = nameHtml;
 
-      let html = `<div class="grid-2">`;
+      let html = `<div class="card"><h2>5. 讓洞設定</h2><div class="grid-2">`;
       playerIDs.forEach(i => {
         html += `
           <div class="card" style="margin-bottom:0; padding:15px;">
@@ -973,20 +1110,41 @@
                 <div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i}, 'p')"><input type="checkbox" id="p${i}_p" checked>抓PAR</div>
               </div>
               <div style="margin-top:12px; border-top:2px dashed #e6ece4; padding-top:10px;">
-                <div class="small-note" style="margin-bottom:8px;">比洞設定：勾選代表有比。輸入正數 = 目前這位玩家讓對手；負數 = 對手讓目前這位玩家；空白視為平打 0 洞。</div>
+                <div class="small-note" style="margin-bottom:8px;">一般讓桿：輸入正數 = 目前這位玩家讓對手；負數 = 對手讓目前這位玩家；空白視為平打 0 洞。</div>
+                <div class="small-note" style="margin-bottom:8px;">特殊讓桿：依 Par 3 / Par 4 / Par 5 手動輸入讓桿值，沿用相同正負方向。</div>
                 ${playerIDs.filter(j => j !== i).map(j => `
                   <div class="pair-row" id="pair-row-${i}-${j}">
                     <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
-                    <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
-                    <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
+                    <div class="pair-main">
+                      <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
+                      <div class="pair-mode-switch">
+                        <div class="pair-mode-chip active" id="pair-mode-general-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'general')">一般讓桿</div>
+                        <div class="pair-mode-chip" id="pair-mode-special-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'special')">特殊讓桿</div>
+                      </div>
+                      <input type="hidden" id="pair-mode-${i}-${j}" value="general">
+                      <div class="pair-input-wrap show" id="pair-general-wrap-${i}-${j}">
+                        <input class="pair-score-input" type="number" id="pair-strokes-${i}-${j}" placeholder="0" oninput="handlePairStrokeInput(${i},${j})">
+                      </div>
+                      <div class="pair-input-wrap" id="pair-special-wrap-${i}-${j}">
+                        <div class="pair-special-grid">
+                          <input type="number" id="pair-special-p3-${i}-${j}" placeholder="Par 3" oninput="handlePairSpecialInput(${i},${j},'p3')">
+                          <input type="number" id="pair-special-p4-${i}-${j}" placeholder="Par 4" oninput="handlePairSpecialInput(${i},${j},'p4')">
+                          <input type="number" id="pair-special-p5-${i}-${j}" placeholder="Par 5" oninput="handlePairSpecialInput(${i},${j},'p5')">
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 `).join('')}
               </div>
             </div>
           </div>`;
       });
-      html += `</div>`;
+      html += `</div></div>`;
       document.getElementById('player-config-area').innerHTML = html;
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_');
+        if (document.getElementById(`pair-mode-${a}-${b}`)) syncPairModeUI(Number(a), Number(b));
+      });
       attachSelectAllBehavior(document.getElementById('player-name-area'));
       applyNumericKeyboardHints(document.getElementById('player-name-area'));
       attachSelectAllBehavior(document.getElementById('player-config-area'));
@@ -1065,8 +1223,47 @@
           toggle.classList.toggle('disabled', !playerEnabled);
           toggle.classList.toggle('active', playerEnabled && active);
           input.disabled = !playerEnabled || !active;
+          ['p3','p4','p5'].forEach(kind => {
+            const el = document.getElementById(`pair-special-${kind}-${i}-${j}`);
+            if (el) el.disabled = !playerEnabled || !active;
+          });
         });
       });
+    }
+
+    function syncPairModeUI(i,j){
+      const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value || 'general';
+      document.getElementById(`pair-mode-general-chip-${i}-${j}`)?.classList.toggle('active', mode === 'general');
+      document.getElementById(`pair-mode-special-chip-${i}-${j}`)?.classList.toggle('active', mode === 'special');
+      document.getElementById(`pair-general-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'general');
+      document.getElementById(`pair-special-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'special');
+    }
+
+    function setPairHandicapMode(i,j,mode,fromSync=false){
+      const el = document.getElementById(`pair-mode-${i}-${j}`);
+      if (!el) return;
+      el.value = mode === 'special' ? 'special' : 'general';
+      syncPairModeUI(i,j);
+      if (!fromSync) setPairHandicapMode(j,i,el.value,true);
+      scheduleAutoSave();
+    }
+
+    function handlePairSpecialInput(i,j,kind,fromSync=false){
+      const input = document.getElementById(`pair-special-${kind}-${i}-${j}`);
+      if (!input) return;
+      const activePlayers = getActivePlayers();
+      const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      if (!playersReady) return;
+      setPairState(i,j,true,document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '0');
+      if (!fromSync) {
+        const raw = input.value;
+        ['p3','p4','p5'].forEach(syncKind => {
+          if (syncKind !== kind) return;
+          const other = document.getElementById(`pair-special-${syncKind}-${j}-${i}`);
+          if (other) other.value = raw === '' ? '' : String(-1 * Number(raw || 0));
+        });
+      }
+      scheduleAutoSave();
     }
 
     function setPairState(i,j,checked,value,fromSync=false){
@@ -1081,6 +1278,10 @@
       tg.classList.toggle('disabled', !pairEnabled);
       inp.disabled = !cb.checked;
       inp.value = cb.checked ? (value ?? '') : '';
+      ['p3','p4','p5'].forEach(kind => {
+        const el = document.getElementById(`pair-special-${kind}-${i}-${j}`);
+        if (el) el.disabled = !cb.checked;
+      });
       if (!fromSync) {
         const mirroredValue = cb.checked ? (value === '' || value === null || value === undefined ? '' : String(-1 * Number(value || 0))) : '';
         setPairState(j,i,cb.checked,mirroredValue,true);
@@ -1106,6 +1307,7 @@
       const raw = input.value;
       setPairState(i,j,true,raw === '' ? 0 : raw);
       refreshAllPairDisabledState();
+      scheduleAutoSave();
     }
 
     function bindCourseAutoLoad(){
@@ -1444,7 +1646,13 @@
       const checked = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
       let value = document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '';
       value = value === '' ? 0 : parseFloat(value);
-      return { checked, value };
+      const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value || 'general';
+      const specials = {
+        p3: (() => { const raw = document.getElementById(`pair-special-p3-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); })(),
+        p4: (() => { const raw = document.getElementById(`pair-special-p4-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); })(),
+        p5: (() => { const raw = document.getElementById(`pair-special-p5-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); })()
+      };
+      return { checked, value, mode, specials };
     }
 
     function getStrokeAllowance(pairValue, hole){
@@ -1466,11 +1674,23 @@
       return 0;
     }
 
+    function getSpecialStrokeAllowance(value, par){
+      if (!value || !par) return 0;
+      return value < 0 ? Math.abs(value) : 0;
+    }
+
     function getNetScoreForPair(player, opponent, hole){
       const meta = getPairMeta(player, opponent);
       const gross = getPlayerScore(player, hole);
       if (!gross) return 0;
-      const allowance = getStrokeAllowance(meta.value, hole);
+      let allowance = 0;
+      if (meta.mode === 'special') {
+        const par = getHoleInfo(hole).par;
+        const key = par === 3 ? 'p3' : par === 4 ? 'p4' : par === 5 ? 'p5' : '';
+        allowance = key ? getSpecialStrokeAllowance(meta.specials[key], par) : 0;
+      } else {
+        allowance = getStrokeAllowance(meta.value, hole);
+      }
       return gross - allowance;
     }
 
@@ -1517,11 +1737,19 @@
       if (isMatchEnabled()) {
         const pairs = buildMatchPairs();
         pairs.forEach(([a,b]) => {
-          const input = document.getElementById(`pair-strokes-${a}-${b}`);
-          if (!input) return;
-          if (input.value === '') return; // 空白視為0
-          const n = Number(input.value);
-          if (Number.isNaN(n) || Math.abs(n) > 18) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的讓洞數必須介於 -18 到 18。`);
+          const meta = getPairMeta(a,b);
+          if (meta.mode === 'special') {
+            ['p3','p4','p5'].forEach(kind => {
+              const val = meta.specials[kind];
+              if (Number.isNaN(val) || Math.abs(val) > 18) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的特殊讓桿必須介於 -18 到 18。`);
+            });
+          } else {
+            const input = document.getElementById(`pair-strokes-${a}-${b}`);
+            if (!input) return;
+            if (input.value === '') return; // 空白視為0
+            const n = Number(input.value);
+            if (Number.isNaN(n) || Math.abs(n) > 18) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的一般讓桿必須介於 -18 到 18。`);
+          }
         });
       }
 
@@ -1772,14 +2000,119 @@
       });
     }
 
+
+    let exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
+
+    function toggleExportOption(type){
+      const map = { result: 'exportIncludeResult', scorecard: 'exportIncludeScorecard' };
+      const optMap = { result: 'exportOptResult', scorecard: 'exportOptScorecard' };
+      const cb = document.getElementById(map[type]);
+      if (!cb) return;
+      cb.checked = !cb.checked;
+      const otherType = type === 'result' ? 'scorecard' : 'result';
+      const other = document.getElementById(map[otherType]);
+      if (!cb.checked && other && !other.checked) cb.checked = true;
+      ['result','scorecard'].forEach(key => document.getElementById(optMap[key])?.classList.toggle('active', !!document.getElementById(map[key])?.checked));
+    }
+
+    function sanitizeFileNamePart(str){
+      return String(str || '').trim().replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || '未命名';
+    }
+
+    function buildExportFileName(parts){
+      const course = sanitizeFileNamePart(document.getElementById('courseName')?.value || '球場');
+      const stamp = new Date();
+      const date = `${stamp.getFullYear()}${String(stamp.getMonth()+1).padStart(2,'0')}${String(stamp.getDate()).padStart(2,'0')}`;
+      return `${course}_${date}_${parts.join('+')}.png`;
+    }
+
+    function downloadPreviewImage(){
+      if (!exportPreviewState.dataUrl) return;
+      const a = document.createElement('a');
+      a.href = exportPreviewState.dataUrl;
+      a.download = exportPreviewState.filename || 'golf-score.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function gatherScorecardRows(order, activePlayers){
+      const summaryFor = (player, holes) => holes.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0), 0);
+      return activePlayers.map(player => ({
+        player,
+        name: nameOf(player),
+        scores: order.map(h => ({ hole: h, score: parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0, par: parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0 })),
+        out: summaryFor(player, order.filter(h => h <= 9)),
+        inn: summaryFor(player, order.filter(h => h >= 10)),
+        total: summaryFor(player, order)
+      }));
+    }
+
+    function drawRoundedRect(ctx, x, y, w, h, r, fill){
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      else ctx.stroke();
+    }
+
     function closeExportPreview(event){
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
+      exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
+    }
+
+    function clearCurrentRoundData(keepPreview=true){
+      document.getElementById('courseName').value = '';
+      document.getElementById('startHole').value = '1';
+      document.getElementById('pointVal').value = '100';
+      document.getElementById('mB').value = '2';
+      document.getElementById('mE4').value = '5';
+      document.getElementById('mE5').value = '3';
+      document.getElementById('mHIO').value = '10';
+      playerIDs.forEach(i => { if (document.getElementById(`name${i}`)) document.getElementById(`name${i}`).value = ''; });
+      updateNames(true);
+      document.getElementById('modeVegas').checked = true;
+      document.getElementById('extMode').checked = false;
+      document.getElementById('modeMatch').checked = true;
+      document.getElementById('modePar').checked = true;
+      applyModeStates('modeMatch');
+      renderScoreboard();
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_').map(Number);
+        if (document.getElementById(`pair-strokes-${a}-${b}`)) document.getElementById(`pair-strokes-${a}-${b}`).value = '0';
+        ['p3','p4','p5'].forEach(kind => {
+          const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
+          if (el) el.value = '';
+        });
+        setPairHandicapMode(a,b,'general',true);
+        syncPairModeUI(a,b);
+        setPairState(a,b,true,'0',true);
+      });
+      document.getElementById('final-money').innerHTML = '';
+      document.getElementById('par-output').innerHTML = '';
+      document.getElementById('vegas-output').innerHTML = '';
+      document.getElementById('match-output').innerHTML = '';
+      document.getElementById('match-detail-output').innerHTML = '';
+      document.getElementById('vegas-hole-output').innerHTML = '';
+      refreshSavedCourseSelect();
+      if (!keepPreview) closeExportPreview();
+      scheduleAutoSave();
     }
 
     function exportResultPreview(){
       try {
+        const includeResult = !!document.getElementById('exportIncludeResult')?.checked;
+        const includeScorecard = !!document.getElementById('exportIncludeScorecard')?.checked;
+        if (!includeResult && !includeScorecard) {
+          alert('請至少勾選一個輸出項目。');
+          return;
+        }
         const table = document.querySelector('#final-money .summary-table');
         if (!table) {
           alert('請先到結算頁產生資料後，再輸出圖片。');
@@ -1793,78 +2126,200 @@
           return;
         }
 
-        const title = '高爾夫總結算';
-        const course = (document.getElementById('courseName')?.value || '').trim();
-        const subtitle = course ? `球場：${course}` : '球場：未填寫';
-        const stamp = new Date();
-        const stampText = `${stamp.getFullYear()}/${String(stamp.getMonth()+1).padStart(2,'0')}/${String(stamp.getDate()).padStart(2,'0')} ${String(stamp.getHours()).padStart(2,'0')}:${String(stamp.getMinutes()).padStart(2,'0')}`;
+        const activePlayers = getActivePlayers();
+        const order = getPlayOrder();
+        const scoreRows = gatherScorecardRows(order, activePlayers);
+        const now = new Date();
+        const dateText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+        const timeText = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const course = (document.getElementById('courseName')?.value || '').trim() || '未填寫球場';
+        const includeParts = [];
+        if (includeResult) includeParts.push('結果');
+        if (includeScorecard) includeParts.push('成績卡');
+        const filename = buildExportFileName(includeParts);
 
-        const colCount = Math.max(...rows.map(r => r.length));
-        const colWidths = [190, 120, 120, 120, 130, 150].slice(0, colCount);
-        while (colWidths.length < colCount) colWidths.push(120);
-        const rowHeight = 62;
         const pad = 28;
-        const headTop = 150;
-        const tableWidth = colWidths.reduce((a,b)=>a+b,0);
-        const width = tableWidth + pad * 2;
-        const height = headTop + rows.length * rowHeight + 36;
+        const cardPad = 18;
+        const width = 1600;
+        let currentY = pad;
+        const sections = [];
 
-        const canvas = document.createElement('canvas');
+        if (includeResult) {
+          const colWidths = [220];
+          for (let i = 1; i < rows[0].length; i++) colWidths.push(120);
+          const rowH = 56;
+          const titleH = 118;
+          const sectionH = titleH + rows.length * rowH + 28;
+          sections.push({ type:'result', x: pad, y: currentY, w: width - pad * 2, h: sectionH, colWidths, rowH, titleH });
+          currentY += sectionH + 18;
+        }
+
+        if (includeScorecard) {
+          const holeW = 58;
+          const sideW = 64;
+          const summaryW = 96;
+          const rowH = 60;
+          const headH = 126;
+          const totalRows = 3 + scoreRows.length;
+          const sectionH = headH + totalRows * rowH + 30;
+          sections.push({ type:'scorecard', x: pad, y: currentY, w: width - pad * 2, h: sectionH, sideW, holeW, summaryW, rowH, headH });
+          currentY += sectionH + 18;
+        }
+
+        const height = currentY + pad;
         const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
+        const canvas = document.createElement('canvas');
         canvas.width = Math.round(width * scale);
         canvas.height = Math.round(height * scale);
         const ctx = canvas.getContext('2d');
         ctx.scale(scale, scale);
 
-        ctx.fillStyle = '#2f6b3f';
+        ctx.fillStyle = '#eef4ec';
         ctx.fillRect(0, 0, width, height);
 
-        ctx.fillStyle = '#ffffff';
-        const cardX = 16;
-        const cardY = 16;
-        const cardW = width - 32;
-        const cardH = height - 32;
-        const radius = 20;
-        ctx.beginPath();
-        ctx.moveTo(cardX + radius, cardY);
-        ctx.arcTo(cardX + cardW, cardY, cardX + cardW, cardY + cardH, radius);
-        ctx.arcTo(cardX + cardW, cardY + cardH, cardX, cardY + cardH, radius);
-        ctx.arcTo(cardX, cardY + cardH, cardX, cardY, radius);
-        ctx.arcTo(cardX, cardY, cardX + cardW, cardY, radius);
-        ctx.closePath();
-        ctx.fill();
+        sections.forEach(section => {
+          ctx.fillStyle = '#ffffff';
+          drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, true);
+          ctx.strokeStyle = '#d6e2d3';
+          ctx.lineWidth = 1;
+          drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, false);
 
-        ctx.fillStyle = '#1e4d2b';
-        ctx.font = '900 34px sans-serif';
-        ctx.fillText(title, pad + 8, 62);
-        ctx.font = '700 20px sans-serif';
-        ctx.fillStyle = '#4f6456';
-        ctx.fillText(subtitle, pad + 8, 95);
-        ctx.fillText(`輸出時間：${stampText}`, pad + 8, 122);
+          ctx.fillStyle = '#1e4d2b';
+          ctx.font = '900 34px sans-serif';
+          ctx.textAlign = 'left';
+          const title = section.type === 'result' ? '總結算' : '成績卡';
+          ctx.fillText(title, section.x + cardPad, section.y + 42);
+          ctx.font = '700 20px sans-serif';
+          ctx.fillStyle = '#4f6456';
+          ctx.fillText(`球場：${course}`, section.x + cardPad, section.y + 74);
+          ctx.fillText(`日期：${dateText}  ${timeText}`, section.x + cardPad, section.y + 102);
 
-        let y = headTop;
-        rows.forEach((row, rowIndex) => {
-          let x = pad;
-          row.forEach((cell, colIndex) => {
-            const w = colWidths[colIndex] || 120;
-            ctx.fillStyle = rowIndex === 0 ? '#2f6b3f' : '#ffffff';
-            ctx.fillRect(x, y, w, rowHeight);
-            ctx.strokeStyle = '#d6e2d3';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(x, y, w, rowHeight);
-            ctx.fillStyle = rowIndex === 0 ? '#ffffff' : '#18311f';
-            ctx.font = rowIndex === 0 ? '900 19px sans-serif' : '800 21px sans-serif';
+          if (section.type === 'result') {
+            let y = section.y + section.titleH;
+            let xStart = section.x + cardPad;
+            rows.forEach((row, rIdx) => {
+              let x = xStart;
+              row.forEach((cell, cIdx) => {
+                const w = section.colWidths[cIdx] || 120;
+                ctx.fillStyle = rIdx === 0 ? '#2f6b3f' : '#ffffff';
+                ctx.fillRect(x, y, w, section.rowH);
+                ctx.strokeStyle = '#d6e2d3';
+                ctx.strokeRect(x, y, w, section.rowH);
+                ctx.fillStyle = rIdx === 0 ? '#ffffff' : '#18311f';
+                ctx.font = rIdx === 0 ? '900 20px sans-serif' : '800 21px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(cell, x + w/2, y + section.rowH/2);
+                x += w;
+              });
+              y += section.rowH;
+            });
+          } else {
+            const x0 = section.x + cardPad;
+            const y0 = section.y + section.headH;
+            const frontOrder = order.filter(h => h <= 9);
+            const backOrder = order.filter(h => h >= 10);
+            const scorecardColumns = [...frontOrder.map(String), '前9小記', ...backOrder.map(String), '後9小記', '18洞總計'];
+            const headers = ['Hole', 'PAR', 'HDCP', ...scorecardColumns];
+            const headerWidths = [section.sideW, section.sideW, section.sideW, ...frontOrder.map(() => section.holeW), section.summaryW, ...backOrder.map(() => section.holeW), section.summaryW, section.summaryW];
+            let x = x0;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(cell, x + w / 2, y + rowHeight / 2);
-            x += w;
-          });
-          y += rowHeight;
+            headers.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              const isInfo = idx < 3;
+              ctx.fillStyle = isInfo ? '#dbead8' : '#eef5ec';
+              ctx.fillRect(x, y0, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, y0, w, section.rowH);
+              ctx.fillStyle = '#1e4d2b';
+              ctx.font = '900 18px sans-serif';
+              ctx.fillText(text, x + w/2, y0 + section.rowH/2);
+              x += w;
+            });
+            const parY = y0 + section.rowH;
+            x = x0;
+            const parVals = ['PAR', '', '', ...frontOrder.map(h => String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || '')), '', ...backOrder.map(h => String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || '')), '', ''];
+            parVals.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillRect(x, parY, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, parY, w, section.rowH);
+              ctx.fillStyle = '#18311f';
+              ctx.font = '800 17px sans-serif';
+              ctx.fillText(text, x + w/2, parY + section.rowH/2);
+              x += w;
+            });
+            const hdcpY = y0 + section.rowH * 2;
+            x = x0;
+            const hdcpVals = ['HDCP', '', '', ...frontOrder.map(h => String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || '')), '', ...backOrder.map(h => String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || '')), '', ''];
+            hdcpVals.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillRect(x, hdcpY, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, hdcpY, w, section.rowH);
+              ctx.fillStyle = '#18311f';
+              ctx.font = '800 17px sans-serif';
+              ctx.fillText(text, x + w/2, hdcpY + section.rowH/2);
+              x += w;
+            });
+            scoreRows.forEach((row, idx) => {
+              const y = y0 + section.rowH * (3 + idx);
+              x = x0;
+              const fill = idx % 2 === 0 ? '#ffffff' : '#f8fbf7';
+              const scoreByHole = Object.fromEntries(row.scores.map(item => [item.hole, item]));
+              const orderedFront = frontOrder.map(h => scoreByHole[h]);
+              const orderedBack = backOrder.map(h => scoreByHole[h]);
+              const vals = [row.name, '', '', ...orderedFront.map(item => item && item.score ? String(item.score) : ''), String(row.out || ''), ...orderedBack.map(item => item && item.score ? String(item.score) : ''), String(row.inn || ''), String(row.total || '')];
+              vals.forEach((text, colIdx) => {
+                const w = headerWidths[colIdx];
+                ctx.fillStyle = colIdx < 3 ? '#edf5eb' : fill;
+                ctx.fillRect(x, y, w, section.rowH);
+                ctx.strokeStyle = '#d6e2d3';
+                ctx.strokeRect(x, y, w, section.rowH);
+                ctx.fillStyle = '#18311f';
+                ctx.font = colIdx === 0 ? '900 17px sans-serif' : '800 18px sans-serif';
+                ctx.fillText(text, x + w/2, y + section.rowH/2);
+                if ((colIdx >= 3 && colIdx < 3 + frontOrder.length) || (colIdx > 3 + frontOrder.length && colIdx < 4 + frontOrder.length + backOrder.length)) {
+                  const item = colIdx < 3 + frontOrder.length
+                    ? orderedFront[colIdx - 3]
+                    : orderedBack[colIdx - (4 + frontOrder.length)];
+                  if (item && item.score && item.par) {
+                    const diff = item.score - item.par;
+                    ctx.strokeStyle = diff < 0 ? '#c33232' : diff > 0 ? '#2f2f2f' : 'transparent';
+                    ctx.lineWidth = 2.5;
+                    if (diff === -1) {
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 17, 0, Math.PI*2); ctx.stroke();
+                    } else if (diff <= -2 || item.score === 1) {
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 17, 0, Math.PI*2); ctx.stroke();
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 13, 0, Math.PI*2); ctx.stroke();
+                    } else if (diff === 1) {
+                      ctx.strokeRect(x + w/2 - 16, y + section.rowH/2 - 16, 32, 32);
+                    } else if (diff >= 2) {
+                      ctx.strokeRect(x + w/2 - 16, y + section.rowH/2 - 16, 32, 32);
+                      ctx.strokeRect(x + w/2 - 12, y + section.rowH/2 - 12, 24, 24);
+                    }
+                  }
+                }
+                x += w;
+              });
+            });
+          }
         });
 
-        const img = document.getElementById('exportPreviewImage');
-        img.src = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL('image/png');
+        exportPreviewState = { dataUrl, filename };
+        document.getElementById('exportPreviewImage').src = dataUrl;
+        document.getElementById('exportPreviewTitle').textContent = filename;
         document.getElementById('exportPreviewOverlay').classList.add('show');
+        scheduleAutoSave();
+
+        if (confirm('圖片已輸出，是否清除本場資料？')) {
+          clearCurrentRoundData(true);
+          showWarning('已清除本場資料，圖片預覽仍保留。', 'global');
+        }
       } catch (err) {
         console.error(err);
         alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
@@ -2051,8 +2506,135 @@
       document.getElementById('final-money').innerHTML = html;
     }
 
+
+    const AUTO_SAVE_KEY = 'golfAutoSaveBeta15';
+    let autoSaveTimer = null;
+
+    function collectAppState(){
+      const state = {
+        version: APP_VERSION,
+        savedAt: Date.now(),
+        courseName: document.getElementById('courseName')?.value || '',
+        startHole: document.getElementById('startHole')?.value || '1',
+        pointVal: document.getElementById('pointVal')?.value || '100',
+        multipliers: {
+          mB: document.getElementById('mB')?.value || '2',
+          mE4: document.getElementById('mE4')?.value || '5',
+          mE5: document.getElementById('mE5')?.value || '3',
+          mHIO: document.getElementById('mHIO')?.value || '10'
+        },
+        players: playerIDs.map(i => ({
+          name: document.getElementById(`name${i}`)?.value || '',
+          match: !!document.getElementById(`p${i}_m`)?.checked,
+          par: !!document.getElementById(`p${i}_p`)?.checked,
+          vegasRank: document.getElementById(`vegasRank${i}`)?.value || ''
+        })),
+        modes: {
+          vegas: !!document.getElementById('modeVegas')?.checked,
+          ext: !!document.getElementById('extMode')?.checked,
+          match: !!document.getElementById('modeMatch')?.checked,
+          par: !!document.getElementById('modePar')?.checked
+        },
+        course: {
+          par: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, document.getElementById(`cell_P_${h}`)?.value || '']; })),
+          hdcp: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, document.getElementById(`cell_Hd_${h}`)?.value || '']; }))
+        },
+        scores: {},
+        pairs: {}
+      };
+      playerIDs.forEach(i => {
+        for (let h=1; h<=18; h++) state.scores[`${i}_${h}`] = document.getElementById(`cell_${i}_${h}`)?.value || '';
+      });
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_');
+        state.pairs[key] = {
+          checked: !!document.getElementById(`pair-check-${a}-${b}`)?.checked,
+          value: document.getElementById(`pair-strokes-${a}-${b}`)?.value || '',
+          mode: document.getElementById(`pair-mode-${a}-${b}`)?.value || 'general',
+          special: {
+            p3: document.getElementById(`pair-special-p3-${a}-${b}`)?.value || '',
+            p4: document.getElementById(`pair-special-p4-${a}-${b}`)?.value || '',
+            p5: document.getElementById(`pair-special-p5-${a}-${b}`)?.value || ''
+          }
+        };
+      });
+      return state;
+    }
+
+    function scheduleAutoSave(){
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        try { localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(collectAppState())); } catch (e) {}
+      }, 200);
+    }
+
+    function restoreAutoSave(){
+      try {
+        const raw = localStorage.getItem(AUTO_SAVE_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (!state || typeof state !== 'object') return;
+        if (state.courseName !== undefined) document.getElementById('courseName').value = state.courseName;
+        if (state.startHole !== undefined) document.getElementById('startHole').value = state.startHole;
+        if (state.pointVal !== undefined) document.getElementById('pointVal').value = state.pointVal;
+        Object.entries(state.multipliers || {}).forEach(([k,v]) => { if (document.getElementById(k)) document.getElementById(k).value = v; });
+        (state.players || []).forEach((p, i) => {
+          if (document.getElementById(`name${i}`)) document.getElementById(`name${i}`).value = p.name || '';
+        });
+        updateNames(true);
+        if (state.modes) {
+          document.getElementById('modeVegas').checked = !!state.modes.vegas;
+          document.getElementById('extMode').checked = !!state.modes.ext;
+          document.getElementById('modeMatch').checked = !!state.modes.match;
+          document.getElementById('modePar').checked = !!state.modes.par;
+        }
+        applyModeStates();
+        (state.players || []).forEach((p, i) => {
+          if (document.getElementById(`p${i}_m`)) document.getElementById(`p${i}_m`).checked = !!p.match;
+          if (document.getElementById(`p${i}_p`)) document.getElementById(`p${i}_p`).checked = !!p.par;
+          if (document.getElementById(`vegasRank${i}`)) document.getElementById(`vegasRank${i}`).value = p.vegasRank || '';
+        });
+        renderVegasRankInputs();
+        renderScoreboard();
+        for (let h=1; h<=18; h++) {
+          if (document.getElementById(`cell_P_${h}`)) document.getElementById(`cell_P_${h}`).value = state.course?.par?.[h] || '';
+          if (document.getElementById(`cell_Hd_${h}`)) document.getElementById(`cell_Hd_${h}`).value = state.course?.hdcp?.[h] || '';
+        }
+        playerIDs.forEach(i => { for (let h=1; h<=18; h++) if (document.getElementById(`cell_${i}_${h}`)) document.getElementById(`cell_${i}_${h}`).value = state.scores?.[`${i}_${h}`] || ''; });
+        pairKeys.forEach(key => {
+          const [a,b] = key.split('_');
+          const pair = state.pairs?.[key];
+          if (!pair) return;
+          if (document.getElementById(`pair-strokes-${a}-${b}`)) document.getElementById(`pair-strokes-${a}-${b}`).value = pair.value || '';
+          ['p3','p4','p5'].forEach(kind => {
+            const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
+            if (el) el.value = pair.special?.[kind] || '';
+          });
+          setPairHandicapMode(Number(a), Number(b), pair.mode || 'general', true);
+          syncPairModeUI(Number(a), Number(b));
+          setPairState(Number(a), Number(b), !!pair.checked, pair.value || '0', true);
+        });
+        updateParTotals();
+        getActivePlayers().forEach(p => { updatePlayerTotals(p); for (let h=1; h<=18; h++) drawMark(p,h,false); });
+        updateVegasPreview();
+        showWarning('已自動恢復上次未完成的資料。', 'global');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function startNewGame(){
+      if (!confirm('確定要開啟新球局嗎？目前本場成績與設定中的即時資料會清空，但已儲存球場資料會保留。')) return;
+      localStorage.removeItem(AUTO_SAVE_KEY);
+      clearCurrentRoundData(false);
+      showWarning('已開始新球局。', 'global');
+    }
+
     window.onload = () => {
       initUI();
+      restoreAutoSave();
+      document.addEventListener('input', scheduleAutoSave, true);
+      document.addEventListener('change', scheduleAutoSave, true);
     };
   </script>
 </body>
