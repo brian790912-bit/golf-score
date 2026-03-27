@@ -1055,21 +1055,21 @@
                       <div class="pair-order-wrap show" id="pair-order-wrap-${i}-${j}">
                         <div class="pair-mini">
                           <label><small>洞序讓幾洞（讓18洞 = 每洞1桿）</small></label>
-                          <input class="pair-input" type="number" id="pair-order-${i}-${j}" min="-18" max="18" step="1" value="18" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input" type="number" id="pair-order-${i}-${j}" min="-18" max="18" step="1" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                       </div>
                       <div class="pair-par-wrap" id="pair-par-wrap-${i}-${j}">
                         <div class="pair-mini">
                           <label><small>Par 3</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par3-${i}-${j}" min="-2" max="2" step="0.5" value="0.5" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input pair-select" type="number" id="pair-par3-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                         <div class="pair-mini">
                           <label><small>Par 4</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par4-${i}-${j}" min="-2" max="2" step="0.5" value="1" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input pair-select" type="number" id="pair-par4-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                         <div class="pair-mini">
                           <label><small>Par 5</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par5-${i}-${j}" min="-2" max="2" step="0.5" value="2" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input pair-select" type="number" id="pair-par5-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                       </div>
                     </div>
@@ -1211,10 +1211,10 @@
       };
       return {
         mode,
-        orderHoles: clampSignedInt(config.orderHoles, 18),
-        par3: clampSignedStep(config.par3, 0.5),
-        par4: clampSignedStep(config.par4, 1),
-        par5: clampSignedStep(config.par5, 2)
+        orderHoles: clampSignedInt(config.orderHoles, 0),
+        par3: clampSignedStep(config.par3, 0),
+        par4: clampSignedStep(config.par4, 0),
+        par5: clampSignedStep(config.par5, 0)
       };
     }
 
@@ -2128,6 +2128,10 @@
       }
 
       updateNames(true);
+      pairKeys.forEach(key => {
+        const [a,b] = key.split('_').map(Number);
+        setPairState(a,b,true,{ mode:'order', orderHoles:0, par3:0, par4:0, par5:0 });
+      });
       applyModeStates();
       renderVegasRankInputs();
       renderScoreboard();
