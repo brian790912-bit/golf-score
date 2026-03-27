@@ -548,7 +548,7 @@
     }
     .export-preview-overlay.show { display: flex; }
     .export-preview-sheet {
-      width: min(720px, 100%); max-height: 92vh; background: #fff; border-radius: 18px; overflow: hidden;
+      width: min(96vw, 1400px); max-height: 92vh; background: #fff; border-radius: 18px; overflow: hidden;
       box-shadow: 0 24px 48px rgba(0,0,0,.24);
     }
     .export-preview-head {
@@ -558,8 +558,22 @@
     .export-preview-close {
       border: none; background: #eef5ec; color: var(--primary-dark); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 900;
     }
-    .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
-    .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
+    .export-preview-body {
+      padding: 14px;
+      overflow: auto;
+      max-height: calc(92vh - 68px);
+      background: #f4f8f2;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+    }
+    .export-preview-body img {
+      width: auto;
+      max-width: none;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
 
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
@@ -728,8 +742,11 @@
   <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
-        <span>長按圖片即可儲存</span>
-        <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
+        <span>可直接下載 PNG 圖片</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button type="button" class="action-btn secondary" style="padding:8px 14px;font-size:.95rem;" onclick="downloadExportPreview()">下載圖片</button>
+          <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
+        </div>
       </div>
       <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
     </div>
@@ -2047,7 +2064,7 @@
     }
 
 
-    function resetFormValuesToNewGame(preserveExportPreview=false){
+    function resetFormValuesToNewGame(){
       ['courseName'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
@@ -2107,11 +2124,11 @@
         const el = document.getElementById(id);
         if (el) el.innerHTML = '';
       });
-      if (!preserveExportPreview) closeExportPreview();
+      closeExportPreview();
     }
 
-    function clearCurrentGameState(preserveTab=false, preserveExportPreview=false){
-      resetFormValuesToNewGame(preserveExportPreview);
+    function clearCurrentGameState(preserveTab=false){
+      resetFormValuesToNewGame();
       try {
         localStorage.removeItem(APP_STATE_KEY);
       } catch (err) {
@@ -2131,6 +2148,8 @@
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
+      exportPreviewDataUrl = '';
+      exportPreviewFilename = 'golf_result.png';
     }
 
     function gatherExportSummaryRows(){
@@ -2156,34 +2175,69 @@
     function buildScorecardExportData(){
       const activePlayers = getActivePlayers();
       const names = activePlayers.map(nameOf);
-      const front = Array.from({length:9}, (_,i) => i + 1);
-      const back = Array.from({length:9}, (_,i) => i + 10);
-      const section = (holes, sectionLabel) => {
-        const rows = [];
-        rows.push([{ text: sectionLabel, kind:'header-label' }, ...holes.map(String), '小計']);
-        rows.push([{ text:'PAR', kind:'info-label' }, ...holes.map(h => ({ text: String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), kind:'info' })), { text: String(holes.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0)), kind:'info' }]);
-        rows.push([{ text:'HDCP', kind:'info-label' }, ...holes.map(h => ({ text: String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || 0), kind:'info' })), { text:'-', kind:'info' }]);
-        activePlayers.forEach((p, idx) => {
-          const vals = holes.map(h => {
-            const raw = document.getElementById(`cell_${p}_${h}`)?.value || '';
-            const par = parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
-            return {
-              text: raw === '' ? '' : String(raw),
-              kind: 'score',
-              playerIndex: idx,
-              markType: getScoreMarkType(raw, par)
-            };
-          });
-          const subtotal = holes.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0);
-          rows.push([{ text:names[idx], kind:'player-label', playerIndex: idx }, ...vals, { text: String(subtotal || ''), kind:'player-total', playerIndex: idx }]);
-        });
-        return rows;
-      };
-      const totals = [[{ text:'姓名', kind:'header-label' }, { text:'總計', kind:'header-label' }]];
+      const holes = Array.from({length:18}, (_,i) => i + 1);
+      const front = holes.slice(0, 9);
+      const back = holes.slice(9);
+      const frontPar = front.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0);
+      const backPar = back.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0);
+      const rows = [];
+      rows.push([
+        { text:'姓名', kind:'header-label' },
+        ...front.map(String),
+        'OUT',
+        ...back.map(String),
+        'IN',
+        'TOTAL'
+      ]);
+      rows.push([
+        { text:'PAR', kind:'info-label' },
+        ...front.map(h => ({ text: String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), kind:'info' })),
+        { text: String(frontPar), kind:'info' },
+        ...back.map(h => ({ text: String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), kind:'info' })),
+        { text: String(backPar), kind:'info' },
+        { text: String(frontPar + backPar), kind:'info' }
+      ]);
+      rows.push([
+        { text:'HDCP', kind:'info-label' },
+        ...front.map(h => ({ text: String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || 0), kind:'info' })),
+        { text:'-', kind:'info' },
+        ...back.map(h => ({ text: String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || 0), kind:'info' })),
+        { text:'-', kind:'info' },
+        { text:'-', kind:'info' }
+      ]);
       activePlayers.forEach((p, idx) => {
-        totals.push([{ text:names[idx], kind:'player-label', playerIndex: idx }, { text: String(Array.from({length:18}, (_,i)=>i+1).reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0)), kind:'player-total', playerIndex: idx }]);
+        const frontVals = front.map(h => {
+          const raw = document.getElementById(`cell_${p}_${h}`)?.value || '';
+          const par = parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
+          return {
+            text: raw === '' ? '' : String(raw),
+            kind: 'score',
+            playerIndex: idx,
+            markType: getScoreMarkType(raw, par)
+          };
+        });
+        const backVals = back.map(h => {
+          const raw = document.getElementById(`cell_${p}_${h}`)?.value || '';
+          const par = parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
+          return {
+            text: raw === '' ? '' : String(raw),
+            kind: 'score',
+            playerIndex: idx,
+            markType: getScoreMarkType(raw, par)
+          };
+        });
+        const outTotal = front.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0);
+        const inTotal = back.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0);
+        rows.push([
+          { text:names[idx], kind:'player-label', playerIndex: idx },
+          ...frontVals,
+          { text: String(outTotal || ''), kind:'player-total', playerIndex: idx },
+          ...backVals,
+          { text: String(inTotal || ''), kind:'player-total', playerIndex: idx },
+          { text: String((outTotal + inTotal) || ''), kind:'player-total', playerIndex: idx }
+        ]);
       });
-      return { front: section(front, '前9'), back: section(back, '後9'), totals };
+      return rows;
     }
 
     function drawRoundedRect(ctx, x, y, w, h, r){
@@ -2288,6 +2342,38 @@
       return cy;
     }
 
+
+    let exportPreviewDataUrl = '';
+    let exportPreviewFilename = 'golf_result.png';
+
+    function sanitizeFilenamePart(value){
+      return String(value || '')
+        .replace(/[\\/:*?"<>|]/g, '_')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getExportPreviewFilename(includeResult, includeScorecard, stampDate, courseName){
+      const safeCourse = sanitizeFilenamePart(courseName) || 'golf_result';
+      let suffix = '結果';
+      if (includeResult && includeScorecard) suffix = '結果+成績卡';
+      else if (!includeResult && includeScorecard) suffix = '成績卡';
+      return `${safeCourse}_${stampDate}_${suffix}.png`;
+    }
+
+    function downloadExportPreview(){
+      if (!exportPreviewDataUrl) {
+        alert('目前沒有可下載的圖片。');
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = exportPreviewDataUrl;
+      a.download = exportPreviewFilename || 'golf_result.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
     function exportResultPreview(){
       try {
         const includeResult = !!document.getElementById('exportIncludeResult')?.checked;
@@ -2309,11 +2395,14 @@
 
         const course = (document.getElementById('courseName')?.value || '').trim();
         const stamp = new Date();
+        const stampDate = `${stamp.getFullYear()}-${String(stamp.getMonth()+1).padStart(2,'0')}-${String(stamp.getDate()).padStart(2,'0')}`;
         const stampText = `${stamp.getFullYear()}/${String(stamp.getMonth()+1).padStart(2,'0')}/${String(stamp.getDate()).padStart(2,'0')} ${String(stamp.getHours()).padStart(2,'0')}:${String(stamp.getMinutes()).padStart(2,'0')}`;
 
         const pad = 28;
-        const width = 1180;
-        const scorecardTargetWidth = 130 + (78 * 9) + 88;
+        const scoreWidths = [130].concat(Array(9).fill(66)).concat([84]).concat(Array(9).fill(66)).concat([84, 98]);
+        const scorecardTargetWidth = scoreWidths.reduce((a,b) => a + b, 0);
+        const canvasContentWidth = scorecardTargetWidth;
+        const width = Math.max(1180, canvasContentWidth + pad * 2);
         let cursorY = 172;
         const blocks = [];
 
@@ -2322,9 +2411,13 @@
           const summaryBaseWidths = [220, 130, 130, 130, 150, 170].slice(0, colCount);
           while (summaryBaseWidths.length < colCount) summaryBaseWidths.push(130);
           const summaryBaseTotal = summaryBaseWidths.reduce((a,b) => a + b, 0);
-          const summaryWidths = summaryBaseWidths.map((w, idx) => idx === summaryBaseWidths.length - 1
-            ? scorecardTargetWidth - summaryBaseWidths.slice(0, -1).map(x => Math.round(x * scorecardTargetWidth / summaryBaseTotal)).reduce((a,b) => a + b, 0)
-            : Math.round(w * scorecardTargetWidth / summaryBaseTotal));
+          let allocated = 0;
+          const summaryWidths = summaryBaseWidths.map((w, idx) => {
+            if (idx === summaryBaseWidths.length - 1) return canvasContentWidth - allocated;
+            const scaled = Math.round(w * canvasContentWidth / summaryBaseTotal);
+            allocated += scaled;
+            return scaled;
+          });
           const rowHeight = 58;
           const info = measureTable(summaryRows, summaryWidths, rowHeight);
           blocks.push({ type:'table', title:'總結算', rows:summaryRows, widths:summaryWidths, rowHeight, headerRows:1, height: info.height + 56 });
@@ -2333,15 +2426,10 @@
 
         if (includeScorecard) {
           const data = buildScorecardExportData();
-          const scoreWidths = [130].concat(Array(9).fill(78)).concat([88]);
-          const totalWidths = [scorecardTargetWidth * 0.6, scorecardTargetWidth * 0.4].map(Math.round);
-          totalWidths[1] = scorecardTargetWidth - totalWidths[0];
           const rowHeight = 52;
-          const frontInfo = measureTable(data.front, scoreWidths, rowHeight);
-          const backInfo = measureTable(data.back, scoreWidths, rowHeight);
-          const totalInfo = measureTable(data.totals, totalWidths, rowHeight);
-          blocks.push({ type:'scorecard', title:'成績卡', data, scoreWidths, totalWidths, rowHeight, height: frontInfo.height + backInfo.height + totalInfo.height + 168 });
-          cursorY += frontInfo.height + backInfo.height + totalInfo.height + 188;
+          const info = measureTable(data, scoreWidths, rowHeight);
+          blocks.push({ type:'scorecard', title:'成績卡', data, scoreWidths, rowHeight, height: info.height + 56 });
+          cursorY += info.height + 76;
         }
 
         const height = Math.max(320, cursorY + 40);
@@ -2377,22 +2465,21 @@
             y += block.height;
           } else {
             const x = pad;
-            drawTable(ctx, block.data.front, x, y, block.scoreWidths, block.rowHeight, 1);
-            y += block.data.front.length * block.rowHeight + 22;
-            drawTable(ctx, block.data.back, x, y, block.scoreWidths, block.rowHeight, 1);
-            y += block.data.back.length * block.rowHeight + 22;
-            drawTable(ctx, block.data.totals, x, y, block.totalWidths, block.rowHeight, 1);
-            y += block.data.totals.length * block.rowHeight + 14;
+            drawTable(ctx, block.data, x, y, block.scoreWidths, block.rowHeight, 1);
+            y += block.data.length * block.rowHeight + 14;
           }
         });
 
         const img = document.getElementById('exportPreviewImage');
-        img.src = canvas.toDataURL('image/png');
+        exportPreviewDataUrl = canvas.toDataURL('image/png');
+        exportPreviewFilename = getExportPreviewFilename(includeResult, includeScorecard, stampDate, course);
+        img.src = exportPreviewDataUrl;
+        img.dataset.filename = exportPreviewFilename;
         document.getElementById('exportPreviewOverlay').classList.add('show');
         scheduleAutoSave();
         setTimeout(() => {
           const shouldClear = window.confirm('圖片已輸出，是否清除本場資料？');
-          if (shouldClear) clearCurrentGameState(true, true);
+          if (shouldClear) clearCurrentGameState(true);
         }, 60);
       } catch (err) {
         console.error(err);
