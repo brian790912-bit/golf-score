@@ -40,6 +40,7 @@
     input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .tab-nav {
       display: flex;
+      align-items: stretch;
       background: rgba(255,255,255,.96);
       position: sticky;
       top: 0;
@@ -47,6 +48,14 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(47,107,63,.08);
       box-shadow: 0 4px 18px rgba(18,45,26,.08);
+    }
+    .tab-btn-group {
+      flex: 1;
+      display: flex;
+      min-width: 0;
+    }
+    .mobile-version-badge {
+      display: none;
     }
     .tab-btn {
       flex: 1;
@@ -636,8 +645,10 @@
     @media (max-width: 860px) {
       .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid, .section-grid-3, .section-grid-2, .inline-field { grid-template-columns: 1fr; }
       .export-option-grid { grid-template-columns: 1fr; }
-      .top-floating-bar { top: 8px; left: 8px; right: 8px; }
-      .floating-btn, .top-floating-bar .version-badge { font-size: .76rem; }
+      .top-floating-bar { display: none; }
+      .tab-nav { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; }
+      .tab-btn-group { min-width: 0; }
+      .mobile-version-badge { display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; font-size: .74rem; font-weight: 900; color: var(--primary-dark); white-space: nowrap; background: rgba(47,107,63,.06); border-left: 1px solid rgba(47,107,63,.08); }
       .pair-row { grid-template-columns: 42px 1fr; }
       .pair-special-grid { grid-template-columns: 1fr; }
       .tab-btn { font-size: .95rem; padding: 15px 6px; }
@@ -677,9 +688,12 @@
 <body>
   <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.5</div></div>
   <div class="tab-nav">
-    <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
-    <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
-    <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
+    <div class="tab-btn-group">
+      <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
+      <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
+      <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
+    </div>
+    <div class="mobile-version-badge">Beta 1.5</div>
   </div>
 
   <div id="setting" class="content active">
