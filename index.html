@@ -548,7 +548,7 @@
     }
     .export-preview-overlay.show { display: flex; }
     .export-preview-sheet {
-      width: min(96vw, 1400px); max-height: 92vh; background: #fff; border-radius: 18px; overflow: hidden;
+      width: min(720px, 100%); max-height: 92vh; background: #fff; border-radius: 18px; overflow: hidden;
       box-shadow: 0 24px 48px rgba(0,0,0,.24);
     }
     .export-preview-head {
@@ -558,22 +558,8 @@
     .export-preview-close {
       border: none; background: #eef5ec; color: var(--primary-dark); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 900;
     }
-    .export-preview-body {
-      padding: 14px;
-      overflow: auto;
-      max-height: calc(92vh - 68px);
-      background: #f4f8f2;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
-    }
-    .export-preview-body img {
-      width: auto;
-      max-width: none;
-      height: auto;
-      display: block;
-      border-radius: 12px;
-    }
+    .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
+    .export-preview-body img { width: auto; max-width: none; height: auto; display: block; border-radius: 12px; }
 
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
@@ -655,10 +641,10 @@
         <div><label><small>5 Par Eagle 倍率</small></label><input type="number" id="mE5" value="3"></div>
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
-      <div class="action-row" style="margin:0 0 18px;">
-        <button type="button" class="action-btn danger" onclick="startNewGame()">新球局</button>
-      </div>
       <div id="player-name-area"></div>
+      <div class="action-row" style="margin:12px 0 18px;">
+        <button class="action-btn danger" type="button" onclick="startNewGame()">新球局</button>
+      </div>
       <div class="mode-stack">
         <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
           <input type="checkbox" id="modeVegas" checked>
@@ -742,9 +728,9 @@
   <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
-        <span>可直接下載 PNG 圖片</span>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <button type="button" class="action-btn secondary" style="padding:8px 14px;font-size:.95rem;" onclick="downloadExportPreview()">下載圖片</button>
+        <span>長按圖片即可儲存</span>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button type="button" class="action-btn secondary" style="padding:10px 14px; min-height:auto; box-shadow:none;" onclick="downloadExportImage()">下載圖片</button>
           <button type="button" class="export-preview-close" onclick="closeExportPreview()">✕</button>
         </div>
       </div>
@@ -892,12 +878,12 @@
         const aOn = activePlayers.includes(a) && !!document.getElementById(`p${a}_m`)?.checked;
         const bOn = activePlayers.includes(b) && !!document.getElementById(`p${b}_m`)?.checked;
         const shouldEnable = isMatchEnabled() && aOn && bOn;
+        const currentChecked = !!document.getElementById(`pair-check-${a}-${b}`)?.checked;
+        const currentConfig = readPairConfig(a,b);
         if (shouldEnable) {
-          const current = document.getElementById(`pair-strokes-${a}-${b}`)?.value;
-          const value = current === '' || current === undefined ? 0 : current;
-          setPairState(a,b,true,value);
+          setPairState(a,b,currentChecked,currentConfig);
         } else {
-          setPairState(a,b,false,'');
+          setPairState(a,b,false,currentConfig);
         }
       });
       refreshAllPairDisabledState();
@@ -1061,15 +1047,15 @@
                       <div class="pair-par-wrap" id="pair-par-wrap-${i}-${j}">
                         <div class="pair-mini">
                           <label><small>Par 3</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par3-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input" type="number" id="pair-par3-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                         <div class="pair-mini">
                           <label><small>Par 4</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par4-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input" type="number" id="pair-par4-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                         <div class="pair-mini">
                           <label><small>Par 5</small></label>
-                          <input class="pair-input pair-select" type="number" id="pair-par5-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
+                          <input class="pair-input" type="number" id="pair-par5-${i}-${j}" min="-2" max="2" step="0.5" value="0" oninput="handlePairConfigChange(${i},${j})">
                         </div>
                       </div>
                     </div>
@@ -1169,6 +1155,17 @@
       });
     }
 
+    function invertPairConfig(config={}){
+      const normalized = normalizePairConfig(config);
+      return {
+        mode: normalized.mode,
+        orderHoles: -normalized.orderHoles,
+        par3: -normalized.par3,
+        par4: -normalized.par4,
+        par5: -normalized.par5
+      };
+    }
+
     function setPairState(i,j,checked,config={},fromSync=false){
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
@@ -1183,7 +1180,7 @@
       const normalized = normalizePairConfig(config);
       cb.checked = checked && pairEnabled;
       modeSelect.value = normalized.mode;
-      orderInput.value = normalized.orderHoles;
+      orderInput.value = String(normalized.orderHoles);
       par3.value = String(normalized.par3);
       par4.value = String(normalized.par4);
       par5.value = String(normalized.par5);
@@ -1197,35 +1194,21 @@
 
     function normalizePairConfig(config={}){
       const mode = config.mode === 'par' ? 'par' : 'order';
-      const clampSignedInt = (v, fallback) => {
-        let n = parseInt(v, 10);
-        if (Number.isNaN(n)) return fallback;
-        if (n > 18) n = 18;
-        if (n < -18) n = -18;
-        return n;
-      };
-      const clampSignedStep = (v, fallback) => {
+      let orderHoles = parseInt(config.orderHoles, 10);
+      if (Number.isNaN(orderHoles)) orderHoles = 0;
+      if (orderHoles < -18) orderHoles = -18;
+      if (orderHoles > 18) orderHoles = 18;
+      const clampStep = (v, fallback) => {
         const n = parseFloat(v);
         if (Number.isNaN(n)) return fallback;
         return Math.max(-2, Math.min(2, Math.round(n * 2) / 2));
       };
       return {
         mode,
-        orderHoles: clampSignedInt(config.orderHoles, 0),
-        par3: clampSignedStep(config.par3, 0),
-        par4: clampSignedStep(config.par4, 0),
-        par5: clampSignedStep(config.par5, 0)
-      };
-    }
-
-    function invertPairConfig(config={}){
-      const normalized = normalizePairConfig(config);
-      return {
-        mode: normalized.mode,
-        orderHoles: -normalized.orderHoles,
-        par3: -normalized.par3,
-        par4: -normalized.par4,
-        par5: -normalized.par5
+        orderHoles,
+        par3: clampStep(config.par3, 0),
+        par4: clampStep(config.par4, 0),
+        par5: clampStep(config.par5, 0)
       };
     }
 
@@ -1621,12 +1604,12 @@
         if (par === 5) return parseFloat(config.par5) || 0;
         return 0;
       }
-      const holes = parseInt(config.orderHoles, 10) || 0;
+      const holes = parseFloat(config.orderHoles) || 0;
       if (holes === 0) return 0;
-      const direction = holes > 0 ? 1 : -1;
+      const sign = holes < 0 ? -1 : 1;
       const absHoles = Math.abs(holes);
-      if (absHoles >= 18) return direction;
-      if (hd > 0 && hd <= absHoles) return direction;
+      if (absHoles >= 18) return 1 * sign;
+      if (hd > 0 && hd <= absHoles) return 1 * sign;
       return 0;
     }
 
@@ -1635,7 +1618,7 @@
       const gross = getPlayerScore(player, hole);
       if (!gross) return 0;
       const allowance = getStrokeAllowance(meta.config, hole);
-      return gross + allowance;
+      return gross - allowance;
     }
 
     function buildMatchPairs(){
@@ -2080,97 +2063,110 @@
       });
     }
 
-
-    function resetFormValuesToNewGame(){
-      ['courseName'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-      const defaults = {
-        startHole: '1',
-        pointVal: '100',
-        mB: '2',
-        mE4: '5',
-        mE5: '3',
-        mHIO: '10'
-      };
-      Object.entries(defaults).forEach(([id, value]) => {
-        const el = document.getElementById(id);
-        if (el) el.value = value;
-      });
-
-      playerIDs.forEach(i => {
-        const nameEl = document.getElementById(`name${i}`);
-        if (nameEl) nameEl.value = '';
-        const vr = document.getElementById(`vegasRank${i}`);
-        if (vr) vr.value = '';
-      });
-
-      ['modeVegas','modeMatch','modePar'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.checked = true;
-      });
-      const extMode = document.getElementById('extMode');
-      if (extMode) extMode.checked = false;
-
-      if (document.getElementById('exportIncludeResult')) document.getElementById('exportIncludeResult').checked = true;
-      if (document.getElementById('exportIncludeScorecard')) document.getElementById('exportIncludeScorecard').checked = true;
-
-      for (let h=1; h<=18; h++) {
-        const parEl = document.getElementById(`cell_P_${h}`);
-        const hdcpEl = document.getElementById(`cell_Hd_${h}`);
-        if (parEl) parEl.value = '';
-        if (hdcpEl) hdcpEl.value = '';
-        playerIDs.forEach(p => {
-          const cell = document.getElementById(`cell_${p}_${h}`);
-          if (cell) cell.value = '';
-        });
-      }
-
-      updateNames(true);
-      pairKeys.forEach(key => {
-        const [a,b] = key.split('_').map(Number);
-        setPairState(a,b,true,{ mode:'order', orderHoles:0, par3:0, par4:0, par5:0 });
-      });
-      applyModeStates();
-      renderVegasRankInputs();
-      renderScoreboard();
-      refreshSavedCourseSelect();
-      showWarning('', 'global');
-      showWarning('', 'scoring');
-      showDanger('', 'scoring');
-      const finalMoney = document.getElementById('final-money');
-      if (finalMoney) finalMoney.innerHTML = '';
-      ['par-output','vegas-output','match-output','match-detail-output','vegas-hole-output'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-      });
-      closeExportPreview();
-    }
-
-    function clearCurrentGameState(preserveTab=false){
-      resetFormValuesToNewGame();
+    function startNewGame(){
+      if (!confirm('是否開始新球局？目前資料將清除。')) return;
+      isRestoringState = true;
       try {
         localStorage.removeItem(APP_STATE_KEY);
-      } catch (err) {
-        console.error('clearCurrentGameState failed', err);
+        ['courseName','savedCourseSelect'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (id === 'savedCourseSelect') el.selectedIndex = 0;
+          else el.value = '';
+        });
+        const defaults = { startHole:'1', pointVal:'100', mB:'2', mE4:'5', mE5:'3', mHIO:'10' };
+        Object.entries(defaults).forEach(([id,val]) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val;
+        });
+        playerIDs.forEach(i => {
+          const nameEl = document.getElementById(`name${i}`);
+          if (nameEl) nameEl.value = '';
+        });
+        updateNames(true);
+        const modeDefaults = { modeVegas:true, extMode:false, modeMatch:true, modePar:true };
+        Object.entries(modeDefaults).forEach(([id,val]) => {
+          const el = document.getElementById(id);
+          if (el) el.checked = val;
+        });
+        applyModeStates();
+        playerIDs.forEach(i => {
+          const mEl = document.getElementById(`p${i}_m`);
+          const pEl = document.getElementById(`p${i}_p`);
+          if (mEl) mEl.checked = true;
+          if (pEl) pEl.checked = true;
+          setPlayerSmallBoxState(i, 'm');
+          setPlayerSmallBoxState(i, 'p');
+        });
+        pairKeys.forEach(key => {
+          const [a,b] = key.split('_').map(Number);
+          setPairState(a,b,true,{ mode:'order', orderHoles:0, par3:0, par4:0, par5:0 });
+        });
+        for (let h=1; h<=18; h++) {
+          const parEl = document.getElementById(`cell_P_${h}`);
+          const hdEl = document.getElementById(`cell_Hd_${h}`);
+          if (parEl) parEl.value = '';
+          if (hdEl) hdEl.value = '';
+          playerIDs.forEach(p => {
+            const scoreEl = document.getElementById(`cell_${p}_${h}`);
+            if (scoreEl) scoreEl.value = '';
+            drawMark(p,h,false);
+          });
+        }
+        updateParTotals();
+        playerIDs.forEach(i => {
+          const vr = document.getElementById(`vegasRank${i}`);
+          if (vr) vr.value = '';
+        });
+        renderVegasRankInputs();
+        const expR = document.getElementById('exportIncludeResult');
+        const expS = document.getElementById('exportIncludeScorecard');
+        if (expR) expR.checked = true;
+        if (expS) expS.checked = true;
+        openTab('setting');
+      } finally {
+        isRestoringState = false;
       }
-      if (!preserveTab) openTab('setting');
       saveAppState();
+      renderAllResults();
     }
 
-    function startNewGame(){
-      const ok = window.confirm('是否開始新球局？目前本場資料將清除。');
-      if (!ok) return;
-      clearCurrentGameState();
-    }
+    let lastExportDataUrl = '';
+    let lastExportFilename = '';
 
     function closeExportPreview(event){
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
-      exportPreviewDataUrl = '';
-      exportPreviewFilename = 'golf_result.png';
+    }
+
+    function sanitizeFilenamePart(value, fallback='未命名'){
+      const cleaned = String(value || '')
+        .replace(/[\/:*?"<>|]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return cleaned || fallback;
+    }
+
+    function getExportFilename(includeResult, includeScorecard){
+      const coursePart = sanitizeFilenamePart(document.getElementById('courseName')?.value || '', 'golf_result');
+      const now = new Date();
+      const datePart = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      let itemPart = '圖片';
+      if (includeResult && includeScorecard) itemPart = '結果+成績卡';
+      else if (includeResult) itemPart = '結果';
+      else if (includeScorecard) itemPart = '成績卡';
+      return `${coursePart}_${datePart}_${itemPart}.png`;
+    }
+
+    function downloadExportImage(){
+      if (!lastExportDataUrl) return;
+      const link = document.createElement('a');
+      link.href = lastExportDataUrl;
+      link.download = lastExportFilename || 'golf_result.png';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     }
 
     function gatherExportSummaryRows(){
@@ -2181,86 +2177,104 @@
       ).filter(r => r.length);
     }
 
+    function buildScorecardExportData(){
+      const activePlayers = getActivePlayers();
+      const holes = Array.from({length:18}, (_,i) => i + 1);
+      const data = [];
+
+      const sumByHoles = (getter) => holes.reduce((sum, hole) => sum + getter(hole), 0);
+      const frontHoles = holes.slice(0, 9);
+      const backHoles = holes.slice(9);
+
+      const makeRow = (label, values, summaryMode='sum') => {
+        let frontTotal = '';
+        let backTotal = '';
+        let total = '';
+        if (summaryMode === 'sum') {
+          frontTotal = String(frontHoles.reduce((sum, hole, idx) => sum + (parseFloat(values[idx]) || 0), 0) || 0);
+          backTotal = String(backHoles.reduce((sum, hole, idx) => sum + (parseFloat(values[idx + 9]) || 0), 0) || 0);
+          total = String((parseFloat(frontTotal) || 0) + (parseFloat(backTotal) || 0));
+        }
+        return [label, ...values.slice(0,9), frontTotal, ...values.slice(9), backTotal, total];
+      };
+
+      data.push(['姓名','1','2','3','4','5','6','7','8','9','OUT','10','11','12','13','14','15','16','17','18','IN','TOTAL']);
+      data.push(makeRow('Hole', holes.map(h => String(h)), 'none'));
+      data.push(makeRow('PAR', holes.map(h => {
+        const v = document.getElementById(`cell_P_${h}`)?.value || '';
+        return v === '' ? '' : String(parseFloat(v) || 0);
+      }), 'none'));
+      data.push(makeRow('HDCP', holes.map(h => {
+        const v = document.getElementById(`cell_Hd_${h}`)?.value || '';
+        return v === '' ? '' : String(parseInt(v) || 0);
+      }), 'none'));
+
+      activePlayers.forEach((playerId, idx) => {
+        const values = holes.map(h => {
+          const v = document.getElementById(`cell_${playerId}_${h}`)?.value || '';
+          return v === '' ? '' : String(v);
+        });
+        const frontTotal = frontHoles.reduce((sum, hole) => sum + (parseFloat(document.getElementById(`cell_${playerId}_${hole}`)?.value) || 0), 0);
+        const backTotal = backHoles.reduce((sum, hole) => sum + (parseFloat(document.getElementById(`cell_${playerId}_${hole}`)?.value) || 0), 0);
+        const total = frontTotal + backTotal;
+        data.push([
+          nameOf(playerId),
+          ...values.slice(0,9),
+          String(frontTotal || 0),
+          ...values.slice(9),
+          String(backTotal || 0),
+          String(total || 0)
+        ]);
+      });
+
+      return { rows: data, activePlayers };
+    }
+
     function getScoreMarkType(score, par){
-      const s = parseFloat(score) || 0;
-      const p = parseFloat(par) || 0;
-      if (s <= 0 || p <= 0) return '';
-      const diff = s - p;
+      const scoreNum = parseFloat(score);
+      const parNum = parseFloat(par);
+      if (!scoreNum || !parNum) return '';
+      const diff = scoreNum - parNum;
       if (diff === -1) return 'circle';
-      if (diff <= -2 || s === 1) return 'double-circle';
+      if (diff <= -2 || scoreNum === 1) return 'double-circle';
       if (diff === 1) return 'square';
       if (diff >= 2) return 'double-square';
       return '';
     }
 
-    function buildScorecardExportData(){
-      const activePlayers = getActivePlayers();
-      const names = activePlayers.map(nameOf);
-      const holes = Array.from({length:18}, (_,i) => i + 1);
-      const front = holes.slice(0, 9);
-      const back = holes.slice(9);
-      const frontPar = front.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0);
-      const backPar = back.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0);
-      const rows = [];
-      rows.push([
-        { text:'姓名', kind:'header-label' },
-        ...front.map(String),
-        'OUT',
-        ...back.map(String),
-        'IN',
-        'TOTAL'
-      ]);
-      rows.push([
-        { text:'PAR', kind:'info-label' },
-        ...front.map(h => ({ text: String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), kind:'info' })),
-        { text: String(frontPar), kind:'info' },
-        ...back.map(h => ({ text: String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), kind:'info' })),
-        { text: String(backPar), kind:'info' },
-        { text: String(frontPar + backPar), kind:'info' }
-      ]);
-      rows.push([
-        { text:'HDCP', kind:'info-label' },
-        ...front.map(h => ({ text: String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || 0), kind:'info' })),
-        { text:'-', kind:'info' },
-        ...back.map(h => ({ text: String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || 0), kind:'info' })),
-        { text:'-', kind:'info' },
-        { text:'-', kind:'info' }
-      ]);
-      activePlayers.forEach((p, idx) => {
-        const frontVals = front.map(h => {
-          const raw = document.getElementById(`cell_${p}_${h}`)?.value || '';
-          const par = parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
-          return {
-            text: raw === '' ? '' : String(raw),
-            kind: 'score',
-            playerIndex: idx,
-            markType: getScoreMarkType(raw, par)
-          };
-        });
-        const backVals = back.map(h => {
-          const raw = document.getElementById(`cell_${p}_${h}`)?.value || '';
-          const par = parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
-          return {
-            text: raw === '' ? '' : String(raw),
-            kind: 'score',
-            playerIndex: idx,
-            markType: getScoreMarkType(raw, par)
-          };
-        });
-        const outTotal = front.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0);
-        const inTotal = back.reduce((sum,h) => sum + (parseFloat(document.getElementById(`cell_${p}_${h}`)?.value) || 0), 0);
-        rows.push([
-          { text:names[idx], kind:'player-label', playerIndex: idx },
-          ...frontVals,
-          { text: String(outTotal || ''), kind:'player-total', playerIndex: idx },
-          ...backVals,
-          { text: String(inTotal || ''), kind:'player-total', playerIndex: idx },
-          { text: String((outTotal + inTotal) || ''), kind:'player-total', playerIndex: idx }
-        ]);
-      });
-      return rows;
+    function drawScoreMark(ctx, markType, centerX, centerY){
+      if (!markType) return;
+      const isCircle = markType.includes('circle');
+      const isDouble = markType.includes('double');
+      const color = isCircle ? '#c33232' : '#2f2f2f';
+      const size = isDouble ? 22 : 20;
+      ctx.save();
+      ctx.strokeStyle = color;
+      if (isDouble) {
+        ctx.lineWidth = 2;
+        if (isCircle) {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, size, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, size - 4, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          ctx.strokeRect(centerX - size, centerY - size, size * 2, size * 2);
+          ctx.strokeRect(centerX - size + 4, centerY - size + 4, (size - 4) * 2, (size - 4) * 2);
+        }
+      } else {
+        ctx.lineWidth = 2;
+        if (isCircle) {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, size, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          ctx.strokeRect(centerX - size, centerY - size, size * 2, size * 2);
+        }
+      }
+      ctx.restore();
     }
-
     function drawRoundedRect(ctx, x, y, w, h, r){
       ctx.beginPath();
       ctx.moveTo(x + r, y);
@@ -2275,124 +2289,59 @@
       return { width: widths.reduce((a,b)=>a+b,0), height: tableRows.length * rowHeight };
     }
 
-    function drawExportScoreMark(ctx, cx, cy, markType){
-      if (!markType) return;
-      ctx.save();
-      ctx.strokeStyle = markType.includes('circle') ? '#c33232' : '#2f2f2f';
-      ctx.lineWidth = markType.startsWith('double') ? 4 : 2.5;
-      const radius = 16;
-      const size = 32;
-      if (markType.endsWith('circle')) {
-        if (markType.startsWith('double')) {
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius - 5, 0, Math.PI * 2);
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      } else {
-        const half = size / 2;
-        if (markType.startsWith('double')) {
-          ctx.strokeRect(cx - half, cy - half, size, size);
-          ctx.strokeRect(cx - half + 5, cy - half + 5, size - 10, size - 10);
-        } else {
-          ctx.strokeRect(cx - half, cy - half, size, size);
-        }
-      }
-      ctx.restore();
-    }
-
-    function drawTable(ctx, tableRows, x, y, widths, rowHeight, headerRows=1, options={}){
-      const borderColor = options.borderColor || '#d6e2d3';
-      const palette = {
-        headerBg: '#2f6b3f',
-        headerText: '#ffffff',
-        infoBg: '#dfe8dc',
-        infoLabelBg: '#d3ddd0',
-        playerEvenBg: '#ffffff',
-        playerOddBg: '#f4f7f3',
-        playerLabelEvenBg: '#f7faf6',
-        playerLabelOddBg: '#ecf2ea',
-        text: '#18311f'
-      };
+    function drawTable(ctx, tableRows, x, y, widths, rowHeight, options={}){
+      const {
+        headerRows = 1,
+        infoRows = 0,
+        playerStartRow = null,
+        playerAlternate = false,
+        includeScoreMarks = false,
+        scorecardParValues = []
+      } = options;
       let cy = y;
       tableRows.forEach((row, rowIndex) => {
         let cx = x;
         row.forEach((cell, colIndex) => {
           const w = widths[colIndex] || widths[widths.length - 1];
-          const cellData = (cell && typeof cell === 'object' && !Array.isArray(cell)) ? cell : { text: cell };
-          const text = cellData.text === undefined || cellData.text === null ? '' : String(cellData.text);
-          let fill = '#ffffff';
-          let textColor = palette.text;
-          let font = '800 18px sans-serif';
-          if (rowIndex < headerRows || cellData.kind === 'header-label') {
-            fill = palette.headerBg;
-            textColor = palette.headerText;
-            font = '900 18px sans-serif';
-          } else if (cellData.kind === 'info' || cellData.kind === 'info-label') {
-            fill = cellData.kind === 'info-label' ? palette.infoLabelBg : palette.infoBg;
-          } else if (cellData.kind && cellData.kind.startsWith('player')) {
-            const odd = (cellData.playerIndex || 0) % 2 === 1;
-            fill = cellData.kind === 'player-label'
-              ? (odd ? palette.playerLabelOddBg : palette.playerLabelEvenBg)
-              : (odd ? palette.playerOddBg : palette.playerEvenBg);
-          } else if (cellData.kind === 'score') {
-            const odd = (cellData.playerIndex || 0) % 2 === 1;
-            fill = odd ? palette.playerOddBg : palette.playerEvenBg;
+          let bg = '#ffffff';
+          let fg = '#18311f';
+          if (rowIndex < headerRows) {
+            bg = '#2f6b3f';
+            fg = '#ffffff';
+          } else if (rowIndex < headerRows + infoRows) {
+            bg = '#eef5ec';
+          } else if (playerAlternate && playerStartRow !== null && rowIndex >= playerStartRow) {
+            bg = (rowIndex - playerStartRow) % 2 === 0 ? '#ffffff' : '#f7faf6';
           }
-          ctx.fillStyle = fill;
+          if (colIndex === 0 && rowIndex >= headerRows) {
+            bg = rowIndex < headerRows + infoRows ? '#e5efe3' : '#f0f5ef';
+          }
+          if (rowIndex >= headerRows && [10, 20, 21].includes(colIndex)) {
+            bg = rowIndex < headerRows + infoRows ? '#dfeadb' : '#edf4ea';
+          }
+          ctx.fillStyle = bg;
           ctx.fillRect(cx, cy, w, rowHeight);
-          ctx.strokeStyle = borderColor;
+          ctx.strokeStyle = '#d6e2d3';
           ctx.lineWidth = 1;
           ctx.strokeRect(cx, cy, w, rowHeight);
-          if (cellData.markType) drawExportScoreMark(ctx, cx + w / 2, cy + rowHeight / 2, cellData.markType);
-          ctx.fillStyle = textColor;
-          ctx.font = font;
+          ctx.fillStyle = fg;
+          ctx.font = rowIndex < headerRows ? '900 18px sans-serif' : '800 18px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          const text = cell === undefined || cell === null ? '' : String(cell);
           ctx.fillText(text, cx + w / 2, cy + rowHeight / 2);
+
+          if (includeScoreMarks && rowIndex >= (playerStartRow ?? 999) && colIndex >= 1 && colIndex <= 19 && text !== '') {
+            const holeIndex = colIndex <= 9 ? colIndex : colIndex - 1;
+            const parValue = scorecardParValues[holeIndex - 1];
+            const markType = getScoreMarkType(text, parValue);
+            drawScoreMark(ctx, markType, cx + w / 2, cy + rowHeight / 2);
+          }
           cx += w;
         });
         cy += rowHeight;
       });
       return cy;
-    }
-
-
-    let exportPreviewDataUrl = '';
-    let exportPreviewFilename = 'golf_result.png';
-
-    function sanitizeFilenamePart(value){
-      return String(value || '')
-        .replace(/[\\/:*?"<>|]/g, '_')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function getExportPreviewFilename(includeResult, includeScorecard, stampDate, courseName){
-      const safeCourse = sanitizeFilenamePart(courseName) || 'golf_result';
-      let suffix = '結果';
-      if (includeResult && includeScorecard) suffix = '結果+成績卡';
-      else if (!includeResult && includeScorecard) suffix = '成績卡';
-      return `${safeCourse}_${stampDate}_${suffix}.png`;
-    }
-
-    function downloadExportPreview(){
-      if (!exportPreviewDataUrl) {
-        alert('目前沒有可下載的圖片。');
-        return;
-      }
-      const a = document.createElement('a');
-      a.href = exportPreviewDataUrl;
-      a.download = exportPreviewFilename || 'golf_result.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
     }
 
     function exportResultPreview(){
@@ -2416,44 +2365,46 @@
 
         const course = (document.getElementById('courseName')?.value || '').trim();
         const stamp = new Date();
-        const stampDate = `${stamp.getFullYear()}-${String(stamp.getMonth()+1).padStart(2,'0')}-${String(stamp.getDate()).padStart(2,'0')}`;
         const stampText = `${stamp.getFullYear()}/${String(stamp.getMonth()+1).padStart(2,'0')}/${String(stamp.getDate()).padStart(2,'0')} ${String(stamp.getHours()).padStart(2,'0')}:${String(stamp.getMinutes()).padStart(2,'0')}`;
 
         const pad = 28;
-        const scoreWidths = [130].concat(Array(9).fill(66)).concat([84]).concat(Array(9).fill(66)).concat([84, 98]);
-        const scorecardTargetWidth = scoreWidths.reduce((a,b) => a + b, 0);
-        const canvasContentWidth = scorecardTargetWidth;
-        const width = Math.max(1180, canvasContentWidth + pad * 2);
-        let cursorY = 172;
+        const baseWidth = 1180;
+        let width = baseWidth;
+        const headerBottomY = 152;
+        let cursorY = headerBottomY + 56;
         const blocks = [];
 
         if (includeResult) {
           const colCount = Math.max(...summaryRows.map(r => r.length));
-          const summaryBaseWidths = [220, 130, 130, 130, 150, 170].slice(0, colCount);
-          while (summaryBaseWidths.length < colCount) summaryBaseWidths.push(130);
-          const summaryBaseTotal = summaryBaseWidths.reduce((a,b) => a + b, 0);
-          let allocated = 0;
-          const summaryWidths = summaryBaseWidths.map((w, idx) => {
-            if (idx === summaryBaseWidths.length - 1) return canvasContentWidth - allocated;
-            const scaled = Math.round(w * canvasContentWidth / summaryBaseTotal);
-            allocated += scaled;
-            return scaled;
-          });
+          const summaryWidths = [220, 130, 130, 130, 150, 170].slice(0, colCount);
+          while (summaryWidths.length < colCount) summaryWidths.push(130);
           const rowHeight = 58;
           const info = measureTable(summaryRows, summaryWidths, rowHeight);
-          blocks.push({ type:'table', title:'總結算', rows:summaryRows, widths:summaryWidths, rowHeight, headerRows:1, height: info.height + 56 });
-          cursorY += info.height + 88;
+          width = Math.max(width, info.width + pad * 2);
+          blocks.push({ type:'table', title:'總結算', rows:summaryRows, widths:summaryWidths, rowHeight, options:{ headerRows:1 }, height: info.height + 56 });
+          cursorY += info.height + 76;
         }
 
         if (includeScorecard) {
           const data = buildScorecardExportData();
-          const rowHeight = 52;
-          const info = measureTable(data, scoreWidths, rowHeight);
-          blocks.push({ type:'scorecard', title:'成績卡', data, scoreWidths, rowHeight, height: info.height + 56 });
+          const scoreWidths = [170].concat(Array(9).fill(78)).concat([92]).concat(Array(9).fill(78)).concat([92,108]);
+          const rowHeight = 56;
+          const info = measureTable(data.rows, scoreWidths, rowHeight);
+          width = Math.max(width, info.width + pad * 2);
+          const parValues = Array.from({length:18}, (_,i) => parseFloat(document.getElementById(`cell_P_${i+1}`)?.value) || 0);
+          blocks.push({
+            type:'scorecard',
+            title:'成績卡',
+            rows: data.rows,
+            widths: scoreWidths,
+            rowHeight,
+            options: { headerRows:1, infoRows:3, playerStartRow:4, playerAlternate:true, includeScoreMarks:true, scorecardParValues: parValues },
+            height: info.height + 56
+          });
           cursorY += info.height + 76;
         }
 
-        const height = Math.max(320, cursorY + 40);
+        const height = Math.max(360, cursorY + 40);
         const canvas = document.createElement('canvas');
         const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
         canvas.width = Math.round(width * scale);
@@ -2469,45 +2420,35 @@
 
         ctx.fillStyle = '#1e4d2b';
         ctx.font = '900 34px sans-serif';
+        ctx.textAlign = 'left';
         ctx.fillText('高爾夫總結算', pad + 8, 62);
         ctx.font = '700 20px sans-serif';
         ctx.fillStyle = '#4f6456';
         ctx.fillText(course ? `球場：${course}` : '球場：未填寫', pad + 8, 95);
         ctx.fillText(`輸出時間：${stampText}`, pad + 8, 122);
 
-        let y = 172;
+        let y = headerBottomY + 56;
         blocks.forEach(block => {
           ctx.fillStyle = '#1e4d2b';
           ctx.font = '900 24px sans-serif';
           ctx.textAlign = 'left';
-          ctx.fillText(block.title, pad, y - 18);
-          if (block.type === 'table') {
-            drawTable(ctx, block.rows, pad, y, block.widths, block.rowHeight, block.headerRows);
-            y += block.height;
-          } else {
-            const x = pad;
-            drawTable(ctx, block.data, x, y, block.scoreWidths, block.rowHeight, 1);
-            y += block.data.length * block.rowHeight + 14;
-          }
+          ctx.fillText(block.title, pad, y - 10);
+          drawTable(ctx, block.rows, pad, y + 10, block.widths, block.rowHeight, block.options || {});
+          y += block.height + 10;
         });
 
+        lastExportDataUrl = canvas.toDataURL('image/png');
+        lastExportFilename = getExportFilename(includeResult, includeScorecard);
         const img = document.getElementById('exportPreviewImage');
-        exportPreviewDataUrl = canvas.toDataURL('image/png');
-        exportPreviewFilename = getExportPreviewFilename(includeResult, includeScorecard, stampDate, course);
-        img.src = exportPreviewDataUrl;
-        img.dataset.filename = exportPreviewFilename;
+        img.src = lastExportDataUrl;
+        img.alt = lastExportFilename;
         document.getElementById('exportPreviewOverlay').classList.add('show');
         scheduleAutoSave();
-        setTimeout(() => {
-          const shouldClear = window.confirm('圖片已輸出，是否清除本場資料？');
-          if (shouldClear) clearCurrentGameState(true);
-        }, 60);
       } catch (err) {
         console.error(err);
         alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
       }
     }
-
     function calculateFinal(){
       const validation = validateBeforeResult();
       if (validation.errors.length) {
