@@ -2067,32 +2067,31 @@
     function buildResultExportData(rows, meta){
       const pad = 28;
       const cardPad = 18;
+      const width = 1600;
+      const summaryColWidths = (() => {
+        const widths = [220];
+        const headerRow = rows[0] || [];
+        for (let i = 1; i < headerRow.length; i++) {
+          const header = headerRow[i] || '';
+          if (header === '金額') widths.push(120);
+          else widths.push(96);
+        }
+        return widths;
+      })();
+      const summaryTableW = summaryColWidths.reduce((sum, w) => sum + w, 0);
+      const matrixPlayerCount = meta.activePlayers.length;
+      const matrixColCount = matrixPlayerCount + 2;
+      const matrixCellW = 132;
+      const matrixTableW = matrixColCount * matrixCellW;
+      const contentMaxW = width - pad * 2 - cardPad * 2;
+      const commonSectionW = Math.min(contentMaxW, Math.max(summaryTableW, matrixTableW, 760));
+      const sectionX = pad + (width - pad * 2 - commonSectionW) / 2;
       const rowH = 56;
       const titleH = 118;
       const extraSections = [];
-      if (isMatchEnabled()) extraSections.push({ title:'🏆 比洞矩陣', htmlTarget:'match-output' });
+      if (isMatchEnabled()) extraSections.push({ title:'🏆 Match 比洞矩陣', htmlTarget:'match-output' });
       if (isParEnabled()) extraSections.push({ title:'🎯 抓PAR 矩陣', htmlTarget:'par-output' });
       if (isVegasEnabled()) extraSections.push({ title:'🎲 Vegas 點數', htmlTarget:'vegas-output' });
-
-      const measureCanvas = document.createElement('canvas');
-      const measureCtx = measureCanvas.getContext('2d');
-      const cellTextWidth = (text, font='800 21px sans-serif') => {
-        measureCtx.font = font;
-        return Math.ceil(measureCtx.measureText(String(text || '')).width);
-      };
-
-      const playerColW = Math.max(170, ...rows.map((row, idx) => cellTextWidth(row[0], idx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 42));
-      const statIndexes = [1,2,3,4].filter(idx => rows[0] && rows[0][idx] !== undefined);
-      const statColW = statIndexes.length
-        ? Math.max(95, ...statIndexes.flatMap(idx => rows.map((row, rIdx) => cellTextWidth(row[idx], rIdx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 34)))
-        : 95;
-      const amountIdx = rows[0].length - 1;
-      const amountColW = Math.max(120, ...rows.map((row, idx) => cellTextWidth(row[amountIdx], idx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 42));
-      const colWidths = rows[0].map((_, idx) => idx === 0 ? playerColW : (idx === amountIdx ? amountColW : statColW));
-      const summaryTableW = colWidths.reduce((sum, w) => sum + w, 0);
-      const innerMinW = Math.max(summaryTableW, 1200);
-      const width = innerMinW + cardPad * 2 + pad * 2;
-
       const detailCount = extraSections.reduce((sum, section) => {
         const el = document.getElementById(section.htmlTarget);
         if (!el) return sum;
@@ -2135,9 +2134,9 @@
 
       let drawY = y + titleH;
       rows.forEach((row, rIdx) => {
-        let drawX = x + cardPad;
+        let drawX = sectionX;
         row.forEach((cell, cIdx) => {
-          const cellW = colWidths[cIdx] || statColW;
+          const cellW = summaryColWidths[cIdx] || 120;
           ctx.fillStyle = rIdx === 0 ? '#2f6b3f' : '#ffffff';
           ctx.fillRect(drawX, drawY, cellW, rowH);
           ctx.strokeStyle = '#d6e2d3';
@@ -2158,7 +2157,7 @@
         ctx.font = '900 26px sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'alphabetic';
-        ctx.fillText(section.title, x + cardPad, drawY + 26);
+        ctx.fillText(section.title, sectionX, drawY + 26);
         drawY += 40;
 
         const el = document.getElementById(section.htmlTarget);
@@ -2170,17 +2169,17 @@
             const left = spans[0]?.innerText?.trim() || '';
             const right = spans[1]?.innerText?.trim() || '';
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(x + cardPad, drawY, w - cardPad * 2, 46);
+            ctx.fillRect(sectionX, drawY, commonSectionW, 46);
             ctx.strokeStyle = '#d6e2d3';
-            ctx.strokeRect(x + cardPad, drawY, w - cardPad * 2, 46);
+            ctx.strokeRect(sectionX, drawY, commonSectionW, 46);
             ctx.fillStyle = '#18311f';
             ctx.font = '800 21px sans-serif';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            ctx.fillText(left, x + cardPad + 14, drawY + 23);
+            ctx.fillText(left, sectionX + 14, drawY + 23);
             ctx.textAlign = 'right';
             ctx.fillStyle = right.startsWith('+') ? '#c33232' : '#18311f';
-            ctx.fillText(right, x + w - cardPad - 14, drawY + 23);
+            ctx.fillText(right, sectionX + commonSectionW - 14, drawY + 23);
             drawY += 46;
           });
           if (!rowsEl.length) drawY += 10;
@@ -2189,9 +2188,8 @@
           tableRows.forEach((tr, rIdx) => {
             const cells = Array.from(tr.children);
             if (!cells.length) return;
-            const totalW = w - cardPad * 2;
-            const cellW = totalW / cells.length;
-            let drawX = x + cardPad;
+            const cellW = commonSectionW / cells.length;
+            let drawX = sectionX;
             cells.forEach((cell, cIdx) => {
               ctx.fillStyle = rIdx === 0 ? '#f3f7f1' : (cell.classList.contains('total-col') ? '#eef5ec' : '#ffffff');
               ctx.fillRect(drawX, drawY, cellW, 46);
@@ -2212,7 +2210,7 @@
             ctx.font = '700 18px sans-serif';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'alphabetic';
-            ctx.fillText((note.innerText || note.textContent || '').trim(), x + cardPad, drawY + 20);
+            ctx.fillText((note.innerText || note.textContent || '').trim(), sectionX, drawY + 20);
             drawY += 28;
           }
         }
@@ -2236,9 +2234,8 @@
       const totalRows = 3 + scoreRows.length;
       const frontOrder = order.filter(h => h <= 9);
       const backOrder = order.filter(h => h >= 10);
-      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
-      const tableW = headerWidths.reduce((sum, w) => sum + w, 0);
-      const width = tableW + cardPad * 2 + pad * 2;
+      const tableW = nameW + frontOrder.length * holeW + summaryW + backOrder.length * holeW + summaryW + summaryW;
+      const width = Math.max(1600, pad * 2 + cardPad * 2 + tableW + 20);
       const sectionH = headH + totalRows * rowH + 30;
       const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
       const canvas = document.createElement('canvas');
@@ -2269,10 +2266,11 @@
       ctx.fillText(`球場：${meta.course}`, x + cardPad, y + 74);
       ctx.fillText(`日期：${meta.dateText}  ${meta.timeText}`, x + cardPad, y + 102);
 
-      const x0 = x + cardPad;
+      const x0 = x + Math.max(cardPad, Math.floor((w - tableW) / 2));
       const y0 = y + headH;
-      const scorecardColumns = [...frontOrder.map(String), '前9小記', ...backOrder.map(String), '後9小記', '18洞總計'];
+      const scorecardColumns = [...frontOrder.map(String), '小記', ...backOrder.map(String), '小記', '18洞總計'];
       const headers = ['Hole', ...scorecardColumns];
+      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
 
       let drawX = x0;
       ctx.textAlign = 'center';
