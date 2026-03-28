@@ -2067,15 +2067,32 @@
     function buildResultExportData(rows, meta){
       const pad = 28;
       const cardPad = 18;
-      const width = 1600;
-      const colWidths = [220];
-      for (let i = 1; i < rows[0].length; i++) colWidths.push(120);
       const rowH = 56;
       const titleH = 118;
       const extraSections = [];
-      if (isMatchEnabled()) extraSections.push({ title:'🏆 Match 比洞矩陣', htmlTarget:'match-output' });
+      if (isMatchEnabled()) extraSections.push({ title:'🏆 比洞矩陣', htmlTarget:'match-output' });
       if (isParEnabled()) extraSections.push({ title:'🎯 抓PAR 矩陣', htmlTarget:'par-output' });
       if (isVegasEnabled()) extraSections.push({ title:'🎲 Vegas 點數', htmlTarget:'vegas-output' });
+
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
+      const cellTextWidth = (text, font='800 21px sans-serif') => {
+        measureCtx.font = font;
+        return Math.ceil(measureCtx.measureText(String(text || '')).width);
+      };
+
+      const playerColW = Math.max(170, ...rows.map((row, idx) => cellTextWidth(row[0], idx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 42));
+      const statIndexes = [1,2,3,4].filter(idx => rows[0] && rows[0][idx] !== undefined);
+      const statColW = statIndexes.length
+        ? Math.max(95, ...statIndexes.flatMap(idx => rows.map((row, rIdx) => cellTextWidth(row[idx], rIdx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 34)))
+        : 95;
+      const amountIdx = rows[0].length - 1;
+      const amountColW = Math.max(120, ...rows.map((row, idx) => cellTextWidth(row[amountIdx], idx === 0 ? '900 20px sans-serif' : '800 21px sans-serif') + 42));
+      const colWidths = rows[0].map((_, idx) => idx === 0 ? playerColW : (idx === amountIdx ? amountColW : statColW));
+      const summaryTableW = colWidths.reduce((sum, w) => sum + w, 0);
+      const innerMinW = Math.max(summaryTableW, 1200);
+      const width = innerMinW + cardPad * 2 + pad * 2;
+
       const detailCount = extraSections.reduce((sum, section) => {
         const el = document.getElementById(section.htmlTarget);
         if (!el) return sum;
@@ -2120,7 +2137,7 @@
       rows.forEach((row, rIdx) => {
         let drawX = x + cardPad;
         row.forEach((cell, cIdx) => {
-          const cellW = colWidths[cIdx] || 120;
+          const cellW = colWidths[cIdx] || statColW;
           ctx.fillStyle = rIdx === 0 ? '#2f6b3f' : '#ffffff';
           ctx.fillRect(drawX, drawY, cellW, rowH);
           ctx.strokeStyle = '#d6e2d3';
@@ -2211,13 +2228,17 @@
       const scoreRows = meta.scoreRows;
       const pad = 28;
       const cardPad = 18;
-      const width = 1600;
       const holeW = 64;
       const nameW = 140;
       const summaryW = 106;
       const rowH = 60;
       const headH = 126;
       const totalRows = 3 + scoreRows.length;
+      const frontOrder = order.filter(h => h <= 9);
+      const backOrder = order.filter(h => h >= 10);
+      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
+      const tableW = headerWidths.reduce((sum, w) => sum + w, 0);
+      const width = tableW + cardPad * 2 + pad * 2;
       const sectionH = headH + totalRows * rowH + 30;
       const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
       const canvas = document.createElement('canvas');
@@ -2250,11 +2271,8 @@
 
       const x0 = x + cardPad;
       const y0 = y + headH;
-      const frontOrder = order.filter(h => h <= 9);
-      const backOrder = order.filter(h => h >= 10);
       const scorecardColumns = [...frontOrder.map(String), '前9小記', ...backOrder.map(String), '後9小記', '18洞總計'];
       const headers = ['Hole', ...scorecardColumns];
-      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
 
       let drawX = x0;
       ctx.textAlign = 'center';
