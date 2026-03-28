@@ -2175,7 +2175,7 @@
             const totalW = w - cardPad * 2;
             const cellW = totalW / cells.length;
             let drawX = x + cardPad;
-            cells.forEach((cell) => {
+            cells.forEach((cell, cIdx) => {
               ctx.fillStyle = rIdx === 0 ? '#f3f7f1' : (cell.classList.contains('total-col') ? '#eef5ec' : '#ffffff');
               ctx.fillRect(drawX, drawY, cellW, 46);
               ctx.strokeStyle = '#d6e2d3';
@@ -2374,7 +2374,6 @@
         document.getElementById('exportPreviewImage').src = dataUrl;
         document.getElementById('exportPreviewTitle').textContent = filename;
         document.getElementById('exportPreviewOverlay').classList.add('show');
-        downloadDataUrl(dataUrl, filename);
         scheduleAutoSave();
       } catch (err) {
         console.error(err);
