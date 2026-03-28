@@ -686,7 +686,7 @@
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.511</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.51</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
@@ -812,7 +812,7 @@
             </div>
           </div>
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.511</div></div>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.51</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -843,7 +843,7 @@
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.511';
+    const APP_VERSION = 'Golf Score Beta 1.51';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -2051,9 +2051,10 @@
     function buildResultExportData(rows, meta){
       const pad = 28;
       const cardPad = 18;
-      const width = 1600;
       const colWidths = [220];
       for (let i = 1; i < rows[0].length; i++) colWidths.push(120);
+      const tableWidth = colWidths.reduce((sum, val) => sum + val, 0);
+      const width = Math.max(1600, tableWidth + cardPad * 2 + pad * 2);
       const rowH = 56;
       const titleH = 118;
       const extraSections = [];
@@ -2099,6 +2100,7 @@
       ctx.fillStyle = '#4f6456';
       ctx.fillText(`球場：${meta.course}`, x + cardPad, y + 74);
       ctx.fillText(`日期：${meta.dateText}  ${meta.timeText}`, x + cardPad, y + 102);
+      drawExportVersionBadge(ctx, x + w - cardPad, y + 34);
 
       let drawY = y + titleH;
       rows.forEach((row, rIdx) => {
@@ -2197,13 +2199,17 @@
       const scoreRows = meta.scoreRows;
       const pad = 28;
       const cardPad = 18;
-      const width = 1600;
       const holeW = 64;
       const nameW = 140;
       const summaryW = 106;
       const rowH = 60;
       const headH = 126;
       const totalRows = 3 + scoreRows.length;
+      const frontOrder = order.filter(h => h <= 9);
+      const backOrder = order.filter(h => h >= 10);
+      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
+      const tableWidth = headerWidths.reduce((sum, val) => sum + val, 0);
+      const width = Math.max(1600, tableWidth + cardPad * 2 + pad * 2);
       const sectionH = headH + totalRows * rowH + 30;
       const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
       const canvas = document.createElement('canvas');
@@ -2233,14 +2239,12 @@
       ctx.fillStyle = '#4f6456';
       ctx.fillText(`球場：${meta.course}`, x + cardPad, y + 74);
       ctx.fillText(`日期：${meta.dateText}  ${meta.timeText}`, x + cardPad, y + 102);
+      drawExportVersionBadge(ctx, x + w - cardPad, y + 34);
 
       const x0 = x + cardPad;
       const y0 = y + headH;
-      const frontOrder = order.filter(h => h <= 9);
-      const backOrder = order.filter(h => h >= 10);
       const scorecardColumns = [...frontOrder.map(String), '前9小記', ...backOrder.map(String), '後9小記', '18洞總計'];
       const headers = ['Hole', ...scorecardColumns];
-      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
 
       let drawX = x0;
       ctx.textAlign = 'center';
@@ -2389,6 +2393,28 @@
       ctx.closePath();
       if (fill) ctx.fill();
       else ctx.stroke();
+    }
+
+
+    function drawExportVersionBadge(ctx, rightX, centerY){
+      const text = APP_VERSION;
+      ctx.save();
+      ctx.font = '900 18px sans-serif';
+      const textW = ctx.measureText(text).width;
+      const badgeW = textW + 28;
+      const badgeH = 38;
+      const badgeX = rightX - badgeW;
+      const badgeY = centerY - badgeH / 2;
+      ctx.fillStyle = '#ffffff';
+      drawRoundedRect(ctx, badgeX, badgeY, badgeW, badgeH, badgeH / 2, true);
+      ctx.strokeStyle = '#d6e2d3';
+      ctx.lineWidth = 1;
+      drawRoundedRect(ctx, badgeX, badgeY, badgeW, badgeH, badgeH / 2, false);
+      ctx.fillStyle = '#1e4d2b';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, badgeX + badgeW / 2, badgeY + badgeH / 2 + 1);
+      ctx.restore();
     }
 
     function closeExportPreview(event){
