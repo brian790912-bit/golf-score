@@ -2067,14 +2067,13 @@
     function buildResultExportData(rows, meta){
       const pad = 28;
       const cardPad = 18;
-      const width = 1600;
       const summaryColWidths = (() => {
         const widths = [220];
         const headerRow = rows[0] || [];
         for (let i = 1; i < headerRow.length; i++) {
           const header = headerRow[i] || '';
           if (header === '金額') widths.push(120);
-          else widths.push(96);
+          else widths.push(92);
         }
         return widths;
       })();
@@ -2083,9 +2082,9 @@
       const matrixColCount = matrixPlayerCount + 2;
       const matrixCellW = 132;
       const matrixTableW = matrixColCount * matrixCellW;
-      const contentMaxW = width - pad * 2 - cardPad * 2;
-      const commonSectionW = Math.min(contentMaxW, Math.max(summaryTableW, matrixTableW, 760));
-      const sectionX = pad + (width - pad * 2 - commonSectionW) / 2;
+      const commonSectionW = Math.max(summaryTableW, matrixTableW);
+      const width = pad * 2 + cardPad * 2 + commonSectionW;
+      const sectionX = pad + cardPad;
       const rowH = 56;
       const titleH = 118;
       const extraSections = [];
