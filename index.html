@@ -804,8 +804,8 @@
       <div class="result-stack">
         <div class="final-area jpg-capture" id="result-capture">
           <div class="export-wrap" style="display:block; margin-bottom:12px;">
-            <div style="font-size:1.02rem; font-weight:900; margin-bottom:8px; color:#fff;">圖片輸出</div>
-            <div class="small-note" style="text-align:left; margin-bottom:8px; color:rgba(255,255,255,.9);">請直接點選要輸出的圖片項目。</div>
+            <div style="font-size:1.02rem; font-weight:900; margin-bottom:8px; color:var(--primary-dark);">圖片輸出</div>
+            <div class="small-note" style="text-align:left; margin-bottom:8px; color:#61705f;">請直接點選要輸出的圖片項目。</div>
             <div class="export-option-grid">
               <button class="action-btn secondary" type="button" onclick="exportSingleImage('result')">比賽結果</button>
               <button class="action-btn secondary" type="button" onclick="exportSingleImage('scorecard')">成績卡</button>
@@ -1113,7 +1113,7 @@
       nameHtml += `</div></div>`;
       document.getElementById('player-name-area').innerHTML = nameHtml;
 
-      let html = `<div class="collapse-block major open" style="margin-top:10px;"><button type="button" class="collapse-head major" onclick="toggleCollapse(this)"><span class="collapse-title">讓洞設定</span><span class="collapse-icon">˄</span></button><div class="collapse-body"><div class="setting-subcard" style="margin-top:2px;">
+      let html = `<div class="collapse-block major" style="margin-top:10px;"><button type="button" class="collapse-head major" onclick="toggleCollapse(this)"><span class="collapse-title">讓洞設定</span><span class="collapse-icon">˅</span></button><div class="collapse-body"><div class="setting-subcard" style="margin-top:2px;">
           <div class="small-note" style="margin-bottom:8px;"><strong>一般讓桿：</strong> 輸入正數＝目前這位玩家讓對手。輸入負數＝對手讓目前這位玩家。留空或 0＝平打。</div>
           <div class="small-note" style="margin-bottom:8px;"><strong>特殊讓桿：</strong> 針對 Par 3、Par 4、Par 5 分別設定讓桿。</div>
           <div class="small-note"><strong>系統同步規則：</strong> 輸入任一方讓桿後，系統會自動同步帶入相對玩家的相反數值。</div>
