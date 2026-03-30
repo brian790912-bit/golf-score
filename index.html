@@ -1113,7 +1113,7 @@
       nameHtml += `</div></div>`;
       document.getElementById('player-name-area').innerHTML = nameHtml;
 
-      let html = `<div class="collapse-block major" style="margin-top:10px;"><button type="button" class="collapse-head major" onclick="toggleCollapse(this)"><span class="collapse-title">讓洞設定</span><span class="collapse-icon">˅</span></button><div class="collapse-body"><div class="setting-subcard" style="margin-top:2px;">
+      let html = `<div class="collapse-block major" id="handicapCollapseBlock" style="margin-top:10px;"><button type="button" class="collapse-head major" aria-expanded="false" onclick="toggleCollapse(this)"><span class="collapse-title">讓洞設定</span><span class="collapse-icon">˅</span></button><div class="collapse-body" style="display:none;"><div class="setting-subcard" style="margin-top:2px;">
           <div class="small-note" style="margin-bottom:8px;"><strong>一般讓桿：</strong> 輸入正數＝目前這位玩家讓對手。輸入負數＝對手讓目前這位玩家。留空或 0＝平打。</div>
           <div class="small-note" style="margin-bottom:8px;"><strong>特殊讓桿：</strong> 針對 Par 3、Par 4、Par 5 分別設定讓桿。</div>
           <div class="small-note"><strong>系統同步規則：</strong> 輸入任一方讓桿後，系統會自動同步帶入相對玩家的相反數值。</div>
@@ -1898,9 +1898,12 @@
     function toggleCollapse(button){
       const block = button.closest('.collapse-block');
       if (!block) return;
+      const body = block.querySelector(':scope > .collapse-body');
       const isOpen = block.classList.toggle('open');
+      if (body) body.style.display = isOpen ? 'block' : 'none';
       const icon = button.querySelector('.collapse-icon');
       if (icon) icon.textContent = isOpen ? '˄' : '˅';
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     }
 
     function buildCollapseBlock(title, innerHtml, open=false, level='minor'){
