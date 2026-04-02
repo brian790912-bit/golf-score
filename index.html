@@ -362,21 +362,7 @@
     .result-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 12px; }
     .result-stack { display: grid; gap: 12px; }
     #result .card { overflow: hidden; }
-
-    .version-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 10px;
-      margin: 0 0 10px auto;
-      border-radius: 999px;
-      background: rgba(47,107,63,.08);
-      color: var(--primary-dark);
-      border: 1px solid rgba(47,107,63,.12);
-      font-size: .8rem;
-      font-weight: 900;
-      letter-spacing: .02em;
-    }
+ 
     .result-version-inline {
       display: flex;
       justify-content: flex-end;
@@ -454,7 +440,7 @@
     .hole-win-item strong { color: var(--primary-dark); }
     .export-wrap { margin-bottom: 10px; display: flex; justify-content: flex-end; }
     .jpg-capture { background: #fff; border-radius: 18px; }
-
+ 
     .vegas-rank-btn {
       width: 100%;
       padding: 13px 44px 13px 12px;
@@ -524,11 +510,11 @@
       cursor: pointer;
     }
     .rank-picker-option:last-child { border-bottom: none; }
-
-
+ 
+ 
     .player-extra.hidden { display: none; }
-    .matrix-table { width: 100%; min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-    .matrix-table th, .matrix-table td { height: auto; padding: 9px 8px; font-size: .92rem; white-space: nowrap; word-break: keep-all; }
+    .matrix-table { min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .matrix-table th, .matrix-table td { height: auto; padding: 9px 10px; font-size: .96rem; }
     .matrix-table th { background: #f3f7f1; color: var(--primary-dark); }
     .matrix-table td.total-col, .matrix-table th.total-col { background: #eef5ec; }
     .matrix-note { margin-top: 8px; font-size: .88rem; color: #667561; }
@@ -553,8 +539,8 @@
     }
     .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
     .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
-
-
+ 
+ 
     .top-floating-bar {
       position: fixed;
       top: 10px;
@@ -600,7 +586,7 @@
     .setting-subcard { background:#fff; border:1px solid var(--border); border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(31,66,40,.04); margin-bottom:14px; }
     .export-option-grid {
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
+      grid-template-columns: repeat(3, minmax(0,1fr));
       gap:10px;
       margin:10px 0 12px;
     }
@@ -629,6 +615,209 @@
       background: #e4efe2;
       border-color: var(--primary);
     }
+    .mode-child-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 2px solid #cfdbcf;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      user-select: none;
+      min-height: 54px;
+      background: #fff;
+      margin-left: 18px;
+    }
+    .mode-child-group { display: grid; gap: 6px; margin-left: 18px; margin-top: -2px; }
+    .mode-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 2px solid #cfdbcf;
+      border-radius: 12px;
+      padding: 0 14px;
+      min-height: 48px;
+      height: 48px;
+      background: #fff;
+      font-size: .98rem;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .mode-sub-collapse { cursor: pointer; user-select: none; }
+    .mode-sub-collapse:hover { background: #f6faf5; }
+    .mode-sub-row input[type="checkbox"] { pointer-events: none; }
+    .mode-sub-row.active { background: linear-gradient(180deg, #edf7ee, #e5f2e6); border-color: var(--primary); color: var(--primary-dark); }
+    .mode-sub-row.disabled { background: #f1f3f0; border-color: #e1e6df; color: #a5afa2; cursor: not-allowed; }
+    .sub-collapse-icon { font-size: .85rem; color: var(--muted); }
+    .mode-child-head.disabled { background: #f1f3f0; border-color: #e1e6df; color: #a5afa2; cursor: not-allowed; }
+    .handicap-collapse-icon { font-size: .9rem; color: var(--muted); }
+    .export-btn-row {
+      display: flex;
+      gap: 10px;
+    }
+    .export-btn-row .action-btn {
+      flex: 1;
+      min-height: 48px;
+    }
+    /* ── 細項新介面 ── */
+    .detail-unified-list { display: grid; gap: 12px; }
+    .detail-match-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .detail-match-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+    .detail-match-vs { font-size: 1rem; }
+    .detail-match-total { font-size: .94rem; opacity: .92; }
+    .detail-halves { display: grid; grid-template-columns: 1fr 1fr; }
+    .detail-half { border-right: 1px solid var(--border); }
+    .detail-half:last-child { border-right: none; }
+    .detail-half-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f2f7f1;
+      padding: 9px 12px;
+      font-size: .9rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      border-bottom: 1px solid #e3ece1;
+    }
+    .detail-half-sub { font-size: .82rem; color: var(--muted); font-weight: 800; }
+    .detail-hole-list { padding: 4px 0; }
+    .detail-hole-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-bottom: 1px solid #f0f4ef;
+      font-size: .88rem;
+    }
+    .detail-hole-row:last-child { border-bottom: none; }
+    .detail-hole-row.win { background: #fff; }
+    .detail-hole-row.tie { background: #fafafa; color: var(--muted); }
+    .detail-hole-num { min-width: 48px; font-weight: 900; color: var(--primary-dark); font-size: .84rem; }
+    .detail-hole-result { flex: 1; font-weight: 800; }
+    .detail-hole-result strong { color: var(--primary-dark); }
+    .detail-hole-teams { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    @media (max-width: 860px) {
+      .detail-halves { grid-template-columns: 1fr; }
+      .detail-half { border-right: none; border-bottom: 1px solid var(--border); }
+      .detail-half:last-child { border-bottom: none; }
+    }
+ 
+    /* ── 新球場彈窗 ── */
+    .new-course-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: none; align-items: flex-start; justify-content: center;
+      z-index: 5000; padding: 18px; overflow-y: auto;
+    }
+    .new-course-overlay.show { display: flex; }
+    .new-course-sheet {
+      width: min(520px, 100%); background: #fff;
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 24px 48px rgba(0,0,0,.22);
+      margin: auto;
+    }
+    .new-course-head {
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: #fff; padding: 16px 18px;
+      font-size: 1.08rem; font-weight: 900;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .new-course-body { padding: 16px; max-height: 70vh; overflow-y: auto; }
+    .new-course-type-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0; }
+    .new-course-type-btn {
+      border: 2px solid var(--border); background: #fff; border-radius: 14px;
+      padding: 18px 12px; font-size: 1.1rem; font-weight: 900;
+      color: var(--primary-dark); cursor: pointer; text-align: center;
+    }
+    .new-course-type-btn:hover { background: var(--primary-soft); border-color: var(--primary); }
+    .new-course-hole-grid { display: grid; gap: 8px; }
+    .new-course-hole-row {
+      display: grid; grid-template-columns: 32px 1fr 1fr; gap: 8px; align-items: center;
+    }
+    .new-course-hole-num {
+      font-weight: 900; color: var(--primary-dark); font-size: .96rem; text-align: center;
+    }
+    .new-course-hole-label { display: block; font-size: .76rem; color: var(--muted); margin-bottom: 2px; }
+    .new-course-input { min-height: 42px; padding: 8px; font-size: .96rem; }
+    .new-course-close-btn {
+      border: none; background: rgba(255,255,255,.2); color: #fff;
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem;
+    }
+ 
+    /* ── 27洞選區彈窗 ── */
+    .zone-select-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: none; align-items: center; justify-content: center;
+      z-index: 5000; padding: 18px;
+    }
+    .zone-select-overlay.show { display: flex; }
+    .zone-select-sheet {
+      width: min(380px, 100%); background: #fff;
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 24px 48px rgba(0,0,0,.22);
+    }
+    .zone-select-head {
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: #fff; padding: 16px 18px;
+      font-size: 1.08rem; font-weight: 900; text-align: center;
+    }
+    .zone-select-body { padding: 18px; }
+    .zone-select-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+    .zone-select-btn {
+      border: 2px solid var(--border); background: #fff;
+      border-radius: 12px; padding: 16px 8px;
+      font-size: 1.1rem; font-weight: 900; color: var(--primary-dark);
+      cursor: pointer; text-align: center;
+    }
+    .zone-select-btn.active { background: var(--primary-soft); border-color: var(--primary); }
+    .zone-select-error { color: var(--warn); font-size: .88rem; margin-bottom: 8px; display: none; }
+    .zone-order-badge {
+      display: inline-block;
+      margin-left: 4px;
+      font-size: .85rem;
+      color: var(--primary-dark);
+    }
+ 
+    .detail-card-icon { font-size: .85rem; color: rgba(255,255,255,.8); }
+    .detail-card-body { padding: 0; }
+    .result-collapse-card { padding: 0 !important; overflow: hidden; }
+    .result-collapse-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; cursor: pointer; user-select: none;
+    }
+    .result-collapse-icon { font-size: .9rem; color: var(--muted); }
+    .result-collapse-body { padding: 0 16px 14px; }
+    .course-cell-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      min-height: 42px;
+      font-size: 1.02rem;
+      font-weight: 900;
+      color: var(--text);
+      background: #f4f7f3;
+      border-radius: 10px;
+      border: 1.5px solid #e2ebe0;
+      padding: 4px;
+      user-select: none;
+    }
     .export-download-btn {
       border:none;
       background:linear-gradient(180deg, var(--primary), var(--primary-dark));
@@ -638,7 +827,7 @@
       font-weight:900;
       cursor:pointer;
     }
-
+ 
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
     }
@@ -661,8 +850,7 @@
       .res-row { font-size: .96rem; padding: 8px 0; }
       .hole-win-item { padding: 8px 10px; font-size: .92rem; }
       .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
-      .matrix-table th, .matrix-table td { font-size: .82rem; padding: 8px 4px; white-space: nowrap; }
-
+ 
       .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 50px; }
       .scoreboard-vertical table { width: auto !important; min-width: auto !important; }
       .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
@@ -687,37 +875,35 @@
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.52</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.6</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
       <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
       <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
     </div>
-    <div class="mobile-version-badge">Beta 1.52</div>
+    <div class="mobile-version-badge">Beta 1.6</div>
   </div>
-
+ 
   <div id="setting" class="content active">
+    <input type="hidden" id="courseName" value="">
     <div id="global-warning" class="warning-box"></div>
-
+ 
     <div class="card">
       <h2>1. 球場</h2>
-      <div class="section-grid-3">
+      <div class="section-grid-2" style="margin-bottom:10px;">
         <div>
-          <label><small>球場名稱</small></label>
-          <input type="text" id="courseName" placeholder="請輸入球場名稱">
-        </div>
-        <div>
-          <label><small>已儲存球場</small></label>
+          <label><small>選擇球場</small></label>
           <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
         </div>
-        <div>
-          <label><small>新球局</small></label>
-          <button type="button" class="new-game-btn" onclick="startNewGame()">新球局</button>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
+          <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
         </div>
       </div>
+      <button type="button" class="new-game-btn" onclick="startNewGame()">新球局</button>
     </div>
-
+ 
     <div class="card">
       <h2>2. 點數 / 倍率</h2>
       <div class="grid-3" style="margin-bottom:12px;">
@@ -735,58 +921,87 @@
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
     </div>
-
+ 
     <div id="player-name-area"></div>
-
+ 
     <div class="card">
       <h2>4. 比賽模式</h2>
       <div class="mode-stack">
-        <div class="inline-field">
-          <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
-            <input type="checkbox" id="modeVegas" checked>
-            <span>Vegas</span>
+ 
+        <!-- Vegas -->
+        <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
+          <input type="checkbox" id="modeVegas" checked>
+          <span>Vegas</span>
+        </div>
+        <div id="vegasSubArea" class="mode-child-group">
+          <div class="mode-sub-row" id="modeRowExt" onclick="toggleMainMode('extMode')">
+            <input type="checkbox" id="extMode">
+            <span>平手遞延</span>
           </div>
-          <div>
-            <label><small>起始洞</small></label>
-            <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()">
+          <div class="mode-sub-row">
+            <span>起始洞</span>
+            <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()" style="width:72px; min-height:36px; padding:6px 8px; font-size:.96rem; text-align:center;">
           </div>
         </div>
-        <div class="mode-row mode-child" id="modeRowExt" onclick="toggleMainMode('extMode')">
-          <input type="checkbox" id="extMode">
-          <span>平手遞延</span>
-        </div>
+ 
+        <!-- 比洞賽 -->
         <div class="mode-row active" id="modeRowMatch" onclick="toggleMainMode('modeMatch')">
           <input type="checkbox" id="modeMatch" checked>
-          <span>比洞</span>
+          <span>比洞賽</span>
         </div>
-        <div id="player-config-area"></div>
+        <div id="matchSubArea" class="mode-child-group">
+          <div class="mode-sub-row mode-sub-collapse" id="modeRowMatchPlayers" onclick="toggleSubCollapse('matchPlayers')">
+            <span>參與玩家</span>
+            <span class="sub-collapse-icon" id="icon-matchPlayers">▶</span>
+          </div>
+          <div id="body-matchPlayers" style="display:none;" class="mode-child">
+            <div id="match-players-area"></div>
+          </div>
+          <div class="mode-sub-row mode-sub-collapse" id="modeRowHandicap" onclick="toggleSubCollapse('handicap')">
+            <span>讓洞設定</span>
+            <span class="sub-collapse-icon" id="icon-handicap">▶</span>
+          </div>
+          <div id="body-handicap" style="display:none;" class="mode-child">
+            <div class="small-note" style="padding:10px 14px 4px; color:var(--muted); line-height:1.6;">一般讓桿：正數＝目前玩家讓對手；負數＝對手讓目前玩家；空白＝平打 0 洞。<br>特殊讓桿：依 Par 3 / Par 4 / Par 5 手動輸入，沿用相同正負方向。</div>
+            <div id="player-config-area"></div>
+          </div>
+        </div>
+ 
+        <!-- 抓PAR -->
         <div class="mode-row active" id="modeRowPar" onclick="toggleMainMode('modePar')">
           <input type="checkbox" id="modePar" checked>
           <span>抓PAR</span>
         </div>
+        <div id="parSubArea" class="mode-child-group">
+          <div class="mode-sub-row mode-sub-collapse" id="modeRowParPlayers" onclick="toggleSubCollapse('parPlayers')">
+            <span>參與玩家</span>
+            <span class="sub-collapse-icon" id="icon-parPlayers">▶</span>
+          </div>
+          <div id="body-parPlayers" style="display:none;" class="mode-child">
+            <div id="par-players-area"></div>
+          </div>
+        </div>
+ 
       </div>
     </div>
-
+ 
   </div>
-
+ 
   <div id="scoring" class="content">
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area">
       <h2>1. 球場資料</h2>
-      <div class="small-note">球洞 PAR 與 HDCP 輸入完成後，可直接在這裡儲存或刪除目前球場資料。</div>
-      <div class="small-note" style="margin-top:8px;">建議另外匯出成 JSON 備份到 iCloud Drive 或電腦，這樣就算清除 Safari 網站資料也能再匯入。</div>
       <div class="action-row">
-        <button class="action-btn" onclick="saveCourseProfile()">儲存球場資料</button>
-        <button class="action-btn danger" onclick="deleteCourseProfile()">刪除球場資料</button>
-        <button class="action-btn secondary" onclick="exportCoursesJson()">匯出球場資料</button>
+        <button class="action-btn" id="editCourseBtn" onclick="openCourseEditDialog()">編輯球洞資訊</button>
+        <button class="action-btn danger" id="deleteCourseBtn" onclick="deleteCourseProfile()">刪除球場資料</button>
         <button class="action-btn secondary" onclick="triggerImportCoursesJson()">匯入球場資料</button>
         <input type="file" id="importCoursesFile" accept="application/json,.json" style="display:none" onchange="importCoursesJson(event)">
       </div>
     </div>
-
+ 
     <div id="vegas-rank-area" class="card"></div>
-
+ 
     <div class="table-wrapper">
       <table id="mainTable">
         <thead>
@@ -798,34 +1013,49 @@
       </table>
     </div>
   </div>
-
+ 
   <div id="result" class="content">
     <div class="result-grid">
       <div class="result-stack">
-        <div class="final-area jpg-capture" id="result-capture">
-          <div class="export-wrap" style="display:block; margin-bottom:12px;">
-            <div style="font-size:1.02rem; font-weight:900; margin-bottom:8px; color:var(--primary-dark);">圖片輸出</div>
-            <div class="small-note" style="text-align:left; margin-bottom:8px; color:#61705f;">請直接點選要輸出的圖片項目。</div>
-            <div class="export-option-grid">
-              <button class="action-btn secondary" type="button" onclick="exportSingleImage('result')">比賽結果</button>
-              <button class="action-btn secondary" type="button" onclick="exportSingleImage('scorecard')">成績卡</button>
-            </div>
+        <div style="margin-bottom:8px;">
+          <div style="font-size:.94rem; font-weight:900; color:var(--primary-dark); margin-bottom:8px; letter-spacing:.02em;">輸出圖片</div>
+          <div class="export-btn-row">
+            <button class="action-btn" type="button" onclick="exportResultPreview('result')">比賽結果</button>
+            <button class="action-btn" type="button" onclick="exportResultPreview('scorecard')">成績卡</button>
           </div>
+        </div>
+        <div class="final-area jpg-capture" id="result-capture">
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.52</div></div>
+          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.6</div></div>
           <div id="final-money"></div>
         </div>
       </div>
       <div class="result-stack">
         <div class="card"><h2>🎯 抓PAR 矩陣</h2><div id="par-output"></div></div>
         <div class="card"><h2>🎲 Vegas 點數</h2><div id="vegas-output"></div></div>
-        <div class="card"><h2>🏆 比洞矩陣</h2><div id="match-output"></div></div>
-        <div class="card"><h2>📝 比洞每組結果</h2><div id="match-detail-output"></div></div>
-        <div class="card"><h2>📝 Vegas 每洞勝負</h2><div id="vegas-hole-output"></div></div>
+        <div class="card"><h2>🏆 比洞賽矩陣</h2><div id="match-output"></div></div>
+        <div class="card result-collapse-card" id="card-match-detail">
+          <div class="result-collapse-head" onclick="toggleResultCollapse('match-detail')">
+            <h2 style="margin:0;">📝 比洞賽每組結果</h2>
+            <span class="result-collapse-icon">▶</span>
+          </div>
+          <div class="result-collapse-body" id="body-match-detail" style="display:none;">
+            <div id="match-detail-output"></div>
+          </div>
+        </div>
+        <div class="card result-collapse-card" id="card-vegas-hole">
+          <div class="result-collapse-head" onclick="toggleResultCollapse('vegas-hole')">
+            <h2 style="margin:0;">📝 Vegas 每洞勝負</h2>
+            <span class="result-collapse-icon">▶</span>
+          </div>
+          <div class="result-collapse-body" id="body-vegas-hole" style="display:none;">
+            <div id="vegas-hole-output"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
+ 
   <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
@@ -834,55 +1064,120 @@
       <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
     </div>
   </div>
-
+ 
+  <!-- 編輯球洞資訊彈窗 -->
+  <div class="new-course-overlay" id="courseEditOverlay">
+    <div class="new-course-sheet">
+      <div class="new-course-head">
+        <span id="courseEditDialogTitle">編輯球洞資訊</span>
+        <button class="new-course-close-btn" onclick="closeCourseEditDialog()">✕</button>
+      </div>
+      <div class="new-course-body" id="courseEditBody">
+      </div>
+    </div>
+  </div>
+ 
+  <!-- 新球場彈窗 -->
+  <div class="new-course-overlay" id="newCourseOverlay">
+    <div class="new-course-sheet">
+      <div class="new-course-head">
+        <span>新增球場</span>
+        <button class="new-course-close-btn" onclick="closeNewCourseDialog()">✕</button>
+      </div>
+      <div class="new-course-body">
+        <div style="margin-bottom:12px;">
+          <label class="new-course-hole-label" style="margin-bottom:4px;">球場名稱</label>
+          <input type="text" id="newCourseNameInput" class="new-course-input" placeholder="請輸入球場名稱" style="width:100%; min-height:48px; padding:10px 12px; font-size:1rem;">
+        </div>
+        <div id="newCourseTypeButtons">
+          <div style="font-size:.94rem; color:var(--muted); margin-bottom:12px;">請選擇球場洞數：</div>
+          <div class="new-course-type-btns">
+            <button class="new-course-type-btn" onclick="selectNewCourseType(18)">⛳ 18 洞</button>
+            <button class="new-course-type-btn" onclick="selectNewCourseType(27)">⛳ 27 洞</button>
+          </div>
+        </div>
+        <div id="newCourseHoleInputArea" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- 27洞選區彈窗 -->
+  <div class="zone-select-overlay" id="zoneSelectOverlay">
+    <div class="zone-select-sheet">
+      <div class="zone-select-head">選擇今天打哪兩區</div>
+      <div class="zone-select-body">
+        <div style="font-size:.9rem; color:var(--muted); text-align:center; margin-bottom:4px;"><span id="zoneSelectDialogName"></span></div>
+        <div style="font-size:.88rem; color:var(--muted); text-align:center; margin-bottom:8px;">請選擇 2 個區域</div>
+        <div class="zone-select-btns" id="zoneSelectBtns"></div>
+        <div class="zone-select-error" id="zoneSelectError">請選擇 2 個區域</div>
+        <button class="action-btn" style="width:100%;" onclick="confirmZoneSelect()">確認</button>
+      </div>
+    </div>
+  </div>
+ 
   <div class="rank-picker-overlay" id="rankPickerOverlay" onclick="closeVegasRankPicker(event)">
     <div class="rank-picker-sheet" onclick="event.stopPropagation()">
       <div class="rank-picker-title" id="rankPickerTitle">請選擇排名</div>
       <div id="rankPickerOptions"></div>
     </div>
   </div>
-
+ 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.52';
+    const APP_VERSION = 'Golf Score Beta 1.6';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
     let selectedAllOnce = false;
-
+    // 全域球場資料，不依賴DOM span
+    let courseData = { par: {}, hdcp: {} };
+    // 27洞選區後儲存的區域名稱，null表示18洞
+    let currentZoneLabels = null; // { front: '東區', back: '西區' }
+ 
     function openTab(t){
       document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(t).classList.add('active');
       document.getElementById('tab-' + (t==='setting'?'set':t==='scoring'?'score':'res')).classList.add('active');
       if (t === 'scoring') {
-          refreshSavedCourseSelect();
+        refreshSavedCourseSelect();
+      }
+      if (t === 'setting') {
+        // 切回設定頁時同步下拉選單
+        const courseName = document.getElementById('courseName')?.value || '';
+        if (courseName) {
+          const key = normalizeCourseName(courseName);
+          const sel = document.getElementById('savedCourseSelect');
+          if (sel) {
+            const all = getSavedCourses();
+            if (all[key]) sel.value = key;
+          }
+        }
       }
     }
-
+ 
     function nameOf(i){
       return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
     }
-
+ 
     function getActivePlayers(){
       const active = [];
       for (const i of playerIDs) {
         const name = (document.getElementById('name'+i)?.value || '').trim();
-        if (!name) break;
-        active.push(i);
+        if (name) active.push(i);
       }
       return active;
     }
-
+ 
     function isPlayerActive(playerId){
       return getActivePlayers().includes(playerId);
     }
-
+ 
     function getActiveNames(){
       const names = {};
       getActivePlayers().forEach(i => { names[i] = nameOf(i); });
       return names;
     }
-
+ 
     function applyNumericKeyboardHints(root=document){
       if (!root) return;
       root.querySelectorAll('input[type="number"]').forEach(el => {
@@ -898,7 +1193,7 @@
         el.setAttribute('enterkeyhint', 'done');
       });
     }
-
+ 
     function attachSelectAllBehavior(root=document){
       const inputs = root.querySelectorAll('input:not([type="checkbox"]), textarea');
       inputs.forEach(el => {
@@ -910,11 +1205,11 @@
         el.addEventListener('mouseup', e => e.preventDefault());
       });
     }
-
+ 
     function normalizeCourseName(name){
       return (name || '').replace(/\s+/g,' ').trim().toLowerCase();
     }
-
+ 
     function getPlayOrder(){
       let start = parseInt(document.getElementById('startHole').value) || 1;
       if (start < 1 || start > 18) start = 1;
@@ -922,18 +1217,18 @@
       for (let i=0;i<18;i++) arr.push(((start - 1 + i) % 18) + 1);
       return arr;
     }
-
+ 
     function getNineSummaryInsertIndexes(order){
       const frontLastIdx = Math.max(...order.map((hole, idx) => hole <= 9 ? idx : -1));
       const backLastIdx = Math.max(...order.map((hole, idx) => hole >= 10 ? idx : -1));
       return { frontLastIdx, backLastIdx };
     }
-
+ 
     function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
     function isParEnabled(){ return document.getElementById('modePar').checked; }
     function isVegasEnabled(){ return document.getElementById('modeVegas').checked; }
     function isExtEnabled(){ return document.getElementById('extMode').checked; }
-
+ 
     function toggleMainMode(id){
       const cb = document.getElementById(id);
       if (!cb || cb.disabled) return;
@@ -941,7 +1236,7 @@
       cb.checked = !cb.checked;
       applyModeStates(id);
     }
-
+ 
     function setPlayerSmallBoxState(playerId, suffix){
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       const box = document.getElementById(`box_p${playerId}_${suffix}`);
@@ -952,21 +1247,21 @@
       box.classList.toggle('active', playerEnabled && parentEnabled && cb.checked);
       box.classList.toggle('disabled', !playerEnabled || !parentEnabled);
     }
-
+ 
     function setPlayerMatchSelected(playerId, checked){
       const cb = document.getElementById(`p${playerId}_m`);
       if (!cb) return;
       cb.checked = checked;
       setPlayerSmallBoxState(playerId, 'm');
     }
-
+ 
     function setPlayerParSelected(playerId, checked){
       const cb = document.getElementById(`p${playerId}_p`);
       if (!cb) return;
       cb.checked = checked;
       setPlayerSmallBoxState(playerId, 'p');
     }
-
+ 
     function normalizeMatchPairStates(){
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
@@ -984,7 +1279,7 @@
       });
       refreshAllPairDisabledState();
     }
-
+ 
     function resetAllMatchDefaults(){
       getActivePlayers().forEach(i => setPlayerMatchSelected(i, true));
       pairKeys.forEach(key => {
@@ -999,7 +1294,7 @@
       });
       refreshAllPairDisabledState();
     }
-
+ 
     function resetAllParDefaults(){
       getActivePlayers().forEach(i => {
         const cb = document.getElementById(`p${i}_p`);
@@ -1008,7 +1303,7 @@
         setPlayerSmallBoxState(i, 'p');
       });
     }
-
+ 
     function applyPlayerConfigVisibility(){
       const activePlayers = getActivePlayers();
       const activeCount = activePlayers.length;
@@ -1022,58 +1317,74 @@
         });
       });
     }
-
+ 
     function applyModeStates(changedMode = ''){
       const activePlayers = getActivePlayers();
       const activeCount = activePlayers.length;
       const canCompete = activeCount >= 2;
       const canVegas = activeCount === 4;
-
+ 
       const modeMatch = document.getElementById('modeMatch');
       const modePar = document.getElementById('modePar');
       const modeVegas = document.getElementById('modeVegas');
       const extMode = document.getElementById('extMode');
-
-      if (!canCompete) {
-        modeMatch.checked = false;
-        modePar.checked = false;
-      }
-      if (!canVegas) {
-        modeVegas.checked = false;
-        extMode.checked = false;
-      }
-
+ 
+      if (!canCompete) { modeMatch.checked = false; modePar.checked = false; }
+      if (!canVegas) { modeVegas.checked = false; extMode.checked = false; }
+ 
       setModeRow('modeRowVegas', modeVegas.checked, !canVegas);
       setModeRow('modeRowMatch', modeMatch.checked, !canCompete);
       setModeRow('modeRowPar', modePar.checked, !canCompete);
-      setModeRow('modeRowExt', extMode.checked, !modeVegas.checked);
-
+ 
       modeVegas.disabled = !canVegas;
       modeMatch.disabled = !canCompete;
       modePar.disabled = !canCompete;
       extMode.disabled = !modeVegas.checked;
-
+ 
+      // Vegas 子項目顯示控制
+      const vegasSub = document.getElementById('vegasSubArea');
+      if (vegasSub) vegasSub.style.display = (canVegas && modeVegas.checked) ? 'grid' : 'none';
+      const extRow = document.getElementById('modeRowExt');
+      if (extRow) {
+        extRow.classList.toggle('active', extMode.checked);
+        extRow.classList.toggle('disabled', !modeVegas.checked);
+      }
+ 
+      // 比洞賽子項目顯示控制
+      const matchSub = document.getElementById('matchSubArea');
+      const matchOn = canCompete && modeMatch.checked;
+      if (matchSub) matchSub.style.display = matchOn ? 'grid' : 'none';
+      if (matchOn) renderMatchPlayersArea();
+ 
+      // 抓PAR 子項目顯示控制
+      const parSub = document.getElementById('parSubArea');
+      const parOn = canCompete && modePar.checked;
+      if (parSub) parSub.style.display = parOn ? 'grid' : 'none';
+      if (parOn) renderParPlayersArea();
+ 
       playerIDs.forEach(i => {
-        syncPlayerSmallMode(i, 'm', canCompete && modeMatch.checked && activePlayers.includes(i));
-        syncPlayerSmallMode(i, 'p', canCompete && modePar.checked && activePlayers.includes(i));
+        syncPlayerSmallMode(i, 'm', matchOn && activePlayers.includes(i));
+        syncPlayerSmallMode(i, 'p', parOn && activePlayers.includes(i));
       });
-
+ 
       if (changedMode === 'modeMatch' && modeMatch.checked) resetAllMatchDefaults();
       if (changedMode === 'modePar' && modePar.checked) resetAllParDefaults();
-
-      document.getElementById('vegas-rank-area').style.display = modeVegas.checked ? 'block' : 'none';
+ 
+      const vegasRankArea = document.getElementById('vegas-rank-area');
+      if (vegasRankArea) vegasRankArea.style.display = (canVegas && modeVegas.checked) ? 'block' : 'none';
+ 
       applyPlayerConfigVisibility();
       normalizeMatchPairStates();
       renderVegasRankInputs();
     }
-
+ 
     function setModeRow(rowId, active, disabled){
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.toggle('active', active && !disabled);
       row.classList.toggle('disabled', disabled);
     }
-
+ 
     function syncPlayerSmallMode(playerId, suffix, enabled){
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       if (!cb) return;
@@ -1081,7 +1392,7 @@
       cb.disabled = !enabled;
       setPlayerSmallBoxState(playerId, suffix);
     }
-
+ 
     function togglePlayerSmallMode(playerId, suffix){
       const activePlayers = getActivePlayers();
       const parentOk = suffix === 'm' ? isMatchEnabled() : isParEnabled();
@@ -1092,7 +1403,7 @@
       setPlayerSmallBoxState(playerId, suffix);
       if (suffix === 'm') normalizeMatchPairStates();
     }
-
+ 
     function initUI(){
       renderPlayerCards();
       renderVegasRankInputs();
@@ -1103,31 +1414,55 @@
       attachSelectAllBehavior(document);
       applyNumericKeyboardHints(document);
       bindCourseAutoLoad();
+      attachSettingAutoJump();
     }
-
+ 
+    function attachSettingAutoJump(){
+      // 點數/倍率：pointVal → mB → mE4 → mE5 → mHIO（同大項內跳，mHIO不跳出）
+      const rateFields = ['pointVal','mB','mE4','mE5','mHIO'];
+      rateFields.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        const next = document.getElementById(rateFields[idx+1]);
+        if(el && next){
+          el.addEventListener('keydown', e => {
+            if(e.key === 'Enter' || e.key === 'Tab'){ e.preventDefault(); next.focus(); }
+          });
+        }
+      });
+    }
+ 
     function renderPlayerCards(){
       let nameHtml = `<div class="card" style="padding:15px;"><h2>3. 玩家名稱</h2><div class="name-grid">`;
       playerIDs.forEach(i => {
-        nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" oninput="updateNames()"></div>`;
+        nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" autocomplete="off" oninput="updateNames()"></div>`;
       });
       nameHtml += `</div></div>`;
       document.getElementById('player-name-area').innerHTML = nameHtml;
-
-      let html = `<div class="collapse-block major" id="handicapCollapseBlock" style="margin-top:10px;"><button type="button" class="collapse-head major" aria-expanded="false" onclick="toggleCollapse(this)"><span class="collapse-title">讓洞設定</span><span class="collapse-icon">˅</span></button><div class="collapse-body" style="display:none;"><div class="setting-subcard" style="margin-top:2px;">
-          <div class="small-note" style="margin-bottom:8px;"><strong>一般讓桿：</strong> 輸入正數＝目前這位玩家讓對手。輸入負數＝對手讓目前這位玩家。留空或 0＝平打。</div>
-          <div class="small-note" style="margin-bottom:8px;"><strong>特殊讓桿：</strong> 針對 Par 3、Par 4、Par 5 分別設定讓桿。</div>
-          <div class="small-note"><strong>系統同步規則：</strong> 輸入任一方讓桿後，系統會自動同步帶入相對玩家的相反數值。</div>
-        </div><div class="grid-2">`;
+      // 玩家名稱自動跳格
+      playerIDs.forEach((id, idx) => {
+        const el = document.getElementById(`name${id}`);
+        const nextId = playerIDs[idx+1];
+        if(el && nextId !== undefined){
+          el.addEventListener('keydown', e => {
+            if(e.key === 'Enter' || e.key === 'Tab'){
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              setTimeout(() => {
+                const next = document.getElementById(`name${nextId}`);
+                if(next) next.focus();
+              }, 10);
+            }
+          });
+        }
+      });
+ 
+      let html = `<div style="padding:8px 0 4px;"><div class="grid-2">`;
       playerIDs.forEach(i => {
         html += `
           <div class="card" style="margin-bottom:0; padding:15px;">
-            <div style="font-size:1.02rem; font-weight:900; color:var(--primary-dark); margin-bottom:4px;" id="pair-title-${i}">${nameOf(i)}</div>
+            <div style="font-size:1.02rem; font-weight:900; color:var(--primary-dark); margin-bottom:10px;" id="pair-title-${i}">${nameOf(i)}</div>
             <div class="player-extra" id="player-extra-${i}">
-              <div class="check-group" style="margin-top:10px;">
-                <div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i}, 'm')"><input type="checkbox" id="p${i}_m" checked>比洞</div>
-                <div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i}, 'p')"><input type="checkbox" id="p${i}_p" checked>抓PAR</div>
-              </div>
-              <div style="margin-top:12px; border-top:2px dashed #e6ece4; padding-top:10px;">
+              <div style="margin-top:4px;">
                 ${playerIDs.filter(j => j !== i).map(j => `
                   <div class="pair-row" id="pair-row-${i}-${j}">
                     <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
@@ -1155,7 +1490,7 @@
             </div>
           </div>`;
       });
-      html += `</div></div></div>`;
+      html += `</div></div>`;
       document.getElementById('player-config-area').innerHTML = html;
       pairKeys.forEach(key => {
         const [a,b] = key.split('_');
@@ -1168,11 +1503,12 @@
       applyPlayerConfigVisibility();
       refreshAllPairDisabledState();
     }
-
+ 
     function renderVegasRankInputs(){
       const activePlayers = getActivePlayers();
+      const vegasRankArea = document.getElementById('vegas-rank-area');
       if (activePlayers.length !== 4) {
-        document.getElementById('vegas-rank-area').style.display = 'none';
+        if (vegasRankArea) vegasRankArea.style.display = 'none';
         return;
       }
       let html = `<h2>2. Vegas 起始洞排名</h2>`;
@@ -1190,10 +1526,10 @@
       if (isVegasEnabled()) document.getElementById('vegas-rank-area').style.display = 'block';
       updateVegasPreview();
     }
-
+ 
     let lastActivePlayersSignature = '';
     let pendingHeavyNameRefresh = null;
-
+ 
     function syncNameLabelsOnly(){
       playerIDs.forEach(i => {
         const nm = nameOf(i);
@@ -1208,7 +1544,7 @@
       });
       updateVegasPreview();
     }
-
+ 
     function updateNames(forceHeavy=false){
       syncNameLabelsOnly();
       const activeSignature = getActivePlayers().join(',');
@@ -1225,7 +1561,7 @@
         pendingHeavyNameRefresh = null;
       }, 0);
     }
-
+ 
     function refreshAllPairDisabledState(){
       const activePlayers = getActivePlayers();
       playerIDs.forEach(i => {
@@ -1246,7 +1582,7 @@
         });
       });
     }
-
+ 
     function syncPairModeUI(i,j){
       const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value || 'general';
       document.getElementById(`pair-mode-general-chip-${i}-${j}`)?.classList.toggle('active', mode === 'general');
@@ -1254,7 +1590,7 @@
       document.getElementById(`pair-general-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'general');
       document.getElementById(`pair-special-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'special');
     }
-
+ 
     function setPairHandicapMode(i,j,mode,fromSync=false){
       const el = document.getElementById(`pair-mode-${i}-${j}`);
       if (!el) return;
@@ -1263,7 +1599,7 @@
       if (!fromSync) setPairHandicapMode(j,i,el.value,true);
       scheduleAutoSave();
     }
-
+ 
     function handlePairSpecialInput(i,j,kind,fromSync=false){
       const input = document.getElementById(`pair-special-${kind}-${i}-${j}`);
       if (!input) return;
@@ -1281,7 +1617,7 @@
       }
       scheduleAutoSave();
     }
-
+ 
     function setPairState(i,j,checked,value,fromSync=false){
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
@@ -1303,7 +1639,7 @@
         setPairState(j,i,cb.checked,mirroredValue,true);
       }
     }
-
+ 
     function togglePair(i,j){
       const activePlayers = getActivePlayers();
       const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
@@ -1314,7 +1650,7 @@
       else setPairState(i,j,true,currentValue === '' ? 0 : currentValue);
       refreshAllPairDisabledState();
     }
-
+ 
     function handlePairStrokeInput(i,j){
       const activePlayers = getActivePlayers();
       const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
@@ -1325,11 +1661,71 @@
       refreshAllPairDisabledState();
       scheduleAutoSave();
     }
-
-    function bindCourseAutoLoad(){
-      const courseInput = document.getElementById('courseName');
-      courseInput.addEventListener('input', () => {
-          const name = courseInput.value.trim();
+ 
+    function toggleDetailCard(id){
+      const body = document.getElementById(`body-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+      if (!body) return;
+      const isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      if (icon) icon.textContent = isOpen ? '▶' : '▼';
+    }
+ 
+    function toggleResultCollapse(id){
+      const body = document.getElementById(`body-${id}`);
+      const icon = document.querySelector(`#card-${id} .result-collapse-icon`);
+      if (!body) return;
+      const isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      if (icon) icon.textContent = isOpen ? '▶' : '▼';
+    }
+ 
+    // ── 讓洞設定收折 ──
+    function toggleSubCollapse(id){
+      const body = document.getElementById(`body-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+      if (!body) return;
+      const isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      if (icon) icon.textContent = isOpen ? '▶' : '▼';
+    }
+ 
+    // 保留舊函式名稱以防其他地方呼叫
+    function toggleHandicapCollapse(){ toggleSubCollapse('handicap'); }
+    function toggleParPlayersCollapse(){ toggleSubCollapse('parPlayers'); }
+ 
+    function renderParPlayersArea(){
+      const activePlayers = getActivePlayers();
+      if (!activePlayers.length) { document.getElementById('par-players-area').innerHTML = ''; return; }
+      const prevChecked = {};
+      activePlayers.forEach(i => { const cb = document.getElementById(`p${i}_p`); prevChecked[i] = cb ? cb.checked : true; });
+      let html = `<div class="check-group" style="padding:10px 0;">`;
+      activePlayers.forEach(i => {
+        html += `<div class="check-item active" id="box_p${i}_p" onclick="togglePlayerSmallMode(${i},'p')"><input type="checkbox" id="p${i}_p" ${prevChecked[i] !== false ? 'checked' : ''}>${nameOf(i)}</div>`;
+      });
+      html += `</div>`;
+      document.getElementById('par-players-area').innerHTML = html;
+    }
+ 
+    function renderMatchPlayersArea(){
+      const activePlayers = getActivePlayers();
+      if (!activePlayers.length) { document.getElementById('match-players-area').innerHTML = ''; return; }
+      const prevChecked = {};
+      activePlayers.forEach(i => { const cb = document.getElementById(`p${i}_m`); prevChecked[i] = cb ? cb.checked : true; });
+      let html = `<div class="check-group" style="padding:10px 0;">`;
+      activePlayers.forEach(i => {
+        html += `<div class="check-item active" id="box_p${i}_m" onclick="togglePlayerSmallMode(${i},'m')"><input type="checkbox" id="p${i}_m" ${prevChecked[i] !== false ? 'checked' : ''}>${nameOf(i)}</div>`;
+      });
+      html += `</div>`;
+      document.getElementById('match-players-area').innerHTML = html;
+    }
+ 
+    // ── 球場名稱輸入處理（含新球場偵測）──
+    let courseNameInputTimer = null;
+    function handleCourseNameInput(){
+      clearTimeout(courseNameInputTimer);
+      courseNameInputTimer = setTimeout(() => {
+        const name = (document.getElementById('courseName')?.value || '').trim();
         if (!name) return;
         const all = getSavedCourses();
         const key = normalizeCourseName(name);
@@ -1337,19 +1733,319 @@
           applyCourseData(all[key]);
           refreshSavedCourseSelect(key);
           showWarning('已自動帶入已儲存球場資料。', 'global');
+        } else {
+          // 新球場：跳出詢問
+          showNewCourseDialog(name);
+        }
+      }, 600);
+    }
+ 
+    // ── 新球場彈窗 ──
+    function showNewCourseDialog(name){
+      const nameInput = document.getElementById('newCourseNameInput');
+      if (nameInput) nameInput.value = name || '';
+      document.getElementById('newCourseOverlay')?.classList.add('show');
+      const holeArea = document.getElementById('newCourseHoleInputArea');
+      if (holeArea) { holeArea.innerHTML = ''; holeArea.style.display = 'none'; }
+      const typeBtn = document.getElementById('newCourseTypeButtons');
+      if (typeBtn) typeBtn.style.display = 'block';
+    }
+    function closeNewCourseDialog(){
+      document.getElementById('newCourseOverlay')?.classList.remove('show');
+      const holeArea = document.getElementById('newCourseHoleInputArea');
+      if (holeArea) { holeArea.innerHTML = ''; holeArea.style.display = 'none'; }
+      const typeBtn = document.getElementById('newCourseTypeButtons');
+      if (typeBtn) typeBtn.style.display = 'block';
+    }
+    function selectNewCourseType(type){
+      document.getElementById('newCourseTypeButtons').style.display = 'none';
+      renderNewCourseHoleInputs(type === 18 ? 18 : 27);
+    }
+    function renderNewCourseHoleInputs(holes, zones){
+      const area = document.getElementById('newCourseHoleInputArea');
+      area.style.display = 'block';
+      if (holes === 18) {
+        let html = `<div class="new-course-hole-grid">`;
+        for(let h=1; h<=18; h++){
+          html += `<div class="new-course-hole-row">
+            <div class="new-course-hole-num">${h}</div>
+            <div><label class="new-course-hole-label">PAR</label><input type="number" min="3" max="5" class="new-course-input" id="nc_P_${h}" placeholder="" inputmode="numeric"></div>
+            <div><label class="new-course-hole-label">HDCP</label><input type="number" min="1" max="18" class="new-course-input" id="nc_Hd_${h}" placeholder="" inputmode="numeric"></div>
+          </div>`;
+        }
+        html += `</div>`;
+        html += `<button class="action-btn" style="width:100%;margin-top:14px;" onclick="saveNewCourse18()">儲存球場資料</button>`;
+        area.innerHTML = html;
+        attachNewCourseAutoJump18();
+      } else {
+        // 27洞：每區9洞，區域名稱可自訂
+        const zoneKeys = ['A','B','C'];
+        const defaultNames = ['A區','B區','C區'];
+        let html = '';
+        zoneKeys.forEach((zone, zi) => {
+          html += `<div style="margin-bottom:16px;">
+            <div style="margin-bottom:8px;">
+              <label class="new-course-hole-label">區域名稱</label>
+              <input type="text" class="new-course-input" id="nc_zonename_${zone}" value="${defaultNames[zi]}" placeholder="${defaultNames[zi]}" style="min-height:40px; padding:8px 10px; font-size:.96rem; text-align:left;">
+            </div>`;
+          html += `<div class="new-course-hole-grid">`;
+          for(let h=1; h<=9; h++){
+            html += `<div class="new-course-hole-row">
+              <div class="new-course-hole-num">${h}</div>
+              <div><label class="new-course-hole-label">PAR</label><input type="number" min="3" max="5" class="new-course-input" id="nc_${zone}_P_${h}" placeholder="" inputmode="numeric"></div>
+              <div><label class="new-course-hole-label">HDCP</label><input type="number" min="1" max="9" class="new-course-input" id="nc_${zone}_Hd_${h}" placeholder="" inputmode="numeric"></div>
+            </div>`;
+          }
+          html += `</div></div>`;
+        });
+        html += `<button class="action-btn" style="width:100%;margin-top:14px;" onclick="saveNewCourse27()">儲存球場資料</button>`;
+        area.innerHTML = html;
+        attachNewCourseAutoJump27();
+      }
+    }
+    function attachNewCourseAutoJump18(){
+      for(let h=1; h<=18; h++){
+        const par = document.getElementById(`nc_P_${h}`);
+        const hdcp = document.getElementById(`nc_Hd_${h}`);
+        const nextPar = document.getElementById(`nc_P_${h+1}`);
+        if(par && hdcp) par.addEventListener('input', () => { if(par.value.length >= 1) hdcp.focus(); });
+        if(hdcp && nextPar) hdcp.addEventListener('input', () => { if(hdcp.value.length >= 1 && parseInt(hdcp.value) >= 1) nextPar.focus(); });
+      }
+    }
+    function attachNewCourseAutoJump27(){
+      const zones = ['A','B','C'];
+      zones.forEach((zone, zi) => {
+        for(let h=1; h<=9; h++){
+          const par = document.getElementById(`nc_${zone}_P_${h}`);
+          const hdcp = document.getElementById(`nc_${zone}_Hd_${h}`);
+          let nextEl;
+          if(h < 9){
+            nextEl = document.getElementById(`nc_${zone}_P_${h+1}`);
+          } else if(zi < 2){
+            nextEl = document.getElementById(`nc_zonename_${zones[zi+1]}`);
+          }
+          if(par && hdcp) par.addEventListener('input', () => { if(par.value.length >= 1) hdcp.focus(); });
+          if(hdcp && nextEl) hdcp.addEventListener('input', () => { if(hdcp.value.length >= 1) nextEl.focus(); });
         }
       });
     }
-
+ 
+    function start27ZoneInput(){
+      document.getElementById('newCourse27ZoneStep').style.display = 'none';
+      renderNewCourseHoleInputs(27);
+    }
+    function saveNewCourse18(){
+      const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
+      if (!name) { alert('請輸入球場名稱。'); return; }
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
+      const par = {}, hdcp = {};
+      for(let h=1; h<=18; h++){
+        par[h] = document.getElementById(`nc_P_${h}`)?.value || '';
+        hdcp[h] = document.getElementById(`nc_Hd_${h}`)?.value || '';
+      }
+      all[key] = { name, type: 18, par, hdcp };
+      setSavedCourses(all);
+      applyCourseData(all[key]);
+      refreshSavedCourseSelect(key);
+      closeNewCourseDialog();
+      showWarning(`「${name}」已儲存。`, 'global');
+    }
+    function saveNewCourse27(){
+      const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
+      if (!name) { alert('請輸入球場名稱。'); return; }
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
+      const zones = {};
+      const zoneNames = {};
+      ['A','B','C'].forEach(zone => {
+        const par = {}, hdcp = {};
+        for(let h=1; h<=9; h++){
+          par[h] = document.getElementById(`nc_${zone}_P_${h}`)?.value || '';
+          hdcp[h] = document.getElementById(`nc_${zone}_Hd_${h}`)?.value || '';
+        }
+        const zoneName = (document.getElementById(`nc_zonename_${zone}`)?.value || '').trim() || `${zone}區`;
+        zones[zone] = { par, hdcp, name: zoneName };
+        zoneNames[zone] = zoneName;
+      });
+      all[key] = { name, type: 27, zones, zoneNames };
+      setSavedCourses(all);
+      refreshSavedCourseSelect(key);
+      closeNewCourseDialog();
+      showZoneSelectDialog(name);
+    }
+ 
+    // ── 27洞選區彈窗 ──
+    function showZoneSelectDialog(name){
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      const course = all[key];
+      if (!course || course.type !== 27) return;
+      document.getElementById('zoneSelectDialogName').textContent = name;
+      document.getElementById('zoneSelectOverlay').classList.add('show');
+      document.getElementById('zoneSelectError').style.display = 'none';
+      document.getElementById('zoneSelectOverlay').dataset.courseName = name;
+      // 動態產生按鈕，顯示自訂區域名稱
+      const btnsEl = document.getElementById('zoneSelectBtns');
+      btnsEl.innerHTML = ['A','B','C'].map(zone => {
+        const zoneName = course.zones?.[zone]?.name || course.zoneNames?.[zone] || `${zone}區`;
+        return `<button class="zone-select-btn" data-zone="${zone}" onclick="toggleZoneSelect('${zone}')">${zoneName}</button>`;
+      }).join('');
+    }
+    function closeZoneSelectDialog(){
+      document.getElementById('zoneSelectOverlay').classList.remove('show');
+      resetZoneSelectBadges();
+      document.querySelectorAll('#zoneSelectBtns .zone-select-btn').forEach(b => b.classList.remove('active'));
+    }
+    function toggleZoneSelect(zone){
+      const btns = Array.from(document.querySelectorAll('#zoneSelectBtns .zone-select-btn'));
+      const activeZones = btns.filter(b => b.classList.contains('active')).map(b => b.dataset.zone);
+      const btn = btns.find(b => b.dataset.zone === zone);
+      if (!btn) return;
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+      } else if (activeZones.length < 2) {
+        btn.classList.add('active');
+      }
+      // 更新順序數字
+      const activeBtns = btns.filter(b => b.classList.contains('active'));
+      btns.forEach(b => {
+        const zoneName = b.dataset.zoneName || b.textContent.replace(/[①②]/g,'').trim();
+        b.dataset.zoneName = zoneName;
+        const orderIdx = activeBtns.indexOf(b);
+        b.innerHTML = orderIdx === 0 ? `${zoneName}<span class="zone-order-badge">①</span>` :
+                      orderIdx === 1 ? `${zoneName}<span class="zone-order-badge">②</span>` :
+                      zoneName;
+      });
+    }
+    function resetZoneSelectBadges(){
+      document.querySelectorAll('#zoneSelectBtns .zone-select-btn').forEach(b => {
+        const zoneName = b.dataset.zoneName || b.textContent.replace(/[①②]/g,'').trim();
+        b.dataset.zoneName = zoneName;
+        b.textContent = zoneName;
+      });
+    }
+    function confirmZoneSelect(){
+      const active = Array.from(document.querySelectorAll('#zoneSelectBtns .zone-select-btn.active')).map(b => b.dataset.zone);
+      if (active.length !== 2) {
+        document.getElementById('zoneSelectError').style.display = 'block';
+        return;
+      }
+      const name = document.getElementById('zoneSelectOverlay').dataset.courseName || '';
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      const course = all[key];
+      apply27ZoneCourse(course, active[0], active[1]);
+      refreshSavedCourseSelect(key);
+      closeZoneSelectDialog();
+      const z1Name = course.zones?.[active[0]]?.name || active[0] + '區';
+      const z2Name = course.zones?.[active[1]]?.name || active[1] + '區';
+      currentZoneLabels = { front: z1Name, back: z2Name };
+      showWarning(`已載入 ${name}（${z1Name}＋${z2Name}）。`, 'global');
+    }
+    function apply27ZoneCourse(course, zone1, zone2){
+      const z1 = course.zones[zone1];
+      const z2 = course.zones[zone2];
+      if (!z1 || !z2) return;
+      // 映射 HDCP：z1→單數，z2→偶數
+      const hdcpMap1 = {}, hdcpMap2 = {};
+      for(let h=1; h<=9; h++){
+        const origHdcp = parseInt(z1.hdcp[h]) || h;
+        hdcpMap1[h] = (origHdcp - 1) * 2 + 1; // 1,3,5,7,9,11,13,15,17
+      }
+      for(let h=1; h<=9; h++){
+        const origHdcp = parseInt(z2.hdcp[h]) || h;
+        hdcpMap2[h] = (origHdcp - 1) * 2 + 2; // 2,4,6,8,10,12,14,16,18
+      }
+      const par = {}, hdcp = {};
+      for(let h=1; h<=9; h++){
+        par[h] = z1.par[h];
+        hdcp[h] = hdcpMap1[h];
+      }
+      for(let h=1; h<=9; h++){
+        par[h+9] = z2.par[h];
+        hdcp[h+9] = hdcpMap2[h];
+      }
+      applyCourseData({ name: course.name, par, hdcp, _is27zone: true });
+    }
+ 
+    // ── 計分頁球洞編輯彈窗 ──
+    function openCourseEditDialog(){
+      const name = (document.getElementById('courseName')?.value || '').trim();
+      // 動態產生18洞輸入格
+      let bodyHtml = `<div class="new-course-hole-grid">
+        <div class="new-course-hole-row" style="font-weight:900; color:var(--primary-dark); font-size:.88rem;">
+          <div style="text-align:center;">洞</div>
+          <div style="text-align:center;">PAR</div>
+          <div style="text-align:center;">HDCP</div>
+        </div>`;
+      for(let h=1; h<=18; h++){
+        const pVal = getCellValue(`cell_P_${h}`);
+        const hVal = getCellValue(`cell_Hd_${h}`);
+        bodyHtml += `<div class="new-course-hole-row">
+          <div class="new-course-hole-num">${h}</div>
+          <div><input type="number" min="3" max="5" class="new-course-input" id="edit_P_${h}" value="${pVal}" placeholder=""></div>
+          <div><input type="number" min="1" max="18" class="new-course-input" id="edit_Hd_${h}" value="${hVal}" placeholder=""></div>
+        </div>`;
+      }
+      bodyHtml += `</div><button class="action-btn" style="width:100%; margin-top:14px;" onclick="saveCourseEditDialog()">確認儲存</button>`;
+      document.getElementById('courseEditBody').innerHTML = bodyHtml;
+      // 自動全選
+      document.getElementById('courseEditBody').querySelectorAll('input').forEach(el => {
+        el.addEventListener('focus', () => { try { el.select(); } catch(e){} });
+        el.addEventListener('click', () => { try { el.select(); } catch(e){} });
+        el.addEventListener('mouseup', e => e.preventDefault());
+      });
+      document.getElementById('courseEditDialogTitle').textContent = name ? `編輯：${name}` : '編輯球洞資訊';
+      document.getElementById('courseEditOverlay').classList.add('show');
+    }
+    function closeCourseEditDialog(){
+      document.getElementById('courseEditOverlay').classList.remove('show');
+    }
+    function saveCourseEditDialog(){
+      const name = (document.getElementById('courseName')?.value || '').trim();
+      const par = {}, hdcp = {};
+      for(let h=1; h<=18; h++){
+        par[h] = document.getElementById(`edit_P_${h}`)?.value || '';
+        hdcp[h] = document.getElementById(`edit_Hd_${h}`)?.value || '';
+      }
+      // 透過applyCourseData統一更新courseData和span
+      applyCourseData({ name, par, hdcp });
+      // 自動儲存
+      if(name){
+        const all = getSavedCourses();
+        const key = normalizeCourseName(name);
+        if(all[key]){
+          if(all[key].type === 27){
+            // 27洞不直接覆蓋zones，只更新當前18洞par/hdcp並提示
+            showWarning('球洞資訊已更新（僅本次球局，27洞球場資料未變更）。', 'scoring');
+          } else {
+            all[key] = { ...all[key], par, hdcp };
+            setSavedCourses(all);
+            showWarning(`「${name}」球洞資訊已自動儲存。`, 'scoring');
+          }
+        }
+      }
+      scheduleAutoSave();
+      closeCourseEditDialog();
+    }
+ 
+    function bindCourseAutoLoad(){
+      // 球場現改為下拉選單選擇，此函式保留供initUI呼叫
+    }
+ 
+ 
     function getSavedCourses(){
       try { return JSON.parse(localStorage.getItem('golfSavedCoursesV21') || '{}'); }
       catch(e){ return {}; }
     }
-
+ 
     function setSavedCourses(data){
       localStorage.setItem('golfSavedCoursesV21', JSON.stringify(data));
     }
-
+ 
     function buildCoursesBackupPayload(){
       return {
         version: 1,
@@ -1359,7 +2055,7 @@
         courses: getSavedCourses()
       };
     }
-
+ 
     function exportCoursesJson(){
       const courses = getSavedCourses();
       const keys = Object.keys(courses);
@@ -1382,11 +2078,11 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       showWarning(`球場資料已匯出：${filename}`, 'scoring');
     }
-
+ 
     function triggerImportCoursesJson(){
       document.getElementById('importCoursesFile')?.click();
     }
-
+ 
     function normalizeImportedCourses(raw){
       if (!raw || typeof raw !== 'object') throw new Error('格式錯誤');
       const sourceCourses = raw.courses && typeof raw.courses === 'object' ? raw.courses : raw;
@@ -1401,15 +2097,11 @@
           par[h] = item.par?.[h] ?? item.par?.[String(h)] ?? '';
           hdcp[h] = item.hdcp?.[h] ?? item.hdcp?.[String(h)] ?? '';
         }
-        for (let h = 1; h <= 18; h++) {
-          par[h] = String(par[h] ?? '').trim();
-          hdcp[h] = String(hdcp[h] ?? '').trim();
-        }
         normalized[normalizeCourseName(name)] = { name, par, hdcp };
       });
       return normalized;
     }
-
+ 
     function importCoursesJson(event){
       const file = event?.target?.files?.[0];
       if (!file) return;
@@ -1437,7 +2129,7 @@
       };
       reader.readAsText(file, 'utf-8');
     }
-
+ 
     function refreshSavedCourseSelect(selectedKey=''){
       const sel = document.getElementById('savedCourseSelect');
       if (!sel) return;
@@ -1450,40 +2142,72 @@
       sel.innerHTML = html;
       if (selectedKey && all[selectedKey]) sel.value = selectedKey;
     }
-
+ 
+    // PAR/HDCP 以 courseData 為主要來源，span 只負責顯示
+    function getCellValue(id){
+      const match = id.match(/^cell_(P|Hd)_(\d+)$/);
+      if (match) {
+        const type = match[1] === 'P' ? 'par' : 'hdcp';
+        const h = parseInt(match[2]);
+        return String(courseData[type][h] ?? '');
+      }
+      const el = document.getElementById(id);
+      if (!el) return '';
+      return el.tagName === 'SPAN' ? (el.textContent || '') : (el.value || '');
+    }
+    function setCellValue(id, val){
+      const match = id.match(/^cell_(P|Hd)_(\d+)$/);
+      if (match) {
+        const type = match[1] === 'P' ? 'par' : 'hdcp';
+        const h = parseInt(match[2]);
+        courseData[type][h] = val;
+      }
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === 'SPAN') el.textContent = val ?? '';
+      else el.value = val ?? '';
+    }
+ 
     function gatherCourseData(){
       const par = {}, hdcp = {};
       for (let h=1; h<=18; h++) {
-        par[h] = document.getElementById(`cell_P_${h}`)?.value ?? '';
-        hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value ?? '';
-      }
-      for (let h=1; h<=18; h++) {
-        par[h] = String(par[h] ?? '').trim();
-        hdcp[h] = String(hdcp[h] ?? '').trim();
+        par[h] = getCellValue(`cell_P_${h}`);
+        hdcp[h] = getCellValue(`cell_Hd_${h}`);
       }
       return { name: (document.getElementById('courseName').value || '').trim(), par, hdcp };
     }
-
+ 
     function applyCourseData(data){
       if (!data) return;
-      document.getElementById('courseName').value = data.name || '';
+      const courseNameEl = document.getElementById('courseName');
+      if (courseNameEl) courseNameEl.value = data.name || '';
+      // 18洞球場清空區域標籤
+      if (!data._is27zone) currentZoneLabels = null;
       for (let h=1; h<=18; h++) {
-        if (document.getElementById(`cell_P_${h}`)) document.getElementById(`cell_P_${h}`).value = data.par?.[h] ?? '';
-        if (document.getElementById(`cell_Hd_${h}`)) document.getElementById(`cell_Hd_${h}`).value = data.hdcp?.[h] ?? '';
+        courseData.par[h] = data.par?.[h] ?? '';
+        courseData.hdcp[h] = data.hdcp?.[h] ?? '';
+        setCellValue(`cell_P_${h}`, courseData.par[h]);
+        setCellValue(`cell_Hd_${h}`, courseData.hdcp[h]);
       }
       updateParTotals();
       playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
     }
-
+ 
     function handleSavedCourseSelect(){
       const key = document.getElementById('savedCourseSelect').value;
       if (!key) return;
       const all = getSavedCourses();
       if (!all[key]) return;
-      applyCourseData(all[key]);
-      showWarning('已載入球場資料。', 'global');
+      const course = all[key];
+      if (course.type === 27) {
+        document.getElementById('courseName').value = course.name;
+        showZoneSelectDialog(course.name);
+      } else {
+        applyCourseData(course);
+        showWarning('已載入球場資料。', 'global');
+      }
     }
-
+ 
     function saveCourseProfile(){
       const data = gatherCourseData();
       if (!data.name) {
@@ -1492,14 +2216,12 @@
       }
       const all = getSavedCourses();
       const key = normalizeCourseName(data.name);
-      all[key] = JSON.parse(JSON.stringify(data));
+      all[key] = data;
       setSavedCourses(all);
-      const saved = getSavedCourses();
-      if (saved[key]) applyCourseData(saved[key]);
       refreshSavedCourseSelect(key);
       showWarning('球場資料已儲存。', 'scoring');
     }
-
+ 
     function deleteCourseProfile(){
       const name = (document.getElementById('courseName').value || '').trim();
       if (!name) { alert('目前沒有可刪除的球場名稱。'); return; }
@@ -1512,15 +2234,15 @@
       refreshSavedCourseSelect('');
       showWarning('球場資料已刪除。', 'scoring');
     }
-
+ 
     function renderScoreboard(){
       const order = getPlayOrder();
       const { frontLastIdx, backLastIdx } = getNineSummaryInsertIndexes(order);
       const activePlayers = getActivePlayers();
       const snapshot = { par: {}, hdcp: {}, scores: {} };
       for (let h=1; h<=18; h++) {
-        snapshot.par[h] = document.getElementById(`cell_P_${h}`)?.value ?? '';
-        snapshot.hdcp[h] = document.getElementById(`cell_Hd_${h}`)?.value ?? '';
+        snapshot.par[h] = String(courseData.par[h] ?? '');
+        snapshot.hdcp[h] = String(courseData.hdcp[h] ?? '');
         playerIDs.forEach(p => { snapshot.scores[`${p}_${h}`] = document.getElementById(`cell_${p}_${h}`)?.value ?? ''; });
       }
       const wrapper = document.querySelector('.table-wrapper');
@@ -1530,30 +2252,34 @@
       document.getElementById('rowH').innerHTML = rowH;
       document.getElementById('rowP').innerHTML = '';
       document.getElementById('rowHd').innerHTML = '';
-
+ 
       let body = '';
       order.forEach((hole, idx) => {
         body += `<tr>`;
         body += `<th class="sticky-col sticky-hole">${hole}</th>`;
-        body += `<td class="sticky-par"><input type="number" id="cell_P_${hole}" oninput="handleCourseInput(${idx}, 'P', ${hole})"></td>`;
-        body += `<td class="sticky-hdcp"><input type="number" id="cell_Hd_${hole}" oninput="handleCourseInput(${idx}, 'Hd', ${hole})"></td>`;
+        body += `<td class="sticky-par"><span class="course-cell-display" id="cell_P_${hole}">${snapshot.par[hole] ?? ''}</span></td>`;
+        body += `<td class="sticky-hdcp"><span class="course-cell-display" id="cell_Hd_${hole}">${snapshot.hdcp[hole] ?? ''}</span></td>`;
         activePlayers.forEach(p => {
-          body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
+          body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" min="1" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
         });
         body += `</tr>`;
-
+ 
         if (idx === frontLastIdx) {
-          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">-</td>`;
+          const frontLabel = currentZoneLabels ? currentZoneLabels.front + '小計' : '小計';
+          const frontHdcp = currentZoneLabels ? currentZoneLabels.front : '-';
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">${frontLabel}</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">${frontHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
-
+ 
         if (idx === backLastIdx) {
-          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">-</td>`;
+          const backLabel = currentZoneLabels ? currentZoneLabels.back + '小計' : '小計';
+          const backHdcp = currentZoneLabels ? currentZoneLabels.back : '-';
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">${backLabel}</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">${backHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
         }
-
+ 
         if (idx === order.length - 1) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
           activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
@@ -1564,8 +2290,10 @@
       attachSelectAllBehavior(document.getElementById('mainTable'));
       applyNumericKeyboardHints(document.getElementById('mainTable'));
       for (let h=1; h<=18; h++) {
-        const pCell = document.getElementById(`cell_P_${h}`); if (pCell) pCell.value = snapshot.par[h] ?? '';
-        const hCell = document.getElementById(`cell_Hd_${h}`); if (hCell) hCell.value = snapshot.hdcp[h] ?? '';
+        const pCell = document.getElementById(`cell_P_${h}`);
+        if (pCell) { if (pCell.tagName === 'SPAN') pCell.textContent = snapshot.par[h] ?? ''; else pCell.value = snapshot.par[h] ?? ''; }
+        const hCell = document.getElementById(`cell_Hd_${h}`);
+        if (hCell) { if (hCell.tagName === 'SPAN') hCell.textContent = snapshot.hdcp[h] ?? ''; else hCell.value = snapshot.hdcp[h] ?? ''; }
         activePlayers.forEach(p => {
           const scoreCell = document.getElementById(`cell_${p}_${h}`); if (scoreCell) scoreCell.value = snapshot.scores[`${p}_${h}`] ?? '';
         });
@@ -1577,18 +2305,18 @@
       });
       updateNames();
     }
-
+ 
     function handleCourseInput(orderIdx, type, hole){
       updateParTotals();
       if (type === 'P') {
         document.getElementById(`cell_Hd_${hole}`).focus();
       }
     }
-
+ 
     function updateParTotals(){
       let out = 0, inn = 0;
-      for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
-      for (let h=10; h<=18; h++) inn += parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0;
+      for (let h=1; h<=9; h++) out += parseFloat(getCellValue(`cell_P_${h}`)) || 0;
+      for (let h=10; h<=18; h++) inn += parseFloat(getCellValue(`cell_P_${h}`)) || 0;
       const op = document.getElementById('out_P');
       const ip = document.getElementById('in_P');
       const tp = document.getElementById('tot_P');
@@ -1596,11 +2324,11 @@
       if (ip) ip.innerText = inn;
       if (tp) tp.innerText = out + inn;
     }
-
+ 
     function drawMark(player, hole, jump=true){
       const el = document.getElementById(`cell_${player}_${hole}`);
       const score = parseFloat(el?.value) || 0;
-      const par = parseFloat(document.getElementById(`cell_P_${hole}`)?.value) || 0;
+      const par = parseFloat(getCellValue(`cell_P_${hole}`)) || 0;
       const mark = document.getElementById(`mark_${player}_${hole}`);
       if (!mark) return;
       mark.className = '';
@@ -1614,7 +2342,7 @@
       updatePlayerTotals(player);
       if (jump) jumpPlayerCell(player, hole);
     }
-
+ 
     function jumpPlayerCell(player, hole){
       const order = getPlayOrder();
       const idx = order.indexOf(hole);
@@ -1624,7 +2352,7 @@
       if (rowIdx < activePlayers.length - 1) document.getElementById(`cell_${activePlayers[rowIdx+1]}_${hole}`)?.focus();
       else if (idx < order.length - 1) document.getElementById(`cell_${activePlayers[0]}_${order[idx+1]}`)?.focus();
     }
-
+ 
     function updatePlayerTotals(player){
       let out=0, inn=0;
       for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
@@ -1633,18 +2361,18 @@
       document.getElementById(`in_${player}`).innerText = inn;
       document.getElementById(`tot_${player}`).innerText = out + inn;
     }
-
+ 
     function getHoleInfo(hole){
       return {
-        par: parseFloat(document.getElementById(`cell_P_${hole}`)?.value) || 0,
-        hdcp: parseInt(document.getElementById(`cell_Hd_${hole}`)?.value) || 0
+        par: parseFloat(getCellValue(`cell_P_${hole}`)) || 0,
+        hdcp: parseInt(getCellValue(`cell_Hd_${hole}`)) || 0
       };
     }
-
+ 
     function getPlayerScore(player, hole){
       return parseFloat(document.getElementById(`cell_${player}_${hole}`)?.value) || 0;
     }
-
+ 
     function getGrossLabel(score, par){
       if (!score || !par) return {points:0, type:'none'};
       if (score === 1) return { points: parseFloat(document.getElementById('mHIO').value) || 0, type:'hio' };
@@ -1658,16 +2386,16 @@
       }
       return { points: 0, type:'none' };
     }
-
+ 
     function getMatchMultiplier(score, par){
       const label = getGrossLabel(score, par);
       return label.points > 0 ? label.points : 1;
     }
-
+ 
     function getActiveParPlayers(){
       return getActivePlayers().filter(i => document.getElementById(`p${i}_p`)?.checked && isParEnabled());
     }
-
+ 
     function getPairMeta(i,j){
       const checked = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
       let value = document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '';
@@ -1680,7 +2408,7 @@
       };
       return { checked, value, mode, specials };
     }
-
+ 
     function getStrokeAllowance(pairValue, hole){
       const info = getHoleInfo(hole);
       const par = info.par;
@@ -1699,12 +2427,12 @@
       if (hd > 0 && hd <= abs) return 1;
       return 0;
     }
-
+ 
     function getSpecialStrokeAllowance(value, par){
       if (!value || !par) return 0;
       return value < 0 ? Math.abs(value) : 0;
     }
-
+ 
     function getNetScoreForPair(player, opponent, hole){
       const meta = getPairMeta(player, opponent);
       const gross = getPlayerScore(player, hole);
@@ -1719,7 +2447,7 @@
       }
       return gross - allowance;
     }
-
+ 
     function buildMatchPairs(){
       const pairs = [];
       const activePlayers = getActivePlayers();
@@ -1735,13 +2463,13 @@
       });
       return pairs;
     }
-
+ 
     function validateBeforeResult(){
       const warnings = [];
       const errors = [];
       const hdcpNums = [];
       for (let h=1; h<=18; h++) {
-        const v = parseInt(document.getElementById(`cell_Hd_${h}`)?.value);
+        const v = parseInt(getCellValue(`cell_Hd_${h}`));
         if (!Number.isNaN(v)) hdcpNums.push(v);
       }
       const sorted = [...hdcpNums].sort((a,b)=>a-b);
@@ -1749,17 +2477,17 @@
       if (sorted.length !== 18 || sorted.some((v,i)=>v!==should[i])) {
         warnings.push('球場 HDCP 建議為 1~18 且不可重複。');
       }
-
+ 
       const start = parseInt(document.getElementById('startHole').value);
       if (!(start >= 1 && start <= 18)) errors.push('起始洞必須為 1~18。');
-
+ 
       if (isVegasEnabled()) {
         const ranks = getActivePlayers().map(i => document.getElementById(`vegasRank${i}`)?.value || '');
         if (ranks.some(v => !v)) errors.push('Vegas 起始洞排名未填完整。');
         const unique = new Set(ranks);
         if (unique.size !== 4) errors.push('Vegas 起始洞排名不可重複。');
       }
-
+ 
       if (isMatchEnabled()) {
         const pairs = buildMatchPairs();
         pairs.forEach(([a,b]) => {
@@ -1778,12 +2506,12 @@
           }
         });
       }
-
+ 
       showWarning(warnings.join('\n'), 'scoring');
       showDanger(errors.join('\n'), 'scoring');
       return { warnings, errors };
     }
-
+ 
     function showWarning(msg, area='global'){
       const map = { global:'global-warning', scoring:'scoring-warning' };
       const el = document.getElementById(map[area] || 'global-warning');
@@ -1792,7 +2520,7 @@
       el.style.display='block';
       el.innerText = msg;
     }
-
+ 
     function showDanger(msg, area='scoring'){
       const map = { scoring:'scoring-danger' };
       const el = document.getElementById(map[area] || 'scoring-danger');
@@ -1801,20 +2529,20 @@
       el.style.display='block';
       el.innerText = msg;
     }
-
+ 
     function getVegasStartTeams(){
       const mapping = {};
       getActivePlayers().forEach(i => { mapping[parseInt(document.getElementById(`vegasRank${i}`).value)] = i; });
       return [[mapping[1], mapping[4]], [mapping[2], mapping[3]]];
     }
-
-
+ 
+ 
     let currentVegasRankPickerPlayer = null;
-
+ 
     function getVegasRankLabel(value){
       return value ? `第${value}名` : '請選擇';
     }
-
+ 
     function openVegasRankPicker(playerId){
       currentVegasRankPickerPlayer = playerId;
       const title = document.getElementById('rankPickerTitle');
@@ -1829,13 +2557,13 @@
       }).join('');
       document.getElementById('rankPickerOverlay').classList.add('show');
     }
-
+ 
     function closeVegasRankPicker(event){
       if (event && event.target !== document.getElementById('rankPickerOverlay')) return;
       document.getElementById('rankPickerOverlay').classList.remove('show');
       currentVegasRankPickerPlayer = null;
     }
-
+ 
     function setVegasRank(playerId, value){
       const input = document.getElementById(`vegasRank${playerId}`);
       const btn = document.getElementById(`vegasRankBtn${playerId}`);
@@ -1844,7 +2572,7 @@
       closeVegasRankPicker();
       updateVegasPreview();
     }
-
+ 
     function updateVegasPreview(){
       const preview = document.getElementById('vegasStartPreview');
       if (!preview) return;
@@ -1857,7 +2585,7 @@
       const [[a,b],[c,d]] = getVegasStartTeams();
       preview.innerText = `起始洞分組：${nameOf(a)} + ${nameOf(b)} / ${nameOf(c)} + ${nameOf(d)}`;
     }
-
+ 
     function comparePlayersByBacktrack(a,b,currentOrderIndex,order){
       for (let step = currentOrderIndex-1; step >= 0; step--) {
         const hole = order[step];
@@ -1869,7 +2597,7 @@
       const rb = parseInt(document.getElementById(`vegasRank${b}`).value) || 99;
       return ra - rb;
     }
-
+ 
     function rankPlayersForVegas(currentOrderIndex, order){
       const arr = [...getActivePlayers()];
       const prevHole = order[currentOrderIndex-1];
@@ -1881,11 +2609,11 @@
       });
       return arr;
     }
-
+ 
     function formatSigned(value, suffix=''){
       return `${value > 0 ? '+' : ''}${value}${suffix}`;
     }
-
+ 
     function escapeHtml(str=''){
       return String(str)
         .replace(/&/g, '&amp;')
@@ -1894,51 +2622,45 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
-
+ 
     function toggleCollapse(button){
       const block = button.closest('.collapse-block');
       if (!block) return;
-      const body = block.querySelector(':scope > .collapse-body');
       const isOpen = block.classList.toggle('open');
-      if (body) body.style.display = isOpen ? 'block' : 'none';
       const icon = button.querySelector('.collapse-icon');
       if (icon) icon.textContent = isOpen ? '˄' : '˅';
-      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     }
-
+ 
     function buildCollapseBlock(title, innerHtml, open=false, level='minor'){
       const cls = `collapse-block ${level} ${open ? 'open' : ''}`.trim();
       const icon = open ? '˄' : '˅';
       return `<div class="${cls}"><button type="button" class="collapse-head ${level}" onclick="toggleCollapse(this)"><span class="collapse-title">${title}</span><span class="collapse-icon">${icon}</span></button><div class="collapse-body">${innerHtml}</div></div>`;
     }
-
-    function getNineDisplayOrder(){
-      const startHole = parseInt(document.getElementById('startHole')?.value, 10) || 1;
-      return startHole >= 10
-        ? [
-            { key: 'back', title: '後 9 洞', short: '後9' },
-            { key: 'front', title: '前 9 洞', short: '前9' }
-          ]
-        : [
-            { key: 'front', title: '前 9 洞', short: '前9' },
-            { key: 'back', title: '後 9 洞', short: '後9' }
-          ];
-    }
-
+ 
     function splitLogsByNine(logs){
+      const startHole = parseInt(document.getElementById('startHole')?.value) || 1;
+      const isBackFirst = startHole >= 10;
+      const first = isBackFirst
+        ? logs.filter(x => x.hole >= 10 && x.hole <= 18)
+        : logs.filter(x => x.hole >= 1 && x.hole <= 9);
+      const second = isBackFirst
+        ? logs.filter(x => x.hole >= 1 && x.hole <= 9)
+        : logs.filter(x => x.hole >= 10 && x.hole <= 18);
       return {
-        front: logs.filter(x => x.hole >= 1 && x.hole <= 9),
-        back: logs.filter(x => x.hole >= 10 && x.hole <= 18)
+        front: first,
+        back: second,
+        frontLabel: isBackFirst ? '後 9 洞' : '前 9 洞',
+        backLabel: isBackFirst ? '前 9 洞' : '後 9 洞'
       };
     }
-
-
+ 
+ 
     function renderSortedRows(values, names, activePlayers){
       const arr = activePlayers.map(i => ({ i, name:names[i], pts: values[i] ?? 0 }));
       arr.sort((a,b) => b.pts - a.pts || a.i - b.i);
       return arr.map(x => `<div class="res-row"><span>${escapeHtml(x.name)}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
     }
-
+ 
     function buildMatchDetails(order, names){
       const pairs = buildMatchPairs();
       return pairs.map(([a,b]) => {
@@ -1967,7 +2689,7 @@
         return { a, b, front, back, total: front + back, logs };
       });
     }
-
+ 
     function buildMatrixTable(title, matrix, totals, activePlayers, names, showPlus=false){
       const numberText = (value) => {
         if (value === null || value === undefined || Number.isNaN(value)) return '-';
@@ -1983,7 +2705,7 @@
       html += `</table>`;
       return html;
     }
-
+ 
     function buildParResults(order, activePlayers){
       const matrix = playerIDs.map(() => playerIDs.map(() => 0));
       const totals = [0,0,0,0];
@@ -2010,7 +2732,7 @@
       });
       return { matrix, totals };
     }
-
+ 
     function buildInlineStyleCss(){
       let css = '';
       Array.from(document.styleSheets || []).forEach(sheet => {
@@ -2019,7 +2741,7 @@
       css += `*{box-sizing:border-box;} body{margin:0 !important;} .export-wrap{display:none !important;} table{border-collapse:collapse;} input,select,button{font-family:inherit;}`;
       return css;
     }
-
+ 
     function inlineFormValues(root){
       root.querySelectorAll('input, textarea, select').forEach(el => {
         const tag = el.tagName.toLowerCase();
@@ -2041,374 +2763,21 @@
         if (tag === 'textarea') el.textContent = el.value || '';
       });
     }
-
-
+ 
+ 
     let exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
-
-    function downloadDataUrl(dataUrl, filename){
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = filename || 'golf-score.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-
-    function getExportMeta(){
-      const now = new Date();
-      return {
-        activePlayers: getActivePlayers(),
-        order: getPlayOrder(),
-        scoreRows: gatherScorecardRows(getPlayOrder(), getActivePlayers()),
-        dateText: `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`,
-        timeText: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
-        course: (document.getElementById('courseName')?.value || '').trim() || '未填寫球場'
-      };
-    }
-
-    function buildResultExportData(rows, meta){
-      const pad = 28;
-      const cardPad = 18;
-      const summaryColWidths = (() => {
-        const widths = [220];
-        const headerRow = rows[0] || [];
-        for (let i = 1; i < headerRow.length; i++) {
-          const header = headerRow[i] || '';
-          if (header === '金額') widths.push(120);
-          else widths.push(92);
-        }
-        return widths;
-      })();
-      const summaryTableW = summaryColWidths.reduce((sum, w) => sum + w, 0);
-      const matrixPlayerCount = meta.activePlayers.length;
-      const matrixColCount = matrixPlayerCount + 2;
-      const matrixCellW = 132;
-      const matrixTableW = matrixColCount * matrixCellW;
-      const commonSectionW = Math.max(summaryTableW, matrixTableW);
-      const width = pad * 2 + cardPad * 2 + commonSectionW;
-      const sectionX = pad + cardPad;
-      const rowH = 56;
-      const titleH = 118;
-      const extraSections = [];
-      if (isMatchEnabled()) extraSections.push({ title:'🏆 Match 比洞矩陣', htmlTarget:'match-output' });
-      if (isParEnabled()) extraSections.push({ title:'🎯 抓PAR 矩陣', htmlTarget:'par-output' });
-      if (isVegasEnabled()) extraSections.push({ title:'🎲 Vegas 點數', htmlTarget:'vegas-output' });
-      const detailCount = extraSections.reduce((sum, section) => {
-        const el = document.getElementById(section.htmlTarget);
-        if (!el) return sum;
-        if (section.htmlTarget === 'vegas-output') {
-          return sum + Math.max(1, el.querySelectorAll('.res-row').length);
-        }
-        const tableRows = el.querySelectorAll('tr').length;
-        const notes = el.querySelectorAll('.matrix-note').length;
-        return sum + Math.max(1, tableRows + notes);
-      }, 0);
-      const sectionH = titleH + rows.length * rowH + 28 + extraSections.length * 70 + detailCount * 52 + 18;
-      const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round((sectionH + pad * 2) * scale);
-      const ctx = canvas.getContext('2d');
-      ctx.scale(scale, scale);
-      ctx.fillStyle = '#eef4ec';
-      ctx.fillRect(0, 0, width, sectionH + pad * 2);
-
-      const x = pad;
-      const y = pad;
-      const w = width - pad * 2;
-      const h = sectionH;
-      ctx.fillStyle = '#ffffff';
-      drawRoundedRect(ctx, x, y, w, h, 22, true);
-      ctx.strokeStyle = '#d6e2d3';
-      ctx.lineWidth = 1;
-      drawRoundedRect(ctx, x, y, w, h, 22, false);
-
-      ctx.fillStyle = '#1e4d2b';
-      ctx.font = '900 34px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText('總結算', x + cardPad, y + 42);
-      ctx.font = '700 20px sans-serif';
-      ctx.fillStyle = '#4f6456';
-      ctx.fillText(`球場：${meta.course}`, x + cardPad, y + 74);
-      ctx.fillText(`日期：${meta.dateText}  ${meta.timeText}`, x + cardPad, y + 102);
-
-      let drawY = y + titleH;
-      rows.forEach((row, rIdx) => {
-        let drawX = sectionX;
-        row.forEach((cell, cIdx) => {
-          const cellW = summaryColWidths[cIdx] || 120;
-          ctx.fillStyle = rIdx === 0 ? '#2f6b3f' : '#ffffff';
-          ctx.fillRect(drawX, drawY, cellW, rowH);
-          ctx.strokeStyle = '#d6e2d3';
-          ctx.strokeRect(drawX, drawY, cellW, rowH);
-          ctx.fillStyle = rIdx === 0 ? '#ffffff' : '#18311f';
-          ctx.font = rIdx === 0 ? '900 20px sans-serif' : '800 21px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(cell, drawX + cellW/2, drawY + rowH/2);
-          drawX += cellW;
-        });
-        drawY += rowH;
-      });
-
-      drawY += 16;
-      extraSections.forEach(section => {
-        ctx.fillStyle = '#1e4d2b';
-        ctx.font = '900 26px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText(section.title, sectionX, drawY + 26);
-        drawY += 40;
-
-        const el = document.getElementById(section.htmlTarget);
-        if (!el) return;
-        if (section.htmlTarget === 'vegas-output') {
-          const rowsEl = Array.from(el.querySelectorAll('.res-row'));
-          rowsEl.forEach(rowEl => {
-            const spans = rowEl.querySelectorAll('span');
-            const left = spans[0]?.innerText?.trim() || '';
-            const right = spans[1]?.innerText?.trim() || '';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(sectionX, drawY, commonSectionW, 46);
-            ctx.strokeStyle = '#d6e2d3';
-            ctx.strokeRect(sectionX, drawY, commonSectionW, 46);
-            ctx.fillStyle = '#18311f';
-            ctx.font = '800 21px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(left, sectionX + 14, drawY + 23);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = right.startsWith('+') ? '#c33232' : '#18311f';
-            ctx.fillText(right, sectionX + commonSectionW - 14, drawY + 23);
-            drawY += 46;
-          });
-          if (!rowsEl.length) drawY += 10;
-        } else {
-          const tableRows = Array.from(el.querySelectorAll('tr'));
-          tableRows.forEach((tr, rIdx) => {
-            const cells = Array.from(tr.children);
-            if (!cells.length) return;
-            const cellW = commonSectionW / cells.length;
-            let drawX = sectionX;
-            cells.forEach((cell, cIdx) => {
-              ctx.fillStyle = rIdx === 0 ? '#f3f7f1' : (cell.classList.contains('total-col') ? '#eef5ec' : '#ffffff');
-              ctx.fillRect(drawX, drawY, cellW, 46);
-              ctx.strokeStyle = '#d6e2d3';
-              ctx.strokeRect(drawX, drawY, cellW, 46);
-              ctx.fillStyle = '#18311f';
-              ctx.font = rIdx === 0 || cIdx === 0 ? '900 19px sans-serif' : '800 19px sans-serif';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText((cell.innerText || cell.textContent || '').trim(), drawX + cellW/2, drawY + 23);
-              drawX += cellW;
-            });
-            drawY += 46;
-          });
-          const note = el.querySelector('.matrix-note');
-          if (note) {
-            ctx.fillStyle = '#667561';
-            ctx.font = '700 18px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'alphabetic';
-            ctx.fillText((note.innerText || note.textContent || '').trim(), sectionX, drawY + 20);
-            drawY += 28;
-          }
-        }
-        drawY += 18;
-      });
-
-      return canvas.toDataURL('image/png');
-    }
-
-    function buildScorecardExportData(meta){
-      const activePlayers = meta.activePlayers;
-      const order = meta.order;
-      const scoreRows = meta.scoreRows;
-      const pad = 28;
-      const cardPad = 18;
-      const holeW = 64;
-      const nameW = 140;
-      const summaryW = 106;
-      const rowH = 60;
-      const headH = 126;
-      const totalRows = 3 + scoreRows.length;
-      const frontOrder = order.filter(h => h <= 9);
-      const backOrder = order.filter(h => h >= 10);
-      const tableW = nameW + frontOrder.length * holeW + summaryW + backOrder.length * holeW + summaryW + summaryW;
-      const width = Math.max(1600, pad * 2 + cardPad * 2 + tableW + 20);
-      const sectionH = headH + totalRows * rowH + 30;
-      const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round((sectionH + pad * 2) * scale);
-      const ctx = canvas.getContext('2d');
-      ctx.scale(scale, scale);
-      ctx.fillStyle = '#eef4ec';
-      ctx.fillRect(0, 0, width, sectionH + pad * 2);
-
-      const x = pad;
-      const y = pad;
-      const w = width - pad * 2;
-      const h = sectionH;
-      ctx.fillStyle = '#ffffff';
-      drawRoundedRect(ctx, x, y, w, h, 22, true);
-      ctx.strokeStyle = '#d6e2d3';
-      ctx.lineWidth = 1;
-      drawRoundedRect(ctx, x, y, w, h, 22, false);
-
-      ctx.fillStyle = '#1e4d2b';
-      ctx.font = '900 34px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText('成績卡', x + cardPad, y + 42);
-      ctx.font = '700 20px sans-serif';
-      ctx.fillStyle = '#4f6456';
-      ctx.fillText(`球場：${meta.course}`, x + cardPad, y + 74);
-      ctx.fillText(`日期：${meta.dateText}  ${meta.timeText}`, x + cardPad, y + 102);
-
-      const x0 = x + Math.max(cardPad, Math.floor((w - tableW) / 2));
-      const y0 = y + headH;
-      const scorecardColumns = [...frontOrder.map(String), '小記', ...backOrder.map(String), '小記', '18洞總計'];
-      const headers = ['Hole', ...scorecardColumns];
-      const headerWidths = [nameW, ...frontOrder.map(() => holeW), summaryW, ...backOrder.map(() => holeW), summaryW, summaryW];
-
-      let drawX = x0;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      headers.forEach((text, idx) => {
-        const cellW = headerWidths[idx];
-        ctx.fillStyle = idx === 0 ? '#dbead8' : '#eef5ec';
-        ctx.fillRect(drawX, y0, cellW, rowH);
-        ctx.strokeStyle = '#d6e2d3';
-        ctx.strokeRect(drawX, y0, cellW, rowH);
-        ctx.fillStyle = '#1e4d2b';
-        ctx.font = '900 18px sans-serif';
-        ctx.fillText(text, drawX + cellW/2, y0 + rowH/2);
-        drawX += cellW;
-      });
-
-      const parY = y0 + rowH;
-      drawX = x0;
-      const parVals = ['PAR', ...frontOrder.map(h => String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || '')), String(frontOrder.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0) || ''), ...backOrder.map(h => String(parseFloat(document.getElementById(`cell_P_${h}`)?.value) || '')), String(backOrder.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0) || ''), String(order.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0), 0) || '')];
-      parVals.forEach((text, idx) => {
-        const cellW = headerWidths[idx];
-        ctx.fillStyle = idx === 0 ? '#e8f2e6' : '#f7faf6';
-        ctx.fillRect(drawX, parY, cellW, rowH);
-        ctx.strokeStyle = '#d6e2d3';
-        ctx.strokeRect(drawX, parY, cellW, rowH);
-        ctx.fillStyle = '#18311f';
-        ctx.font = '800 17px sans-serif';
-        ctx.fillText(text, drawX + cellW/2, parY + rowH/2);
-        drawX += cellW;
-      });
-
-      const hdcpY = y0 + rowH * 2;
-      drawX = x0;
-      const hdcpVals = ['HDCP', ...frontOrder.map(h => String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || '')), '', ...backOrder.map(h => String(parseInt(document.getElementById(`cell_Hd_${h}`)?.value) || '')), '', ''];
-      hdcpVals.forEach((text, idx) => {
-        const cellW = headerWidths[idx];
-        ctx.fillStyle = idx === 0 ? '#e8f2e6' : '#f7faf6';
-        ctx.fillRect(drawX, hdcpY, cellW, rowH);
-        ctx.strokeStyle = '#d6e2d3';
-        ctx.strokeRect(drawX, hdcpY, cellW, rowH);
-        ctx.fillStyle = '#18311f';
-        ctx.font = '800 17px sans-serif';
-        ctx.fillText(text, drawX + cellW/2, hdcpY + rowH/2);
-        drawX += cellW;
-      });
-
-      scoreRows.forEach((row, idx) => {
-        const drawY = y0 + rowH * (3 + idx);
-        drawX = x0;
-        const fill = idx % 2 === 0 ? '#ffffff' : '#f8fbf7';
-        const scoreByHole = Object.fromEntries(row.scores.map(item => [item.hole, item]));
-        const orderedFront = frontOrder.map(h => scoreByHole[h]);
-        const orderedBack = backOrder.map(h => scoreByHole[h]);
-        const vals = [row.name, ...orderedFront.map(item => item && item.score ? String(item.score) : ''), String(row.out || ''), ...orderedBack.map(item => item && item.score ? String(item.score) : ''), String(row.inn || ''), String(row.total || '')];
-        vals.forEach((text, colIdx) => {
-          const cellW = headerWidths[colIdx];
-          ctx.fillStyle = colIdx === 0 ? '#edf5eb' : fill;
-          ctx.fillRect(drawX, drawY, cellW, rowH);
-          ctx.strokeStyle = '#d6e2d3';
-          ctx.strokeRect(drawX, drawY, cellW, rowH);
-          ctx.fillStyle = '#18311f';
-          ctx.font = colIdx === 0 ? '900 17px sans-serif' : '800 18px sans-serif';
-          ctx.fillText(text, drawX + cellW/2, drawY + rowH/2);
-          const frontStart = 1;
-          const frontEnd = frontOrder.length;
-          const backStart = frontOrder.length + 2;
-          const backEnd = backStart + backOrder.length - 1;
-          if ((colIdx >= frontStart && colIdx <= frontEnd) || (colIdx >= backStart && colIdx <= backEnd)) {
-            const item = colIdx <= frontEnd ? orderedFront[colIdx - 1] : orderedBack[colIdx - backStart];
-            if (item && item.score && item.par) {
-              const diff = item.score - item.par;
-              ctx.strokeStyle = diff < 0 ? '#c33232' : diff > 0 ? '#2f2f2f' : 'transparent';
-              ctx.lineWidth = 2.5;
-              if (diff === -1) {
-                ctx.beginPath(); ctx.arc(drawX + cellW/2, drawY + rowH/2, 17, 0, Math.PI*2); ctx.stroke();
-              } else if (diff <= -2 || item.score === 1) {
-                ctx.beginPath(); ctx.arc(drawX + cellW/2, drawY + rowH/2, 17, 0, Math.PI*2); ctx.stroke();
-                ctx.beginPath(); ctx.arc(drawX + cellW/2, drawY + rowH/2, 13, 0, Math.PI*2); ctx.stroke();
-              } else if (diff === 1) {
-                ctx.strokeRect(drawX + cellW/2 - 16, drawY + rowH/2 - 16, 32, 32);
-              } else if (diff >= 2) {
-                ctx.strokeRect(drawX + cellW/2 - 16, drawY + rowH/2 - 16, 32, 32);
-                ctx.strokeRect(drawX + cellW/2 - 12, drawY + rowH/2 - 12, 24, 24);
-              }
-            }
-          }
-          drawX += cellW;
-        });
-      });
-
-      return canvas.toDataURL('image/png');
-    }
-
-    function exportSingleImage(type){
-      try {
-        const table = document.querySelector('#final-money .summary-table');
-        if (!table) {
-          alert('請先到結算頁產生資料後，再輸出圖片。');
-          return;
-        }
-        const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
-          Array.from(tr.children).map(td => (td.innerText || td.textContent || '').trim())
-        ).filter(r => r.length);
-        if (rows.length < 2) {
-          alert('目前沒有可輸出的結算資料。');
-          return;
-        }
-
-        const meta = getExportMeta();
-        const fileLabel = type === 'scorecard' ? '成績卡' : '比賽結果';
-        const filename = buildExportFileName([fileLabel]);
-        const dataUrl = type === 'scorecard'
-          ? buildScorecardExportData(meta)
-          : buildResultExportData(rows, meta);
-
-        exportPreviewState = { dataUrl, filename };
-        document.getElementById('exportPreviewImage').src = dataUrl;
-        document.getElementById('exportPreviewTitle').textContent = filename;
-        document.getElementById('exportPreviewOverlay').classList.add('show');
-        scheduleAutoSave();
-      } catch (err) {
-        console.error(err);
-        alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
-      }
-    }
-
+ 
     function sanitizeFileNamePart(str){
       return String(str || '').trim().replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || '未命名';
     }
-
+ 
     function buildExportFileName(parts){
       const course = sanitizeFileNamePart(document.getElementById('courseName')?.value || '球場');
       const stamp = new Date();
       const date = `${stamp.getFullYear()}${String(stamp.getMonth()+1).padStart(2,'0')}${String(stamp.getDate()).padStart(2,'0')}`;
-      return `${course}_${date}_${parts.join('+')}.png`;
+      return `${date}_${course}_${parts.join('+')}.png`;
     }
-
+ 
     function downloadPreviewImage(){
       if (!exportPreviewState.dataUrl) return;
       const a = document.createElement('a');
@@ -2418,19 +2787,19 @@
       a.click();
       a.remove();
     }
-
+ 
     function gatherScorecardRows(order, activePlayers){
       const summaryFor = (player, holes) => holes.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0), 0);
       return activePlayers.map(player => ({
         player,
         name: nameOf(player),
-        scores: order.map(h => ({ hole: h, score: parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0, par: parseFloat(document.getElementById(`cell_P_${h}`)?.value) || 0 })),
+        scores: order.map(h => ({ hole: h, score: parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0, par: parseFloat(getCellValue(`cell_P_${h}`)) || 0 })),
         out: summaryFor(player, order.filter(h => h <= 9)),
         inn: summaryFor(player, order.filter(h => h >= 10)),
         total: summaryFor(player, order)
       }));
     }
-
+ 
     function drawRoundedRect(ctx, x, y, w, h, r, fill){
       ctx.beginPath();
       ctx.moveTo(x + r, y);
@@ -2442,14 +2811,14 @@
       if (fill) ctx.fill();
       else ctx.stroke();
     }
-
+ 
     function closeExportPreview(event){
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
       exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
     }
-
+ 
     function clearCurrentRoundData(keepPreview=true){
       document.getElementById('courseName').value = '';
       document.getElementById('startHole').value = '1';
@@ -2487,7 +2856,375 @@
       if (!keepPreview) closeExportPreview();
       scheduleAutoSave();
     }
-
+ 
+    function exportResultPreview(type){
+      try {
+        const includeResult = (type === 'result');
+        const includeScorecard = (type === 'scorecard');
+        const table = document.querySelector('#final-money .summary-table');
+        if (!table) {
+          alert('請先到結算頁產生資料後，再輸出圖片。');
+          return;
+        }
+        const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+          Array.from(tr.children).map(td => (td.innerText || td.textContent || '').trim())
+        ).filter(r => r.length);
+        if (rows.length < 2) {
+          alert('目前沒有可輸出的結算資料。');
+          return;
+        }
+ 
+        const activePlayers = getActivePlayers();
+        const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
+        const order = getPlayOrder();
+        const scoreRows = gatherScorecardRows(order, activePlayers);
+        const now = new Date();
+        const dateText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+        const timeText = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const course = (document.getElementById('courseName')?.value || '').trim() || '未填寫球場';
+        const filename = buildExportFileName([type === 'result' ? '比賽結果' : '成績卡']);
+ 
+        // 收集各模式點數（比賽結果用）
+        const modeRows = [];
+        if (includeResult) {
+          // 從畫面上已計算的結果讀取各模式點數
+          if (isMatchEnabled()) {
+            const matchTable = document.querySelector('#match-output .matrix-table');
+            if (matchTable) {
+              const mRows = Array.from(matchTable.querySelectorAll('tr')).map(tr =>
+                Array.from(tr.children).map(td => (td.innerText||td.textContent||'').trim())
+              ).filter(r=>r.length);
+              if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows });
+            }
+          }
+          if (isParEnabled()) {
+            const parTable = document.querySelector('#par-output .matrix-table');
+            if (parTable) {
+              const pRows = Array.from(parTable.querySelectorAll('tr')).map(tr =>
+                Array.from(tr.children).map(td => (td.innerText||td.textContent||'').trim())
+              ).filter(r=>r.length);
+              if (pRows.length) modeRows.push({ title: '抓PAR', rows: pRows });
+            }
+          }
+          if (isVegasEnabled()) {
+            const vegasDiv = document.getElementById('vegas-output');
+            const vegasItems = vegasDiv ? Array.from(vegasDiv.querySelectorAll('.res-row')).map(row => {
+              const spans = row.querySelectorAll('span');
+              return [spans[0]?.textContent.trim()||'', spans[1]?.textContent.trim()||''];
+            }).filter(r=>r[0]) : [];
+            if (vegasItems.length) modeRows.push({ title: 'Vegas', items: vegasItems });
+          }
+        }
+ 
+        const pad = 28;
+        const cardPad = 18;
+        const width = 1600;
+        let currentY = pad;
+        const sections = [];
+ 
+        // 先用暫時canvas量所有表格的最佳寬度，取最大值
+        const tmpCanvas = document.createElement('canvas');
+        const tmpCtx = tmpCanvas.getContext('2d');
+        let unifiedW = 0;
+        let allColWidthsMap = {}; // 儲存每個mode的欄寬
+ 
+        if (includeResult) {
+          // 量總結算欄寬
+          tmpCtx.font = '900 18px sans-serif';
+          const summaryColW = rows[0].map((_, ci) => {
+            let maxW = 0;
+            rows.forEach(row => {
+              tmpCtx.font = '800 18px sans-serif';
+              const w = tmpCtx.measureText(row[ci] || '').width + 36;
+              if (w > maxW) maxW = w;
+            });
+            return maxW;
+          });
+          const summaryTotalW = summaryColW.reduce((a,b) => a+b, 0);
+          if (summaryTotalW > unifiedW) unifiedW = summaryTotalW;
+          allColWidthsMap['result'] = summaryColW;
+ 
+          // 量各模式矩陣欄寬
+          modeRows.forEach((mode, mi) => {
+            if (mode.rows) {
+              tmpCtx.font = '900 17px sans-serif';
+              const colCount = mode.rows[0]?.length || 1;
+              const colMaxW = Array(colCount).fill(0);
+              mode.rows.forEach(row => {
+                row.forEach((cell, ci) => {
+                  const w = tmpCtx.measureText(cell).width + 32;
+                  if (w > colMaxW[ci]) colMaxW[ci] = w;
+                });
+              });
+              const totalW = colMaxW.reduce((a,b) => a+b, 0);
+              if (totalW > unifiedW) unifiedW = totalW;
+              allColWidthsMap[`mode-${mi}`] = colMaxW;
+            } else if (mode.items) {
+              // Vegas: 量名稱+點數寬度
+              tmpCtx.font = '800 19px sans-serif';
+              let maxNameW = 0, maxPtsW = 0;
+              mode.items.forEach(([name, pts]) => {
+                const nw = tmpCtx.measureText(name).width + 28;
+                const pw = tmpCtx.measureText(pts || '').width + 28;
+                if (nw > maxNameW) maxNameW = nw;
+                if (pw > maxPtsW) maxPtsW = pw;
+              });
+              const totalW = maxNameW + maxPtsW;
+              if (totalW > unifiedW) unifiedW = totalW;
+              allColWidthsMap[`mode-${mi}`] = [maxNameW, maxPtsW];
+            }
+          });
+        }
+ 
+        if (includeResult) {
+          // 總結算用統一寬度，欄寬等比縮放
+          const rawColW = allColWidthsMap['result'] || [];
+          const rawTotal = rawColW.reduce((a,b) => a+b, 0) || unifiedW;
+          const scale = unifiedW / rawTotal;
+          const colWidths = rawColW.map(w => w * scale);
+          const rowH = 56;
+          const titleH = 118;
+          const sectionH = titleH + rows.length * rowH + 28;
+          const sectionW = unifiedW + cardPad * 2;
+          sections.push({ type:'result', x: pad, y: currentY, w: sectionW, h: sectionH, colWidths, rowH, titleH });
+          currentY += sectionH + 18;
+ 
+          // 各模式匯總區塊
+          modeRows.forEach((mode, mi) => {
+            const mRowH = 48;
+            const mTitleH = 56;
+            const dataRows = mode.rows || mode.items || [];
+            const mSectionH = mTitleH + dataRows.length * mRowH + 20;
+            const rawMColW = allColWidthsMap[`mode-${mi}`] || [];
+            const rawMTotal = rawMColW.reduce((a,b) => a+b, 0) || unifiedW;
+            const mScale = unifiedW / rawMTotal;
+            const scaledColW = rawMColW.map(w => w * mScale);
+            sections.push({ type:'mode-summary', x: pad, y: currentY, w: unifiedW + cardPad * 2, h: mSectionH, mRowH, mTitleH, mode, matrixW: unifiedW, matrixColWidths: mode.rows ? scaledColW : null, vegasCols: mode.items ? scaledColW : null });
+            currentY += mSectionH + 14;
+          });
+        }
+ 
+        if (includeScorecard) {
+          const holeW = 58;
+          const sideW = 64;
+          const summaryW = 96;
+          const rowH = 60;
+          const headH = 126;
+          const totalRows = 3 + scoreRows.length;
+          const sectionH = headH + totalRows * rowH + 30;
+          sections.push({ type:'scorecard', x: pad, y: currentY, w: width - pad * 2, h: sectionH, sideW, holeW, summaryW, rowH, headH });
+          currentY += sectionH + 18;
+        }
+ 
+        const height = currentY + pad;
+        // 找最寬的section決定canvas寬度
+        const maxSectionW = sections.reduce((m, s) => Math.max(m, s.x + s.w + pad), pad * 2);
+        const canvasWidth = includeResult ? Math.max(maxSectionW, pad * 2) : width;
+        const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(canvasWidth * scale);
+        canvas.height = Math.round(height * scale);
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+ 
+        ctx.fillStyle = '#eef4ec';
+        ctx.fillRect(0, 0, canvasWidth, height);
+ 
+        sections.forEach(section => {
+          ctx.fillStyle = '#ffffff';
+          drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, true);
+          ctx.strokeStyle = '#d6e2d3';
+          ctx.lineWidth = 1;
+          drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, false);
+ 
+          ctx.fillStyle = '#1e4d2b';
+          ctx.font = '900 34px sans-serif';
+          ctx.textAlign = 'left';
+          const title = section.type === 'result' ? '總結算' : section.type === 'scorecard' ? '成績卡' : '';
+          if (title) ctx.fillText(title, section.x + cardPad, section.y + 42);
+          ctx.font = '700 20px sans-serif';
+          ctx.fillStyle = '#4f6456';
+          ctx.fillText(`球場：${course}`, section.x + cardPad, section.y + 74);
+          ctx.fillText(`日期：${dateText}  ${timeText}`, section.x + cardPad, section.y + 102);
+ 
+          if (section.type === 'result') {
+            let y = section.y + section.titleH;
+            let xStart = section.x + cardPad;
+            rows.forEach((row, rIdx) => {
+              let x = xStart;
+              row.forEach((cell, cIdx) => {
+                const w = section.colWidths[cIdx] || 120;
+                ctx.fillStyle = rIdx === 0 ? '#2f6b3f' : '#ffffff';
+                ctx.fillRect(x, y, w, section.rowH);
+                ctx.strokeStyle = '#d6e2d3';
+                ctx.strokeRect(x, y, w, section.rowH);
+                ctx.fillStyle = rIdx === 0 ? '#ffffff' : '#18311f';
+                ctx.font = rIdx === 0 ? '900 18px sans-serif' : '800 18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(cell, x + w/2, y + section.rowH/2);
+                x += w;
+              });
+              y += section.rowH;
+            });
+          } else if (section.type === 'mode-summary') {
+            // 模式標題列
+            ctx.fillStyle = '#2f6b3f';
+            ctx.font = '900 22px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(section.mode.title, section.x + cardPad, section.y + section.mTitleH / 2);
+            let y = section.y + section.mTitleH;
+            const xStart = section.x + cardPad;
+            const dataRows = section.mode.rows || section.mode.items || [];
+            const matrixW = section.matrixW || (section.w - cardPad * 2);
+            dataRows.forEach((row, rIdx) => {
+              if (Array.isArray(row) && row.length === 2 && !section.mode.rows) {
+                // Vegas items: [name, pts] — 用統一寬度
+                ctx.fillStyle = rIdx % 2 === 0 ? '#f8fbf7' : '#ffffff';
+                ctx.fillRect(xStart, y, matrixW, section.mRowH);
+                ctx.strokeStyle = '#e4ebe2';
+                ctx.strokeRect(xStart, y, matrixW, section.mRowH);
+                ctx.fillStyle = '#18311f';
+                ctx.font = '800 18px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(row[0], xStart + 14, y + section.mRowH / 2);
+                const pts = row[1] || '';
+                ctx.fillStyle = pts.startsWith('+') ? '#c33232' : '#18311f';
+                ctx.textAlign = 'right';
+                ctx.fillText(pts, xStart + matrixW - 14, y + section.mRowH / 2);
+              } else if (Array.isArray(row)) {
+                // Matrix table rows — 用measureText自動欄寬
+                const colWidths = section.matrixColWidths;
+                let x = xStart;
+                row.forEach((cell, cIdx) => {
+                  const w = colWidths ? colWidths[cIdx] : (matrixW / row.length);
+                  ctx.fillStyle = rIdx === 0 ? '#3a7a4a' : (rIdx % 2 === 0 ? '#f8fbf7' : '#ffffff');
+                  ctx.fillRect(x, y, w, section.mRowH);
+                  ctx.strokeStyle = '#e4ebe2';
+                  ctx.strokeRect(x, y, w, section.mRowH);
+                  ctx.fillStyle = rIdx === 0 ? '#ffffff' : '#18311f';
+                  ctx.font = rIdx === 0 ? '900 18px sans-serif' : '800 18px sans-serif';
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'middle';
+                  ctx.fillText(cell, x + w / 2, y + section.mRowH / 2);
+                  x += w;
+                });
+              }
+              y += section.mRowH;
+            });
+          } else {
+            const x0 = section.x + cardPad;
+            const y0 = section.y + section.headH;
+            const frontOrder = order.filter(h => h <= 9);
+            const backOrder = order.filter(h => h >= 10);
+            const scorecardColumns = [...frontOrder.map(String), '小計', ...backOrder.map(String), '小計', '總計'];
+            const headers = ['Hole', 'PAR', 'HDCP', ...scorecardColumns];
+            const headerWidths = [section.sideW, section.sideW, section.sideW, ...frontOrder.map(() => section.holeW), section.summaryW, ...backOrder.map(() => section.holeW), section.summaryW, section.summaryW];
+            let x = x0;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            headers.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              const isInfo = idx < 3;
+              ctx.fillStyle = isInfo ? '#dbead8' : '#eef5ec';
+              ctx.fillRect(x, y0, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, y0, w, section.rowH);
+              ctx.fillStyle = '#1e4d2b';
+              ctx.font = '900 18px sans-serif';
+              ctx.fillText(text, x + w/2, y0 + section.rowH/2);
+              x += w;
+            });
+            // PAR row — 從span讀值，有小計
+            const parY = y0 + section.rowH;
+            x = x0;
+            const frontParSum = frontOrder.reduce((s,h) => s + (parseFloat(getCellValue(`cell_P_${h}`)) || 0), 0);
+            const backParSum = backOrder.reduce((s,h) => s + (parseFloat(getCellValue(`cell_P_${h}`)) || 0), 0);
+            const parVals = ['PAR', '', '', ...frontOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(frontParSum || ''), ...backOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(backParSum || ''), String((frontParSum + backParSum) || '')];
+            parVals.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillRect(x, parY, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, parY, w, section.rowH);
+              ctx.fillStyle = '#18311f';
+              ctx.font = '800 17px sans-serif';
+              ctx.fillText(text, x + w/2, parY + section.rowH/2);
+              x += w;
+            });
+            // HDCP row — 從span讀值，無小計
+            const hdcpY = y0 + section.rowH * 2;
+            x = x0;
+            const hdcpVals = ['HDCP', '', '', ...frontOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ...backOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ''];
+            hdcpVals.forEach((text, idx) => {
+              const w = headerWidths[idx];
+              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillRect(x, hdcpY, w, section.rowH);
+              ctx.strokeStyle = '#d6e2d3';
+              ctx.strokeRect(x, hdcpY, w, section.rowH);
+              ctx.fillStyle = '#18311f';
+              ctx.font = '800 17px sans-serif';
+              ctx.fillText(text, x + w/2, hdcpY + section.rowH/2);
+              x += w;
+            });
+            scoreRows.forEach((row, idx) => {
+              const y = y0 + section.rowH * (3 + idx);
+              x = x0;
+              const fill = idx % 2 === 0 ? '#ffffff' : '#f8fbf7';
+              const scoreByHole = Object.fromEntries(row.scores.map(item => [item.hole, item]));
+              const orderedFront = frontOrder.map(h => scoreByHole[h]);
+              const orderedBack = backOrder.map(h => scoreByHole[h]);
+              const vals = [row.name, '', '', ...orderedFront.map(item => item && item.score ? String(item.score) : ''), String(row.out || ''), ...orderedBack.map(item => item && item.score ? String(item.score) : ''), String(row.inn || ''), String(row.total || '')];
+              vals.forEach((text, colIdx) => {
+                const w = headerWidths[colIdx];
+                ctx.fillStyle = colIdx < 3 ? '#edf5eb' : fill;
+                ctx.fillRect(x, y, w, section.rowH);
+                ctx.strokeStyle = '#d6e2d3';
+                ctx.strokeRect(x, y, w, section.rowH);
+                ctx.fillStyle = '#18311f';
+                ctx.font = colIdx === 0 ? '900 17px sans-serif' : '800 18px sans-serif';
+                ctx.fillText(text, x + w/2, y + section.rowH/2);
+                if ((colIdx >= 3 && colIdx < 3 + frontOrder.length) || (colIdx > 3 + frontOrder.length && colIdx < 4 + frontOrder.length + backOrder.length)) {
+                  const item = colIdx < 3 + frontOrder.length
+                    ? orderedFront[colIdx - 3]
+                    : orderedBack[colIdx - (4 + frontOrder.length)];
+                  if (item && item.score && item.par) {
+                    const diff = item.score - item.par;
+                    ctx.strokeStyle = diff < 0 ? '#c33232' : diff > 0 ? '#2f2f2f' : 'transparent';
+                    ctx.lineWidth = 2.5;
+                    if (diff === -1) {
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 17, 0, Math.PI*2); ctx.stroke();
+                    } else if (diff <= -2 || item.score === 1) {
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 17, 0, Math.PI*2); ctx.stroke();
+                      ctx.beginPath(); ctx.arc(x + w/2, y + section.rowH/2, 13, 0, Math.PI*2); ctx.stroke();
+                    } else if (diff === 1) {
+                      ctx.strokeRect(x + w/2 - 16, y + section.rowH/2 - 16, 32, 32);
+                    } else if (diff >= 2) {
+                      ctx.strokeRect(x + w/2 - 16, y + section.rowH/2 - 16, 32, 32);
+                      ctx.strokeRect(x + w/2 - 12, y + section.rowH/2 - 12, 24, 24);
+                    }
+                  }
+                }
+                x += w;
+              });
+            });
+          }
+        });
+ 
+        const dataUrl = canvas.toDataURL('image/png');
+        exportPreviewState = { dataUrl, filename };
+        document.getElementById('exportPreviewImage').src = dataUrl;
+        document.getElementById('exportPreviewTitle').textContent = filename;
+        document.getElementById('exportPreviewOverlay').classList.add('show');
+        scheduleAutoSave();
+      } catch (err) {
+        console.error(err);
+        alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
+      }
+    }
+ 
     function calculateFinal(){
       const validation = validateBeforeResult();
       if (validation.errors.length) {
@@ -2499,7 +3236,7 @@
       const pointValue = parseFloat(document.getElementById('pointVal').value) || 0;
       const order = getPlayOrder();
       updateVegasPreview();
-
+ 
       const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
       const matchPoints = [0,0,0,0];
       const matchPairs = buildMatchPairs();
@@ -2525,11 +3262,11 @@
         matchMatrix[b][a] = bScore;
       });
       activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
-
+ 
       const parResult = buildParResults(order, activePlayers);
       const parPoints = parResult.totals;
       const parMatrix = parResult.matrix;
-
+ 
       const vegasPoints = [0,0,0,0];
       const vegasHoleWins = [];
       if (isVegasEnabled() && activePlayers.length === 4) {
@@ -2561,10 +3298,10 @@
           carry = 1;
         });
       }
-
+ 
       const totalPoints = [0,0,0,0];
       activePlayers.forEach(i => { totalPoints[i] = matchPoints[i] + parPoints[i] + vegasPoints[i]; });
-
+ 
       const matchDetails = buildMatchDetails(order, names);
       renderMatchOutput(matchMatrix, matchPoints, names, activePlayers);
       renderMatchDetailOutput(matchDetails, names);
@@ -2575,39 +3312,58 @@
       renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers);
       openTab('result');
     }
-
+ 
     function renderMatchOutput(matrix, totals, names, activePlayers){
       if (!isMatchEnabled()) {
         document.getElementById('match-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
         return;
       }
-      document.getElementById('match-output').innerHTML = buildMatrixTable('比洞', matrix, totals, activePlayers, names, false);
+      document.getElementById('match-output').innerHTML = buildMatrixTable('比洞賽', matrix, totals, activePlayers, names, false);
     }
-
+ 
     function renderMatchDetailOutput(details, names){
       if (!isMatchEnabled()) {
-        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
+        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日未啟用比洞賽</div>`;
         return;
       }
       if (!details.length) {
-        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日沒有比洞對戰明細</div>`;
+        document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日沒有比洞賽對戰明細</div>`;
         return;
       }
-      const nineOrder = getNineDisplayOrder();
-      let inner = '';
-      details.forEach((item) => {
+      let html = `<div class="detail-unified-list">`;
+      details.forEach((item, idx) => {
         const split = splitLogsByNine(item.logs);
-        const buildLogItems = (logs) => logs.length
-          ? `<div class="hole-win-log">${logs.map(log => `<div class="hole-win-item">${escapeHtml(log.text)}</div>`).join('')}</div>`
-          : `<div class="center-note">沒有完整紀錄</div>`;
-        const sectionsHtml = nineOrder.map(({ key, title }) => `<div class="detail-section"><div class="detail-section-title">${title}</div>${buildLogItems(split[key])}</div>`).join('');
-        const summaryText = nineOrder.map(({ key, short }) => `${short} ${formatSigned(key === 'front' ? item.front : item.back)}`).join('｜');
-        const summary = `<div class="detail-summary-card"><div class="detail-summary-top"><div class="detail-summary-title">${escapeHtml(names[item.a])} vs ${escapeHtml(names[item.b])}</div><div class="detail-summary-total">總計 ${formatSigned(item.total)}</div></div><div class="detail-summary-sub">${summaryText}</div></div>`;
-        inner += buildCollapseBlock(summary, sectionsHtml, false, 'minor');
+        const buildHalf = (label, logs, subTotal) => {
+          const items = logs.map(log => {
+            const isWin = log.delta !== 0;
+            return `<div class="detail-hole-row ${isWin ? 'win' : 'tie'}">
+              <span class="detail-hole-num">第 ${log.hole} 洞</span>
+              <span class="detail-hole-result">${escapeHtml(log.text.replace(`第 ${log.hole} 洞　`,''))}</span>
+            </div>`;
+          }).join('');
+          return `<div class="detail-half">
+            <div class="detail-half-head"><span>${label}</span><span class="detail-half-sub">${formatSigned(subTotal)}</span></div>
+            <div class="detail-hole-list">${items || '<div class="center-note" style="padding:8px 0;">無紀錄</div>'}</div>
+          </div>`;
+        };
+        const cardId = `match-pair-${idx}`;
+        html += `<div class="detail-match-card">
+          <div class="detail-match-head" style="cursor:pointer;" onclick="toggleDetailCard('${cardId}')">
+            <span class="detail-match-vs">${escapeHtml(names[item.a])} vs ${escapeHtml(names[item.b])}</span>
+            <span style="display:flex;align-items:center;gap:8px;">
+              <span class="detail-match-total">總計 ${formatSigned(item.total)}</span>
+              <span class="detail-card-icon" id="icon-${cardId}">▶</span>
+            </span>
+          </div>
+          <div class="detail-card-body" id="body-${cardId}" style="display:none;">
+            <div class="detail-halves">${buildHalf(split.frontLabel, split.front, item.front)}${buildHalf(split.backLabel, split.back, item.back)}</div>
+          </div>
+        </div>`;
       });
-      document.getElementById('match-detail-output').innerHTML = buildCollapseBlock('展開／收起比洞明細', inner, false, 'major');
+      html += `</div>`;
+      document.getElementById('match-detail-output').innerHTML = html;
     }
-
+ 
     function renderParOutput(matrix, totals, names, activePlayers){
       if (!isParEnabled()) {
         document.getElementById('par-output').innerHTML = `<div class="center-note">本日未啟用抓PAR</div>`;
@@ -2620,7 +3376,7 @@
       }
       document.getElementById('par-output').innerHTML = buildMatrixTable('抓PAR', matrix, totals, participants, names, false) + `<div class="matrix-note">右側總計就是每位玩家抓PAR點數的來源。</div>`;
     }
-
+ 
     function renderVegasOutput(points, names, activePlayers){
       if (!isVegasEnabled()) {
         document.getElementById('vegas-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
@@ -2628,7 +3384,7 @@
       }
       document.getElementById('vegas-output').innerHTML = renderSortedRows(points, names, activePlayers);
     }
-
+ 
     function renderVegasHoleOutput(logs, names){
       if (!isVegasEnabled()) {
         document.getElementById('vegas-hole-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
@@ -2639,24 +3395,51 @@
         return;
       }
       const split = splitLogsByNine(logs);
-      const buildSection = (title, sectionLogs) => {
-        const items = sectionLogs.length
-          ? `<div class="hole-win-log">${sectionLogs.map(item => item.tie ? `<div class="hole-win-item">第 ${item.hole} 洞　平手 0</div>` : `<div class="hole-win-item">第 ${item.hole} 洞　<strong>${item.winner.map(p => escapeHtml(names[p])).join('、')}</strong> +${item.points}</div>`).join('')}</div>`
-          : `<div class="center-note">沒有完整紀錄</div>`;
-        return buildCollapseBlock(`${title} 明細`, items, false, 'minor');
+      const buildHalf = (label, sectionLogs, halfIdx) => {
+        const tieCount = sectionLogs.filter(x => x.tie).length;
+        const decided = sectionLogs.filter(x => !x.tie);
+        const pointTotal = decided.reduce((sum, x) => sum + (x.points || 0), 0);
+        const cardId = `vegas-half-${halfIdx}`;
+        const items = sectionLogs.map(item => {
+          if (item.tie) {
+            const carried = item.carryAbandoned ? '（遞延結束）' : (isExtEnabled() ? '＋遞延' : '');
+            return `<div class="detail-hole-row tie">
+              <span class="detail-hole-num">第 ${item.hole} 洞</span>
+              <span class="detail-hole-result">平手 ${carried}</span>
+            </div>`;
+          }
+          const winnerNames = item.winner.map(p => escapeHtml(names[p])).join('、');
+          const teamA = item.teams[0].map(p => escapeHtml(names[p])).join('、');
+          const teamB = item.teams[1].map(p => escapeHtml(names[p])).join('、');
+          return `<div class="detail-hole-row win">
+            <span class="detail-hole-num">第 ${item.hole} 洞</span>
+            <span class="detail-hole-result"><strong>${winnerNames}</strong> +${item.points}</span>
+            <span class="detail-hole-teams">${teamA} vs ${teamB}</span>
+          </div>`;
+        }).join('');
+        return `<div class="detail-match-card">
+          <div class="detail-match-head" style="cursor:pointer;" onclick="toggleDetailCard('${cardId}')">
+            <span class="detail-match-vs">${label}</span>
+            <span style="display:flex;align-items:center;gap:8px;">
+              <span class="detail-match-total">勝負 ${decided.length} / 平手 ${tieCount} / +${pointTotal}</span>
+              <span class="detail-card-icon" id="icon-${cardId}">▶</span>
+            </span>
+          </div>
+          <div class="detail-card-body" id="body-${cardId}" style="display:none;">
+            <div class="detail-hole-list">${items || '<div class="center-note" style="padding:8px 0;">無紀錄</div>'}</div>
+          </div>
+        </div>`;
       };
-      const nineOrder = getNineDisplayOrder();
-      const inner = nineOrder.map(({ key, title }) => buildSection(title, split[key])).join('');
-      document.getElementById('vegas-hole-output').innerHTML = buildCollapseBlock('展開／收起 Vegas 明細', inner, false, 'major');
+      document.getElementById('vegas-hole-output').innerHTML = `<div class="detail-unified-list">${buildHalf(split.frontLabel, split.front, 0)}${buildHalf(split.backLabel, split.back, 1)}</div>`;
     }
-
+ 
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
       return;
     }
-
+ 
     function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers){
       const rows = activePlayers.map(i => ({ i, name:names[i], match: matchPoints[i], par: parPoints[i], vegas: vegasPoints[i], total: totalPoints[i], money: Math.round(totalPoints[i] * pointValue) })).sort((a,b) => b.total - a.total || a.i - b.i);
-      let html = `<table class="summary-table"><tr><th>玩家</th>${isMatchEnabled()?'<th>比洞</th>':''}${isParEnabled()?'<th>抓PAR</th>':''}${isVegasEnabled()?'<th>Vegas</th>':''}<th>總點數</th><th>金額</th></tr>`;
+      let html = `<table class="summary-table"><tr><th>玩家</th>${isMatchEnabled()?'<th>比洞賽</th>':''}${isParEnabled()?'<th>抓PAR</th>':''}${isVegasEnabled()?'<th>Vegas</th>':''}<th>總點數</th><th>金額</th></tr>`;
       rows.forEach(r => {
         const totalCls = r.total > 0 ? 'red-text' : r.total < 0 ? '' : 'muted';
         const moneyCls = r.money > 0 ? 'red-text' : r.money < 0 ? '' : 'muted';
@@ -2665,11 +3448,11 @@
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
     }
-
-
-    const AUTO_SAVE_KEY = 'golfAutoSaveBeta152';
+ 
+ 
+    const AUTO_SAVE_KEY = 'golfAutoSaveBeta15';
     let autoSaveTimer = null;
-
+ 
     function collectAppState(){
       const state = {
         version: APP_VERSION,
@@ -2696,8 +3479,8 @@
           par: !!document.getElementById('modePar')?.checked
         },
         course: {
-          par: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, document.getElementById(`cell_P_${h}`)?.value || '']; })),
-          hdcp: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, document.getElementById(`cell_Hd_${h}`)?.value || '']; }))
+          par: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, getCellValue(`cell_P_${h}`)]; })),
+          hdcp: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, getCellValue(`cell_Hd_${h}`)]; }))
         },
         scores: {},
         pairs: {}
@@ -2720,21 +3503,30 @@
       });
       return state;
     }
-
+ 
     function scheduleAutoSave(){
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         try { localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(collectAppState())); } catch (e) {}
       }, 200);
     }
-
+ 
     function restoreAutoSave(){
       try {
         const raw = localStorage.getItem(AUTO_SAVE_KEY);
         if (!raw) return;
         const state = JSON.parse(raw);
         if (!state || typeof state !== 'object') return;
-        if (state.courseName !== undefined) document.getElementById('courseName').value = state.courseName;
+        if (state.courseName !== undefined) {
+          document.getElementById('courseName').value = state.courseName;
+          // 同步下拉選單
+          const sel = document.getElementById('savedCourseSelect');
+          if (sel && state.courseName) {
+            const key = normalizeCourseName(state.courseName);
+            const all = getSavedCourses();
+            if (all[key]) sel.value = key;
+          }
+        }
         if (state.startHole !== undefined) document.getElementById('startHole').value = state.startHole;
         if (state.pointVal !== undefined) document.getElementById('pointVal').value = state.pointVal;
         Object.entries(state.multipliers || {}).forEach(([k,v]) => { if (document.getElementById(k)) document.getElementById(k).value = v; });
@@ -2755,11 +3547,12 @@
           if (document.getElementById(`vegasRank${i}`)) document.getElementById(`vegasRank${i}`).value = p.vegasRank || '';
         });
         renderVegasRankInputs();
-        renderScoreboard();
+        // 先更新courseData，renderScoreboard才能正確帶入PAR/HDCP
         for (let h=1; h<=18; h++) {
-          if (document.getElementById(`cell_P_${h}`)) document.getElementById(`cell_P_${h}`).value = state.course?.par?.[h] || '';
-          if (document.getElementById(`cell_Hd_${h}`)) document.getElementById(`cell_Hd_${h}`).value = state.course?.hdcp?.[h] || '';
+          courseData.par[h] = state.course?.par?.[h] || '';
+          courseData.hdcp[h] = state.course?.hdcp?.[h] || '';
         }
+        renderScoreboard();
         playerIDs.forEach(i => { for (let h=1; h<=18; h++) if (document.getElementById(`cell_${i}_${h}`)) document.getElementById(`cell_${i}_${h}`).value = state.scores?.[`${i}_${h}`] || ''; });
         pairKeys.forEach(key => {
           const [a,b] = key.split('_');
@@ -2782,14 +3575,13 @@
         console.error(e);
       }
     }
-
+ 
     function startNewGame(){
-      if (!confirm('確定要開啟新球局嗎？目前本場成績與設定中的即時資料會清空，但已儲存球場資料會保留。')) return;
       localStorage.removeItem(AUTO_SAVE_KEY);
       clearCurrentRoundData(false);
       showWarning('已開始新球局。', 'global');
     }
-
+ 
     window.onload = () => {
       initUI();
       restoreAutoSave();
