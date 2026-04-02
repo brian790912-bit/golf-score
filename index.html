@@ -891,17 +891,14 @@
  
     <div class="card">
       <h2>1. 球場</h2>
-      <div class="section-grid-2" style="margin-bottom:10px;">
-        <div>
-          <label><small>選擇球場</small></label>
-          <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
-          <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
-        </div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
+        <button type="button" class="new-game-btn" onclick="triggerImportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯入球場資料</button>
+        <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
+        <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
+        <button type="button" class="new-game-btn" onclick="startNewGame()">開新球局</button>
       </div>
-      <button type="button" class="new-game-btn" onclick="startNewGame()">新球局</button>
+      <input type="file" id="importCoursesFile" accept="application/json,.json" style="display:none" onchange="importCoursesJson(event)">
     </div>
  
     <div class="card">
@@ -990,14 +987,8 @@
   <div id="scoring" class="content">
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
-    <div class="card" id="course-save-area">
-      <h2>1. 球場資料</h2>
-      <div class="action-row">
-        <button class="action-btn" id="editCourseBtn" onclick="openCourseEditDialog()">編輯球洞資訊</button>
-        <button class="action-btn danger" id="deleteCourseBtn" onclick="deleteCourseProfile()">刪除球場資料</button>
-        <button class="action-btn secondary" onclick="triggerImportCoursesJson()">匯入球場資料</button>
-        <input type="file" id="importCoursesFile" accept="application/json,.json" style="display:none" onchange="importCoursesJson(event)">
-      </div>
+    <div class="card" id="course-save-area" style="padding:12px;">
+      <button class="action-btn" id="editCourseBtn" onclick="openCourseEditDialog()" style="width:100%;">編輯球洞資訊</button>
     </div>
  
     <div id="vegas-rank-area" class="card"></div>
@@ -1026,7 +1017,6 @@
         </div>
         <div class="final-area jpg-capture" id="result-capture">
           <h2>💰 總結算</h2>
-          <div class="result-version-inline"><div class="version-badge" style="margin:0;">Golf Score Beta 1.6</div></div>
           <div id="final-money"></div>
         </div>
       </div>
@@ -1415,6 +1405,12 @@
       applyNumericKeyboardHints(document);
       bindCourseAutoLoad();
       attachSettingAutoJump();
+      // 手機版下拉選單相容性
+      const sel = document.getElementById('savedCourseSelect');
+      if (sel) {
+        sel.addEventListener('change', handleSavedCourseSelect);
+        sel.addEventListener('touchend', () => setTimeout(handleSavedCourseSelect, 100));
+      }
     }
  
     function attachSettingAutoJump(){
@@ -1434,7 +1430,8 @@
     function renderPlayerCards(){
       let nameHtml = `<div class="card" style="padding:15px;"><h2>3. 玩家名稱</h2><div class="name-grid">`;
       playerIDs.forEach(i => {
-        nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" autocomplete="off" oninput="updateNames()"></div>`;
+        const isLast = i === playerIDs[playerIDs.length - 1];
+        nameHtml += `<div class="name-card"><label><small>${placeholders[i]}</small></label><input type="text" id="name${i}" placeholder="${placeholders[i]}" autocomplete="off" enterkeyhint="${isLast ? 'done' : 'next'}" oninput="updateNames()"></div>`;
       });
       nameHtml += `</div></div>`;
       document.getElementById('player-name-area').innerHTML = nameHtml;
@@ -2265,17 +2262,15 @@
         body += `</tr>`;
  
         if (idx === frontLastIdx) {
-          const frontLabel = currentZoneLabels ? currentZoneLabels.front + '小計' : '小計';
           const frontHdcp = currentZoneLabels ? currentZoneLabels.front : '-';
-          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">${frontLabel}</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">${frontHdcp}</td>`;
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">${frontHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
  
         if (idx === backLastIdx) {
-          const backLabel = currentZoneLabels ? currentZoneLabels.back + '小計' : '小計';
           const backHdcp = currentZoneLabels ? currentZoneLabels.back : '-';
-          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">${backLabel}</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">${backHdcp}</td>`;
+          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">${backHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
         }
@@ -2827,6 +2822,9 @@
       document.getElementById('mE4').value = '5';
       document.getElementById('mE5').value = '3';
       document.getElementById('mHIO').value = '10';
+      // 清空球場資料
+      courseData = { par: {}, hdcp: {} };
+      currentZoneLabels = null;
       playerIDs.forEach(i => { if (document.getElementById(`name${i}`)) document.getElementById(`name${i}`).value = ''; });
       updateNames(true);
       document.getElementById('modeVegas').checked = true;
@@ -3046,6 +3044,14 @@
           ctx.fillStyle = '#4f6456';
           ctx.fillText(`球場：${course}`, section.x + cardPad, section.y + 74);
           ctx.fillText(`日期：${dateText}  ${timeText}`, section.x + cardPad, section.y + 102);
+          // 版本號右上角
+          if (title) {
+            ctx.font = '600 18px sans-serif';
+            ctx.fillStyle = '#9aab98';
+            ctx.textAlign = 'right';
+            ctx.fillText(APP_VERSION, section.x + section.w - cardPad, section.y + 42);
+            ctx.textAlign = 'left';
+          }
  
           if (section.type === 'result') {
             let y = section.y + section.titleH;
@@ -3120,15 +3126,14 @@
             const frontOrder = order.filter(h => h <= 9);
             const backOrder = order.filter(h => h >= 10);
             const scorecardColumns = [...frontOrder.map(String), '小計', ...backOrder.map(String), '小計', '總計'];
-            const headers = ['Hole', 'PAR', 'HDCP', ...scorecardColumns];
-            const headerWidths = [section.sideW, section.sideW, section.sideW, ...frontOrder.map(() => section.holeW), section.summaryW, ...backOrder.map(() => section.holeW), section.summaryW, section.summaryW];
+            const headers = ['Hole', ...scorecardColumns];
+            const headerWidths = [section.sideW, ...frontOrder.map(() => section.holeW), section.summaryW, ...backOrder.map(() => section.holeW), section.summaryW, section.summaryW];
             let x = x0;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             headers.forEach((text, idx) => {
               const w = headerWidths[idx];
-              const isInfo = idx < 3;
-              ctx.fillStyle = isInfo ? '#dbead8' : '#eef5ec';
+              ctx.fillStyle = idx === 0 ? '#dbead8' : '#eef5ec';
               ctx.fillRect(x, y0, w, section.rowH);
               ctx.strokeStyle = '#d6e2d3';
               ctx.strokeRect(x, y0, w, section.rowH);
@@ -3137,15 +3142,15 @@
               ctx.fillText(text, x + w/2, y0 + section.rowH/2);
               x += w;
             });
-            // PAR row — 從span讀值，有小計
+            // PAR row
             const parY = y0 + section.rowH;
             x = x0;
             const frontParSum = frontOrder.reduce((s,h) => s + (parseFloat(getCellValue(`cell_P_${h}`)) || 0), 0);
             const backParSum = backOrder.reduce((s,h) => s + (parseFloat(getCellValue(`cell_P_${h}`)) || 0), 0);
-            const parVals = ['PAR', '', '', ...frontOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(frontParSum || ''), ...backOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(backParSum || ''), String((frontParSum + backParSum) || '')];
+            const parVals = ['PAR', ...frontOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(frontParSum || ''), ...backOrder.map(h => String(parseFloat(getCellValue(`cell_P_${h}`)) || '')), String(backParSum || ''), String((frontParSum + backParSum) || '')];
             parVals.forEach((text, idx) => {
               const w = headerWidths[idx];
-              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillStyle = idx === 0 ? '#e8f2e6' : '#f7faf6';
               ctx.fillRect(x, parY, w, section.rowH);
               ctx.strokeStyle = '#d6e2d3';
               ctx.strokeRect(x, parY, w, section.rowH);
@@ -3154,13 +3159,13 @@
               ctx.fillText(text, x + w/2, parY + section.rowH/2);
               x += w;
             });
-            // HDCP row — 從span讀值，無小計
+            // HDCP row
             const hdcpY = y0 + section.rowH * 2;
             x = x0;
-            const hdcpVals = ['HDCP', '', '', ...frontOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ...backOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ''];
+            const hdcpVals = ['HDCP', ...frontOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ...backOrder.map(h => String(parseInt(getCellValue(`cell_Hd_${h}`)) || '')), '', ''];
             hdcpVals.forEach((text, idx) => {
               const w = headerWidths[idx];
-              ctx.fillStyle = idx < 3 ? '#e8f2e6' : '#f7faf6';
+              ctx.fillStyle = idx === 0 ? '#e8f2e6' : '#f7faf6';
               ctx.fillRect(x, hdcpY, w, section.rowH);
               ctx.strokeStyle = '#d6e2d3';
               ctx.strokeRect(x, hdcpY, w, section.rowH);
@@ -3176,20 +3181,21 @@
               const scoreByHole = Object.fromEntries(row.scores.map(item => [item.hole, item]));
               const orderedFront = frontOrder.map(h => scoreByHole[h]);
               const orderedBack = backOrder.map(h => scoreByHole[h]);
-              const vals = [row.name, '', '', ...orderedFront.map(item => item && item.score ? String(item.score) : ''), String(row.out || ''), ...orderedBack.map(item => item && item.score ? String(item.score) : ''), String(row.inn || ''), String(row.total || '')];
+              const vals = [row.name, ...orderedFront.map(item => item && item.score ? String(item.score) : ''), String(row.out || ''), ...orderedBack.map(item => item && item.score ? String(item.score) : ''), String(row.inn || ''), String(row.total || '')];
               vals.forEach((text, colIdx) => {
                 const w = headerWidths[colIdx];
-                ctx.fillStyle = colIdx < 3 ? '#edf5eb' : fill;
+                ctx.fillStyle = colIdx === 0 ? '#edf5eb' : fill;
                 ctx.fillRect(x, y, w, section.rowH);
                 ctx.strokeStyle = '#d6e2d3';
                 ctx.strokeRect(x, y, w, section.rowH);
                 ctx.fillStyle = '#18311f';
                 ctx.font = colIdx === 0 ? '900 17px sans-serif' : '800 18px sans-serif';
                 ctx.fillText(text, x + w/2, y + section.rowH/2);
-                if ((colIdx >= 3 && colIdx < 3 + frontOrder.length) || (colIdx > 3 + frontOrder.length && colIdx < 4 + frontOrder.length + backOrder.length)) {
-                  const item = colIdx < 3 + frontOrder.length
-                    ? orderedFront[colIdx - 3]
-                    : orderedBack[colIdx - (4 + frontOrder.length)];
+                // 標記圈圈方框（colIdx 1~frontOrder.length 是前9，frontOrder.length+2 ~ frontOrder.length+1+backOrder.length 是後9）
+                if ((colIdx >= 1 && colIdx < 1 + frontOrder.length) || (colIdx > 1 + frontOrder.length && colIdx < 2 + frontOrder.length + backOrder.length)) {
+                  const item = colIdx < 1 + frontOrder.length
+                    ? orderedFront[colIdx - 1]
+                    : orderedBack[colIdx - (2 + frontOrder.length)];
                   if (item && item.score && item.par) {
                     const diff = item.score - item.par;
                     ctx.strokeStyle = diff < 0 ? '#c33232' : diff > 0 ? '#2f2f2f' : 'transparent';
