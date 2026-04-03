@@ -2124,9 +2124,7 @@
       }
       const payload = buildCoursesBackupPayload();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-      const stamp = new Date();
-      const pad = n => String(n).padStart(2, '0');
-      const filename = `golf-courses-backup-${stamp.getFullYear()}${pad(stamp.getMonth()+1)}${pad(stamp.getDate())}-${pad(stamp.getHours())}${pad(stamp.getMinutes())}${pad(stamp.getSeconds())}.json`;
+      const filename = `golf-courses-backup.json`;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -2156,7 +2154,26 @@
           par[h] = item.par?.[h] ?? item.par?.[String(h)] ?? '';
           hdcp[h] = item.hdcp?.[h] ?? item.hdcp?.[String(h)] ?? '';
         }
-        normalized[normalizeCourseName(name)] = { name, par, hdcp };
+        if (item.type === 27 && item.zones) {
+          // 27洞球場保留完整資料
+          const zones = {};
+          ['A','B','C'].forEach(zone => {
+            if (!item.zones[zone]) return;
+            const zPar = {}, zHdcp = {};
+            for (let h = 1; h <= 9; h++) {
+              zPar[h] = item.zones[zone].par?.[h] ?? item.zones[zone].par?.[String(h)] ?? '';
+              zHdcp[h] = item.zones[zone].hdcp?.[h] ?? item.zones[zone].hdcp?.[String(h)] ?? '';
+            }
+            zones[zone] = {
+              par: zPar,
+              hdcp: zHdcp,
+              name: item.zones[zone].name || item.zoneNames?.[zone] || `${zone}區`
+            };
+          });
+          normalized[normalizeCourseName(name)] = { name, type: 27, zones, zoneNames: item.zoneNames || {} };
+        } else {
+          normalized[normalizeCourseName(name)] = { name, par, hdcp };
+        }
       });
       return normalized;
     }
