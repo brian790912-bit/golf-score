@@ -774,7 +774,8 @@
     .zone-select-head {
       background: linear-gradient(180deg, var(--primary), var(--primary-dark));
       color: #fff; padding: 16px 18px;
-      font-size: 1.08rem; font-weight: 900; text-align: center;
+      font-size: 1.08rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .zone-select-body { padding: 18px; }
     .zone-select-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
@@ -893,8 +894,21 @@
       <h2>1. 球場</h2>
       <div style="display:flex; flex-direction:column; gap:8px;">
         <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
+        <!-- 起始洞設定：18洞顯示輸入框，27洞顯示區域+洞號 -->
+        <div id="startHoleArea18" style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:.96rem; font-weight:900; color:var(--text);">起始洞</span>
+          <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()" style="width:72px; min-height:40px; padding:6px 8px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
+        </div>
+        <div id="startHoleArea27" style="display:none; align-items:center; gap:10px;">
+          <span style="font-size:.96rem; font-weight:900; color:var(--text);">起始洞</span>
+          <select id="startZone" onchange="updateStartHole27()" style="flex:1; min-height:40px; padding:6px 8px; font-size:.96rem; border:2px solid #d2ddd0; border-radius:10px;"></select>
+          <span style="font-size:.96rem; font-weight:900;">第</span>
+          <input type="number" id="startHole27Num" value="1" min="1" max="9" oninput="updateStartHole27()" style="width:60px; min-height:40px; padding:6px 8px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
+          <span style="font-size:.96rem; font-weight:900;">洞</span>
+        </div>
         <button type="button" class="new-game-btn" onclick="triggerImportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯入球場資料</button>
         <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
+        <div class="small-note" style="margin-top:-4px; margin-bottom:4px;">建議定期匯出以防資料遺失</div>
         <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
         <button type="button" class="new-game-btn" onclick="startNewGame()">開新球局</button>
       </div>
@@ -934,10 +948,6 @@
           <div class="mode-sub-row" id="modeRowExt" onclick="toggleMainMode('extMode')">
             <input type="checkbox" id="extMode">
             <span>平手遞延</span>
-          </div>
-          <div class="mode-sub-row">
-            <span>起始洞</span>
-            <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()" style="width:72px; min-height:36px; padding:6px 8px; font-size:.96rem; text-align:center;">
           </div>
         </div>
  
@@ -1094,7 +1104,10 @@
   <!-- 27洞選區彈窗 -->
   <div class="zone-select-overlay" id="zoneSelectOverlay">
     <div class="zone-select-sheet">
-      <div class="zone-select-head">選擇今天打哪兩區</div>
+      <div class="zone-select-head">
+        <span>選擇今天打哪兩區</span>
+        <button class="new-course-close-btn" onclick="cancelZoneSelect()">✕</button>
+      </div>
       <div class="zone-select-body">
         <div style="font-size:.9rem; color:var(--muted); text-align:center; margin-bottom:4px;"><span id="zoneSelectDialogName"></span></div>
         <div style="font-size:.88rem; color:var(--muted); text-align:center; margin-bottom:8px;">請選擇 2 個區域</div>
@@ -1888,13 +1901,18 @@
       const btnsEl = document.getElementById('zoneSelectBtns');
       btnsEl.innerHTML = ['A','B','C'].map(zone => {
         const zoneName = course.zones?.[zone]?.name || course.zoneNames?.[zone] || `${zone}區`;
-        return `<button class="zone-select-btn" data-zone="${zone}" onclick="toggleZoneSelect('${zone}')">${zoneName}</button>`;
+        return `<button class="zone-select-btn" data-zone="${zone}" data-zone-name="${zoneName}" onclick="toggleZoneSelect('${zone}')">${zoneName}</button>`;
       }).join('');
     }
     function closeZoneSelectDialog(){
       document.getElementById('zoneSelectOverlay').classList.remove('show');
-      resetZoneSelectBadges();
       document.querySelectorAll('#zoneSelectBtns .zone-select-btn').forEach(b => b.classList.remove('active'));
+    }
+    function cancelZoneSelect(){
+      // 關閉彈窗並把下拉選單重置回「請選擇」
+      closeZoneSelectDialog();
+      const sel = document.getElementById('savedCourseSelect');
+      if (sel) sel.value = '';
     }
     function toggleZoneSelect(zone){
       const btns = Array.from(document.querySelectorAll('#zoneSelectBtns .zone-select-btn'));
@@ -1906,23 +1924,9 @@
       } else if (activeZones.length < 2) {
         btn.classList.add('active');
       }
-      // 更新順序數字
-      const activeBtns = btns.filter(b => b.classList.contains('active'));
-      btns.forEach(b => {
-        const zoneName = b.dataset.zoneName || b.textContent.replace(/[①②]/g,'').trim();
-        b.dataset.zoneName = zoneName;
-        const orderIdx = activeBtns.indexOf(b);
-        b.innerHTML = orderIdx === 0 ? `${zoneName}<span class="zone-order-badge">①</span>` :
-                      orderIdx === 1 ? `${zoneName}<span class="zone-order-badge">②</span>` :
-                      zoneName;
-      });
     }
     function resetZoneSelectBadges(){
-      document.querySelectorAll('#zoneSelectBtns .zone-select-btn').forEach(b => {
-        const zoneName = b.dataset.zoneName || b.textContent.replace(/[①②]/g,'').trim();
-        b.dataset.zoneName = zoneName;
-        b.textContent = zoneName;
-      });
+      // 無需重置，已移除①②
     }
     function confirmZoneSelect(){
       const active = Array.from(document.querySelectorAll('#zoneSelectBtns .zone-select-btn.active')).map(b => b.dataset.zone);
@@ -1934,27 +1938,85 @@
       const all = getSavedCourses();
       const key = normalizeCourseName(name);
       const course = all[key];
-      apply27ZoneCourse(course, active[0], active[1]);
+      // 修復舊格式：確保zones有name屬性
+      active.forEach(zone => {
+        if (course.zones?.[zone] && !course.zones[zone].name) {
+          course.zones[zone].name = course.zoneNames?.[zone] || `${zone}區`;
+        }
+      });
+      // 儲存選擇的區域資訊，供起始洞下拉使用
+      const z1Key = active[0], z2Key = active[1];
+      const z1Name = course.zones?.[z1Key]?.name || course.zoneNames?.[z1Key] || `${z1Key}區`;
+      const z2Name = course.zones?.[z2Key]?.name || course.zoneNames?.[z2Key] || `${z2Key}區`;
+      // 儲存27洞選區資訊
+      document.getElementById('zoneSelectOverlay').dataset.selectedZones = JSON.stringify([
+        { key: z1Key, name: z1Name },
+        { key: z2Key, name: z2Name }
+      ]);
+      apply27ZoneCourse(course, z1Key, z2Key, z1Key); // 預設第一個區為起始區
       refreshSavedCourseSelect(key);
       closeZoneSelectDialog();
-      const z1Name = course.zones?.[active[0]]?.name || active[0] + '區';
-      const z2Name = course.zones?.[active[1]]?.name || active[1] + '區';
       currentZoneLabels = { front: z1Name, back: z2Name };
+      // 更新起始洞下拉選單
+      updateStartHoleUI27([
+        { key: z1Key, name: z1Name },
+        { key: z2Key, name: z2Name }
+      ], z1Key);
       showWarning(`已載入 ${name}（${z1Name}＋${z2Name}）。`, 'global');
     }
-    function apply27ZoneCourse(course, zone1, zone2){
+ 
+    // 更新27洞起始洞UI
+    function updateStartHoleUI27(zones, defaultZoneKey){
+      document.getElementById('startHoleArea18').style.display = 'none';
+      document.getElementById('startHoleArea27').style.display = 'flex';
+      const sel = document.getElementById('startZone');
+      sel.innerHTML = zones.map(z => `<option value="${z.key}">${z.name}</option>`).join('');
+      sel.value = defaultZoneKey;
+      document.getElementById('startHole27Num').value = 1;
+      updateStartHole27();
+    }
+ 
+    // 27洞起始洞變更時更新startHole並重新計算HDCP
+    function updateStartHole27(){
+      const zoneKey = document.getElementById('startZone')?.value;
+      const holeNum = parseInt(document.getElementById('startHole27Num')?.value) || 1;
+      // 判斷起始洞在哪個區，該區用單數HDCP
+      const name = document.getElementById('courseName')?.value || '';
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      const course = all[key];
+      if (!course || course.type !== 27) return;
+      // 取得兩個已選區域
+      const zonesData = JSON.parse(document.getElementById('zoneSelectOverlay').dataset.selectedZones || '[]');
+      if (zonesData.length !== 2) return;
+      const [z1, z2] = zonesData;
+      // 起始洞所在區為第一區（單數HDCP），另一區為第二區（偶數HDCP）
+      const firstZone = zoneKey === z1.key ? z1.key : z2.key;
+      const secondZone = zoneKey === z1.key ? z2.key : z1.key;
+      const firstZoneName = zoneKey === z1.key ? z1.name : z2.name;
+      const secondZoneName = zoneKey === z1.key ? z2.name : z1.name;
+      apply27ZoneCourse(course, firstZone, secondZone, firstZone);
+      currentZoneLabels = { front: firstZoneName, back: secondZoneName };
+      // 計算實際起始洞號（第一區的第holeNum洞 = holeNum，第二區的第holeNum洞 = holeNum+9）
+      const actualStartHole = (zoneKey === firstZone) ? holeNum : holeNum + 9;
+      const startHoleEl = document.getElementById('startHole');
+      if (startHoleEl) startHoleEl.value = actualStartHole;
+      renderScoreboard();
+    }
+ 
+    function apply27ZoneCourse(course, zone1, zone2, startZoneKey){
       const z1 = course.zones[zone1];
       const z2 = course.zones[zone2];
       if (!z1 || !z2) return;
-      // 映射 HDCP：z1→單數，z2→偶數
+      // 映射 HDCP：zone1（起始區）→單數，zone2→偶數
       const hdcpMap1 = {}, hdcpMap2 = {};
       for(let h=1; h<=9; h++){
         const origHdcp = parseInt(z1.hdcp[h]) || h;
-        hdcpMap1[h] = (origHdcp - 1) * 2 + 1; // 1,3,5,7,9,11,13,15,17
+        hdcpMap1[h] = (origHdcp - 1) * 2 + 1;
       }
       for(let h=1; h<=9; h++){
         const origHdcp = parseInt(z2.hdcp[h]) || h;
-        hdcpMap2[h] = (origHdcp - 1) * 2 + 2; // 2,4,6,8,10,12,14,16,18
+        hdcpMap2[h] = (origHdcp - 1) * 2 + 2;
       }
       const par = {}, hdcp = {};
       for(let h=1; h<=9; h++){
@@ -2178,8 +2240,12 @@
       if (!data) return;
       const courseNameEl = document.getElementById('courseName');
       if (courseNameEl) courseNameEl.value = data.name || '';
-      // 18洞球場清空區域標籤
-      if (!data._is27zone) currentZoneLabels = null;
+      // 依球場類型切換起始洞UI
+      if (!data._is27zone) {
+        currentZoneLabels = null;
+        document.getElementById('startHoleArea18').style.display = 'flex';
+        document.getElementById('startHoleArea27').style.display = 'none';
+      }
       for (let h=1; h<=18; h++) {
         courseData.par[h] = data.par?.[h] ?? '';
         courseData.hdcp[h] = data.hdcp?.[h] ?? '';
@@ -2188,6 +2254,8 @@
       }
       updateParTotals();
       playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
+      // 重繪計分頁讓小計列HDCP欄更新
+      renderScoreboard();
     }
  
     function handleSavedCourseSelect(){
@@ -2201,6 +2269,7 @@
         showZoneSelectDialog(course.name);
       } else {
         applyCourseData(course);
+        renderScoreboard();
         showWarning('已載入球場資料。', 'global');
       }
     }
@@ -2822,9 +2891,13 @@
       document.getElementById('mE4').value = '5';
       document.getElementById('mE5').value = '3';
       document.getElementById('mHIO').value = '10';
-      // 清空球場資料
+      // 清空球場資料，重置起始洞UI為18洞預設
       courseData = { par: {}, hdcp: {} };
       currentZoneLabels = null;
+      const area18 = document.getElementById('startHoleArea18');
+      const area27 = document.getElementById('startHoleArea27');
+      if (area18) area18.style.display = 'flex';
+      if (area27) area27.style.display = 'none';
       playerIDs.forEach(i => { if (document.getElementById(`name${i}`)) document.getElementById(`name${i}`).value = ''; });
       updateNames(true);
       document.getElementById('modeVegas').checked = true;
