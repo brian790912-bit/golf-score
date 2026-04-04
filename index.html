@@ -124,7 +124,7 @@
       font-weight: 900;
       background: #fff;
       color: var(--text);
-      min-height: 50px;
+      min-height: 48px;
       transition: border-color .16s ease, box-shadow .16s ease;
     }
     input:focus, select:focus {
@@ -139,6 +139,10 @@
       pointer-events: none;
     }
     .check-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #match-players-area .check-item,
+    #par-players-area .check-item { min-height: 48px !important; height: 48px !important; padding: 0 12px !important; font-size: .96rem !important; }
+    .player-check-card { transition: border-color .15s; }
+    .player-check-active { border-color: var(--primary) !important; background: var(--primary-soft) !important; color: var(--primary-dark) !important; }
     .check-item {
       background: #fff;
       border: 2px solid #cfdbcf;
@@ -151,8 +155,11 @@
       font-weight: 900;
       cursor: pointer;
       user-select: none;
-      min-height: 52px;
+      min-height: 48px;
     }
+    .check-item.pair-toggle-item { min-height: 48px !important; height: 48px !important; padding: 0 12px !important; font-size: .92rem !important; background: #fff !important; border: 1px solid var(--border) !important; border-radius: 14px !important; box-shadow: 0 6px 16px rgba(31,66,40,.04) !important; }
+    .check-item.pair-toggle-item.active { background: var(--primary-soft) !important; border-color: var(--primary) !important; }
+    .check-item.pair-toggle-item.disabled { background: #f1f3f0 !important; border-color: #e1e6df !important; color: #adb6ab !important; }
     .check-item.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); }
     .check-item.disabled { background: #f1f3f0; border-color: #e1e6df; color: #adb6ab; cursor: not-allowed; }
     .mode-stack { display: grid; gap: 8px; }
@@ -162,15 +169,16 @@
       gap: 10px;
       border: 2px solid #cfdbcf;
       border-radius: 14px;
-      padding: 13px 14px;
+      padding: 0 14px;
       cursor: pointer;
       user-select: none;
-      min-height: 54px;
+      min-height: 48px;
+      height: 48px;
       background: #fff;
     }
     .mode-row.active { background: linear-gradient(180deg, #edf7ee, #e5f2e6); border-color: var(--primary); color: var(--primary-dark); }
     .mode-row.disabled { background: #f1f3f0; border-color: #e1e6df; color: #a5afa2; cursor: not-allowed; }
-    .mode-child { margin-left: 18px; }
+    .mode-child { margin-left: 0; }
     .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -191,10 +199,10 @@
     .scoreboard-vertical .sticky-hole,
     .scoreboard-vertical .sticky-par,
     .scoreboard-vertical .sticky-hdcp { position: sticky; }
-    .scoreboard-vertical .sticky-hole { left: 0; z-index: 64; background: #f8fbf7; }
-    .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #f8fbf7; }
-    .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #f8fbf7; }
-    .scoreboard-vertical thead th { position: sticky; top: var(--sticky-top); z-index: 70; background: #f8fbf7; box-shadow: 0 1px 0 #dbe5d8; }
+    .scoreboard-vertical .sticky-hole { left: 0; z-index: 64; background: #e8f0e6; }
+    .scoreboard-vertical .sticky-par { left: var(--info-col-w); z-index: 63; background: #e8f0e6; }
+    .scoreboard-vertical .sticky-hdcp { left: calc(var(--info-col-w) * 2); z-index: 62; background: #e8f0e6; }
+    .scoreboard-vertical thead th { position: sticky; top: var(--sticky-top); z-index: 70; background: #e8f0e6; box-shadow: 0 1px 0 #dbe5d8; }
     .scoreboard-vertical thead .sticky-hole { z-index: 76; }
     .scoreboard-vertical thead .sticky-par { z-index: 75; }
     .scoreboard-vertical thead .sticky-hdcp { z-index: 74; }
@@ -210,6 +218,8 @@
     }
     .scoreboard-vertical td.sticky-par,
     .scoreboard-vertical td.sticky-hdcp { padding: 3px; }
+    .scoreboard-vertical th.sticky-hdcp,
+    .scoreboard-vertical td.sticky-hdcp { border-right: 2px solid #b5c9b2 !important; }
     .scoreboard-vertical td.sticky-par input,
     .scoreboard-vertical td.sticky-hdcp input { min-height: 42px; height: 42px; padding: 0 4px; font-size: 1.02rem; border-radius: 10px; }
     .scoreboard-vertical .summary-row th, .scoreboard-vertical .summary-row td { background:#f6faf5; color:var(--primary-dark); }
@@ -233,25 +243,39 @@
       border-right: 2px solid #dbe5d8;
     }
     .score-cell input { border: none !important; background: transparent !important; width: 100%; height: 100%; font-size: 1.58rem; padding: 0; }
+    #playerRows tr:nth-child(even) td:not(.sticky-par):not(.sticky-hdcp),
+    #playerRows tr:nth-child(even) th:not(.sticky-hole) { background: #f6faf5; }
+    #playerRows tr:nth-child(odd) td:not(.sticky-par):not(.sticky-hdcp),
+    #playerRows tr:nth-child(odd) th:not(.sticky-hole) { background: #ffffff; }
+    #playerRows .summary-row th.sticky-hole { background: #e8f0e6 !important; }
+    #playerRows .summary-row td:not(.sticky-par):not(.sticky-hdcp),
+    #playerRows .summary-row th:not(.sticky-hole) { background: #f0f7ee !important; }
+    /* sticky-par 和 sticky-hdcp 跟隨交替行背景 */
+    #playerRows tr:nth-child(even) td.sticky-par,
+    #playerRows tr:nth-child(even) td.sticky-hdcp { background: #e8f0e6; }
+    #playerRows tr:nth-child(odd) td.sticky-par,
+    #playerRows tr:nth-child(odd) td.sticky-hdcp { background: #e8f0e6; }
+    #playerRows .summary-row td.sticky-par,
+    #playerRows .summary-row td.sticky-hdcp { background: #e8f0e6 !important; }
     .mark-circle {
       border: 3px solid var(--birdie);
       border-radius: 50%; width: 48px; height: 48px;
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 1;
     }
     .mark-double-circle {
       border: 6px double var(--birdie);
       border-radius: 50%; width: 52px; height: 52px;
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 1;
     }
     .mark-square {
       border: 3px solid var(--bogey);
       width: 48px; height: 48px;
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 1;
     }
     .mark-double-square {
       border: 6px double var(--bogey);
       width: 52px; height: 52px;
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 1;
     }
     .res-row {
       display: flex;
@@ -280,48 +304,37 @@
     .player-pair-card { border: 2px solid var(--border); border-radius: 14px; padding: 14px; }
     .player-pair-title { font-size: 1.02rem; color: var(--primary-dark); margin-bottom: 10px; }
     .pair-row {
-      display: grid;
-      grid-template-columns: auto 1fr 96px;
-      gap: 8px;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       margin-bottom: 8px;
       padding-bottom: 8px;
       border-bottom: 1px dashed #e2e9e0;
     }
     .pair-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .pair-toggle {
+    .pair-row-head {
       display: flex;
       align-items: center;
-      justify-content: center;
-      width: 42px;
-      height: 42px;
-      border: 2px solid #cfd9cd;
-      border-radius: 12px;
-      cursor: pointer;
-      user-select: none;
-      background: #fff;
+      gap: 8px;
     }
     .pair-toggle.active { background: var(--primary-soft); border-color: var(--primary); }
     .pair-toggle.disabled { background: #f1f3f0; border-color: #e1e6df; cursor: not-allowed; }
     .pair-name { text-align: left; font-size: .98rem; }
     .pair-score-input { padding: 10px 8px; font-size: .98rem; min-height: 44px; }
     .pair-score-input:disabled { background: #f4f5f3; color: #aaa; }
-    .pair-row {
-      grid-template-columns: 42px 1fr;
-      align-items: start;
-    }
-    .pair-main { display:grid; gap:8px; }
-    .pair-mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
+    .pair-main { display:grid; gap:6px; }
+    .pair-mode-switch { display:flex; gap:8px; }
     .pair-mode-chip {
       border: 2px solid #cfdbcf;
       background:#fff;
       color: var(--text);
       border-radius: 999px;
-      padding: 8px 12px;
-      font-size: .9rem;
+      padding: 6px 10px;
+      font-size: .78rem;
       font-weight: 900;
       cursor:pointer;
       user-select:none;
+      white-space: nowrap;
     }
     .pair-mode-chip.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); }
     .pair-input-wrap { display:none; }
@@ -453,18 +466,18 @@
   font-weight: 900;
   background: #fff;
   color: var(--text);
-  min-height: 50px;
+  min-height: 48px;
   position: relative;
   cursor: pointer;
 }
 .vegas-rank-btn::after {
-  content: '⌄';
+  content: '▾';
   position: absolute;
   right: 14px;
   top: 50%;
-  transform: translateY(-52%);
-  font-size: 1.35rem;
-  color: var(--text);
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: #888;
   line-height: 1;
   pointer-events: none;
 }
@@ -580,9 +593,7 @@
   box-shadow: 0 8px 18px rgba(24,49,31,.12);
 }
 .section-grid-3 { display:grid; grid-template-columns: 2fr 1.3fr 1fr; gap:12px; }
-.section-grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-.inline-field { display:grid; grid-template-columns: 1fr 120px; gap:10px; align-items:end; }
-.inline-field .mode-row { margin:0; }
+
 .new-game-btn { width:100%; min-height:50px; border:none; border-radius:12px; background:linear-gradient(180deg, var(--primary), var(--primary-dark)); color:#fff; font-size:1rem; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(24,49,31,.12); }
 .setting-section-title { margin-bottom:12px; }
 .setting-subcard { background:#fff; border:1px solid var(--border); border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(31,66,40,.04); margin-bottom:14px; }
@@ -627,11 +638,11 @@
   padding: 12px 14px;
   cursor: pointer;
   user-select: none;
-  min-height: 54px;
+  min-height: 48px;
   background: #fff;
   margin-left: 18px;
 }
-.mode-child-group { display: grid; gap: 6px; margin-left: 18px; margin-top: -2px; }
+.mode-child-group { display: grid; gap: 6px; margin-left: 0; margin-top: -2px; }
 .mode-sub-row {
   display: flex;
   align-items: center;
@@ -835,13 +846,13 @@
   .result-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
-  .grid-3, .grid-4, .grid-2, .rank-grid, .result-grid, .name-grid, .section-grid-3, .section-grid-2, .inline-field { grid-template-columns: 1fr; }
+  .grid-3, .grid-4, .result-grid, .section-grid-3 { grid-template-columns: 1fr; }
+  .rank-grid { grid-template-columns: 1fr 1fr; }
   .export-option-grid { grid-template-columns: 1fr; }
   .top-floating-bar { display: none; }
   .tab-nav { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; }
   .tab-btn-group { min-width: 0; }
   .mobile-version-badge { display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; font-size: .74rem; font-weight: 900; color: var(--primary-dark); white-space: nowrap; background: rgba(47,107,63,.06); border-left: 1px solid rgba(47,107,63,.08); }
-  .pair-row { grid-template-columns: 42px 1fr; }
   .pair-special-grid { grid-template-columns: 1fr; }
   .tab-btn { font-size: .95rem; padding: 15px 6px; }
   .content { padding: 10px; }
@@ -854,15 +865,15 @@
   .hole-win-item { padding: 8px 10px; font-size: .92rem; }
   .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
 
-  .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 50px; }
-  .scoreboard-vertical table { width: auto !important; min-width: auto !important; }
+  .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 44px; }
+  .scoreboard-vertical table { width: 100% !important; min-width: unset !important; }
   .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
   .scoreboard-vertical thead th:not(.sticky-hole):not(.sticky-par):not(.sticky-hdcp),
   .scoreboard-vertical tbody td:not(.sticky-par):not(.sticky-hdcp),
   .scoreboard-vertical tbody th:not(.sticky-hole) {
-    width: 72px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
+    width: auto !important;
+    min-width: 60px !important;
+    max-width: none !important;
   }
   .scoreboard-vertical td.sticky-par,
   .scoreboard-vertical td.sticky-hdcp { padding: 2px; }
@@ -898,43 +909,42 @@
 <div class="card">
   <h2>1. 球場</h2>
   <div style="display:flex; flex-direction:column; gap:8px;">
-    <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <select id="savedCourseSelect" onchange="handleSavedCourseSelect()" style="flex:1;"></select>
+      <div id="startHoleArea18" style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+        <span style="font-size:.88rem; font-weight:900; color:var(--muted); white-space:nowrap;">起始洞</span>
+        <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()" style="width:52px; min-height:40px; padding:6px 4px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
+      </div>
+      <div id="startHoleArea27" style="display:none; align-items:center; gap:6px; flex-shrink:0;">
+        <span style="font-size:.88rem; font-weight:900; color:var(--muted); white-space:nowrap;">起始洞</span>
+        <select id="startZone" onchange="updateStartHole27()" style="min-height:40px; padding:6px 4px; font-size:.88rem; border:2px solid #d2ddd0; border-radius:10px; max-width:80px;"></select>
+        <input type="number" id="startHole27Num" value="1" min="1" max="9" oninput="updateStartHole27()" style="width:44px; min-height:40px; padding:6px 4px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
+      </div>
+    </div>
     <div id="favoriteArea" style="display:none; align-items:center; gap:8px;">
       <button id="favoriteBtn" onclick="handleFavoriteToggle()" style="font-size:1.4rem; background:none; border:none; cursor:pointer; padding:4px 8px;" title="加入最愛">☆</button>
       <span id="favoriteLabel" style="font-size:.9rem; color:var(--muted);">我的最愛</span>
     </div>
-    <!-- 起始洞設定：18洞顯示輸入框，27洞顯示區域+洞號 -->
-    <div id="startHoleArea18" style="display:flex; align-items:center; gap:10px;">
-      <span style="font-size:.96rem; font-weight:900; color:var(--text);">起始洞</span>
-      <input type="number" id="startHole" value="1" min="1" max="18" oninput="renderScoreboard()" style="width:72px; min-height:40px; padding:6px 8px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" class="new-game-btn" onclick="triggerImportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯入球場資料</button>
+      <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
     </div>
-    <div id="startHoleArea27" style="display:none; align-items:center; gap:10px;">
-      <span style="font-size:.96rem; font-weight:900; color:var(--text);">起始洞</span>
-      <select id="startZone" onchange="updateStartHole27()" style="flex:1; min-height:40px; padding:6px 8px; font-size:.96rem; border:2px solid #d2ddd0; border-radius:10px;"></select>
-      <span style="font-size:.96rem; font-weight:900;">第</span>
-      <input type="number" id="startHole27Num" value="1" min="1" max="9" oninput="updateStartHole27()" style="width:60px; min-height:40px; padding:6px 8px; font-size:.96rem; text-align:center; border:2px solid #d2ddd0; border-radius:10px;">
-      <span style="font-size:.96rem; font-weight:900;">洞</span>
-    </div>
-    <button type="button" class="new-game-btn" onclick="triggerImportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯入球場資料</button>
-    <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
     <div class="small-note" style="margin-top:-4px; margin-bottom:4px;">每次新增球場後請立即匯出備份，系統更新可能導致資料遺失</div>
-    <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
-    <button type="button" class="new-game-btn" onclick="startNewGame()">開新球局</button>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
+      <button type="button" class="new-game-btn" onclick="startNewGame()">開新球局</button>
+    </div>
   </div>
   <input type="file" id="importCoursesFile" accept="application/json,.json" style="display:none" onchange="importCoursesJson(event)">
 </div>
 
 <div class="card">
   <h2>2. 點數 / 倍率</h2>
-  <div class="grid-3" style="margin-bottom:12px;">
-    <div>
-      <label><small>點 / 元</small></label>
-      <input type="number" id="pointVal" value="100">
-    </div>
-    <div></div>
-    <div></div>
+  <div style="margin-bottom:12px;">
+    <label><small>點 / 元</small></label>
+    <input type="number" id="pointVal" value="100">
   </div>
-  <div class="grid-4">
+  <div class="grid-2">
     <div><label><small>Birdie 倍率</small></label><input type="number" id="mB" value="2"></div>
     <div><label><small>4 Par Eagle 倍率</small></label><input type="number" id="mE4" value="5"></div>
     <div><label><small>5 Par Eagle 倍率</small></label><input type="number" id="mE5" value="3"></div>
@@ -1495,9 +1505,13 @@
               <div style="margin-top:4px;">
                 ${playerIDs.filter(j => j !== i).map(j => `
                   <div class="pair-row" id="pair-row-${i}-${j}">
-                    <div class="pair-toggle" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})"><input type="checkbox" id="pair-check-${i}-${j}"></div>
+                    <div class="pair-row-head">
+                      <div class="check-item ${true ? 'active' : ''} pair-toggle-item" id="pair-toggle-${i}-${j}" onclick="togglePair(${i},${j})" style="flex:1; justify-content:flex-start; gap:10px;">
+                        <input type="checkbox" id="pair-check-${i}-${j}" style="pointer-events:none;">
+                        <span id="pair-name-${i}-${j}">${nameOf(j)}</span>
+                      </div>
+                    </div>
                     <div class="pair-main">
-                      <div class="pair-name" id="pair-name-${i}-${j}">${nameOf(j)}</div>
                       <div class="pair-mode-switch">
                         <div class="pair-mode-chip active" id="pair-mode-general-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'general')">一般讓桿</div>
                         <div class="pair-mode-chip" id="pair-mode-special-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'special')">特殊讓桿</div>
@@ -1862,10 +1876,6 @@
       });
     }
 
-    function start27ZoneInput(){
-      document.getElementById('newCourse27ZoneStep').style.display = 'none';
-      renderNewCourseHoleInputs(27);
-    }
     function saveNewCourse18(){
       const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
       if (!name) { alert('請輸入球場名稱。'); return; }
