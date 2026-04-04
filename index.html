@@ -362,7 +362,7 @@
     .result-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 12px; }
     .result-stack { display: grid; gap: 12px; }
     #result .card { overflow: hidden; }
- 
+
     .result-version-inline {
       display: flex;
       justify-content: flex-end;
@@ -440,7 +440,7 @@
     .hole-win-item strong { color: var(--primary-dark); }
     .export-wrap { margin-bottom: 10px; display: flex; justify-content: flex-end; }
     .jpg-capture { background: #fff; border-radius: 18px; }
- 
+
     .vegas-rank-btn {
       width: 100%;
       padding: 13px 44px 13px 12px;
@@ -510,8 +510,8 @@
       cursor: pointer;
     }
     .rank-picker-option:last-child { border-bottom: none; }
- 
- 
+
+
     .player-extra.hidden { display: none; }
     .matrix-table { min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
     .matrix-table th, .matrix-table td { height: auto; padding: 9px 10px; font-size: .96rem; }
@@ -539,8 +539,8 @@
     }
     .export-preview-body { padding: 14px; overflow: auto; max-height: calc(92vh - 68px); background: #f4f8f2; }
     .export-preview-body img { width: 100%; height: auto; display: block; border-radius: 12px; }
- 
- 
+
+
     .top-floating-bar {
       position: fixed;
       top: 10px;
@@ -717,7 +717,7 @@
       .detail-half { border-right: none; border-bottom: 1px solid var(--border); }
       .detail-half:last-child { border-bottom: none; }
     }
- 
+
     /* ── 新球場彈窗 ── */
     .new-course-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.45);
@@ -758,7 +758,7 @@
       border: none; background: rgba(255,255,255,.2); color: #fff;
       width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem;
     }
- 
+
     /* ── 27洞選區彈窗 ── */
     .zone-select-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.45);
@@ -793,7 +793,7 @@
       font-size: .85rem;
       color: var(--primary-dark);
     }
- 
+
     .detail-card-icon { font-size: .85rem; color: rgba(255,255,255,.8); }
     .detail-card-body { padding: 0; }
     .result-collapse-card { padding: 0 !important; overflow: hidden; }
@@ -828,7 +828,7 @@
       font-weight:900;
       cursor:pointer;
     }
- 
+
     @media (max-width: 1024px) {
       .result-grid { grid-template-columns: 1fr; }
     }
@@ -851,7 +851,7 @@
       .res-row { font-size: .96rem; padding: 8px 0; }
       .hole-win-item { padding: 8px 10px; font-size: .92rem; }
       .summary-table th, .summary-table td { font-size: .86rem; padding: 8px 6px; }
- 
+
       .scoreboard-vertical { --sticky-top: 0px; --info-col-w: 50px; }
       .scoreboard-vertical table { width: auto !important; min-width: auto !important; }
       .scoreboard-vertical th, .scoreboard-vertical td { height: 52px; padding: 2px; font-size: .86rem; }
@@ -885,11 +885,11 @@
     </div>
     <div class="mobile-version-badge">Beta 1.6</div>
   </div>
- 
+
   <div id="setting" class="content active">
     <input type="hidden" id="courseName" value="">
     <div id="global-warning" class="warning-box"></div>
- 
+
     <div class="card">
       <h2>1. 球場</h2>
       <div style="display:flex; flex-direction:column; gap:8px;">
@@ -918,7 +918,7 @@
       </div>
       <input type="file" id="importCoursesFile" accept="application/json,.json" style="display:none" onchange="importCoursesJson(event)">
     </div>
- 
+
     <div class="card">
       <h2>2. 點數 / 倍率</h2>
       <div class="grid-3" style="margin-bottom:12px;">
@@ -936,13 +936,13 @@
         <div><label><small>HIO 倍率</small></label><input type="number" id="mHIO" value="10"></div>
       </div>
     </div>
- 
+
     <div id="player-name-area"></div>
- 
+
     <div class="card">
       <h2>4. 比賽模式</h2>
       <div class="mode-stack">
- 
+
         <!-- Vegas -->
         <div class="mode-row active" id="modeRowVegas" onclick="toggleMainMode('modeVegas')">
           <input type="checkbox" id="modeVegas" checked>
@@ -954,7 +954,7 @@
             <span>平手遞延</span>
           </div>
         </div>
- 
+
         <!-- 比洞賽 -->
         <div class="mode-row active" id="modeRowMatch" onclick="toggleMainMode('modeMatch')">
           <input type="checkbox" id="modeMatch" checked>
@@ -977,7 +977,7 @@
             <div id="player-config-area"></div>
           </div>
         </div>
- 
+
         <!-- 抓PAR -->
         <div class="mode-row active" id="modeRowPar" onclick="toggleMainMode('modePar')">
           <input type="checkbox" id="modePar" checked>
@@ -992,21 +992,21 @@
             <div id="par-players-area"></div>
           </div>
         </div>
- 
+
       </div>
     </div>
- 
+
   </div>
- 
+
   <div id="scoring" class="content">
     <div id="scoring-warning" class="warning-box"></div>
     <div id="scoring-danger" class="danger-box"></div>
     <div class="card" id="course-save-area" style="padding:12px;">
       <button class="action-btn" id="editCourseBtn" onclick="openCourseEditDialog()" style="width:100%;">編輯球洞資訊</button>
     </div>
- 
+
     <div id="vegas-rank-area" class="card"></div>
- 
+
     <div class="table-wrapper">
       <table id="mainTable">
         <thead>
@@ -1018,7 +1018,7 @@
       </table>
     </div>
   </div>
- 
+
   <div id="result" class="content">
     <div class="result-grid">
       <div class="result-stack">
@@ -1059,7 +1059,7 @@
       </div>
     </div>
   </div>
- 
+
   <div class="export-preview-overlay" id="exportPreviewOverlay" onclick="closeExportPreview(event)">
     <div class="export-preview-sheet" onclick="event.stopPropagation()">
       <div class="export-preview-head">
@@ -1068,7 +1068,7 @@
       <div class="export-preview-body"><img id="exportPreviewImage" alt="結算圖片預覽"></div>
     </div>
   </div>
- 
+
   <!-- 編輯球洞資訊彈窗 -->
   <div class="new-course-overlay" id="courseEditOverlay">
     <div class="new-course-sheet">
@@ -1080,7 +1080,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- 新球場彈窗 -->
   <div class="new-course-overlay" id="newCourseOverlay">
     <div class="new-course-sheet">
@@ -1108,7 +1108,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- 27洞選區彈窗 -->
   <div class="zone-select-overlay" id="zoneSelectOverlay">
     <div class="zone-select-sheet">
@@ -1125,14 +1125,14 @@
       </div>
     </div>
   </div>
- 
+
   <div class="rank-picker-overlay" id="rankPickerOverlay" onclick="closeVegasRankPicker(event)">
     <div class="rank-picker-sheet" onclick="event.stopPropagation()">
       <div class="rank-picker-title" id="rankPickerTitle">請選擇排名</div>
       <div id="rankPickerOptions"></div>
     </div>
   </div>
- 
+
   <script>
     const APP_VERSION = 'Golf Score Beta 1.6';
     const playerIDs = [0,1,2,3];
@@ -1143,7 +1143,7 @@
     let courseData = { par: {}, hdcp: {} };
     // 27洞選區後儲存的區域名稱，null表示18洞
     let currentZoneLabels = null; // { front: '東區', back: '西區' }
- 
+
     function openTab(t){
       document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1165,11 +1165,11 @@
         }
       }
     }
- 
+
     function nameOf(i){
       return (document.getElementById('name'+i)?.value || '').trim() || placeholders[i];
     }
- 
+
     function getActivePlayers(){
       const active = [];
       for (const i of playerIDs) {
@@ -1178,17 +1178,17 @@
       }
       return active;
     }
- 
+
     function isPlayerActive(playerId){
       return getActivePlayers().includes(playerId);
     }
- 
+
     function getActiveNames(){
       const names = {};
       getActivePlayers().forEach(i => { names[i] = nameOf(i); });
       return names;
     }
- 
+
     function applyNumericKeyboardHints(root=document){
       if (!root) return;
       root.querySelectorAll('input[type="number"]').forEach(el => {
@@ -1204,7 +1204,7 @@
         el.setAttribute('enterkeyhint', 'done');
       });
     }
- 
+
     function attachSelectAllBehavior(root=document){
       const inputs = root.querySelectorAll('input:not([type="checkbox"]), textarea');
       inputs.forEach(el => {
@@ -1216,11 +1216,11 @@
         el.addEventListener('mouseup', e => e.preventDefault());
       });
     }
- 
+
     function normalizeCourseName(name){
       return (name || '').replace(/\s+/g,' ').trim().toLowerCase();
     }
- 
+
     function getPlayOrder(){
       let start = parseInt(document.getElementById('startHole').value) || 1;
       if (start < 1 || start > 18) start = 1;
@@ -1228,18 +1228,18 @@
       for (let i=0;i<18;i++) arr.push(((start - 1 + i) % 18) + 1);
       return arr;
     }
- 
+
     function getNineSummaryInsertIndexes(order){
       const frontLastIdx = Math.max(...order.map((hole, idx) => hole <= 9 ? idx : -1));
       const backLastIdx = Math.max(...order.map((hole, idx) => hole >= 10 ? idx : -1));
       return { frontLastIdx, backLastIdx };
     }
- 
+
     function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
     function isParEnabled(){ return document.getElementById('modePar').checked; }
     function isVegasEnabled(){ return document.getElementById('modeVegas').checked; }
     function isExtEnabled(){ return document.getElementById('extMode').checked; }
- 
+
     function toggleMainMode(id){
       const cb = document.getElementById(id);
       if (!cb || cb.disabled) return;
@@ -1247,7 +1247,7 @@
       cb.checked = !cb.checked;
       applyModeStates(id);
     }
- 
+
     function setPlayerSmallBoxState(playerId, suffix){
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       const box = document.getElementById(`box_p${playerId}_${suffix}`);
@@ -1258,21 +1258,21 @@
       box.classList.toggle('active', playerEnabled && parentEnabled && cb.checked);
       box.classList.toggle('disabled', !playerEnabled || !parentEnabled);
     }
- 
+
     function setPlayerMatchSelected(playerId, checked){
       const cb = document.getElementById(`p${playerId}_m`);
       if (!cb) return;
       cb.checked = checked;
       setPlayerSmallBoxState(playerId, 'm');
     }
- 
+
     function setPlayerParSelected(playerId, checked){
       const cb = document.getElementById(`p${playerId}_p`);
       if (!cb) return;
       cb.checked = checked;
       setPlayerSmallBoxState(playerId, 'p');
     }
- 
+
     function normalizeMatchPairStates(){
       pairKeys.forEach(key => {
         const [a,b] = key.split('_').map(Number);
@@ -1290,7 +1290,7 @@
       });
       refreshAllPairDisabledState();
     }
- 
+
     function resetAllMatchDefaults(){
       getActivePlayers().forEach(i => setPlayerMatchSelected(i, true));
       pairKeys.forEach(key => {
@@ -1305,7 +1305,7 @@
       });
       refreshAllPairDisabledState();
     }
- 
+
     function resetAllParDefaults(){
       getActivePlayers().forEach(i => {
         const cb = document.getElementById(`p${i}_p`);
@@ -1314,7 +1314,7 @@
         setPlayerSmallBoxState(i, 'p');
       });
     }
- 
+
     function applyPlayerConfigVisibility(){
       const activePlayers = getActivePlayers();
       const activeCount = activePlayers.length;
@@ -1328,30 +1328,30 @@
         });
       });
     }
- 
+
     function applyModeStates(changedMode = ''){
       const activePlayers = getActivePlayers();
       const activeCount = activePlayers.length;
       const canCompete = activeCount >= 2;
       const canVegas = activeCount === 4;
- 
+
       const modeMatch = document.getElementById('modeMatch');
       const modePar = document.getElementById('modePar');
       const modeVegas = document.getElementById('modeVegas');
       const extMode = document.getElementById('extMode');
- 
+
       if (!canCompete) { modeMatch.checked = false; modePar.checked = false; }
       if (!canVegas) { modeVegas.checked = false; extMode.checked = false; }
- 
+
       setModeRow('modeRowVegas', modeVegas.checked, !canVegas);
       setModeRow('modeRowMatch', modeMatch.checked, !canCompete);
       setModeRow('modeRowPar', modePar.checked, !canCompete);
- 
+
       modeVegas.disabled = !canVegas;
       modeMatch.disabled = !canCompete;
       modePar.disabled = !canCompete;
       extMode.disabled = !modeVegas.checked;
- 
+
       // Vegas 子項目顯示控制
       const vegasSub = document.getElementById('vegasSubArea');
       if (vegasSub) vegasSub.style.display = (canVegas && modeVegas.checked) ? 'grid' : 'none';
@@ -1360,42 +1360,42 @@
         extRow.classList.toggle('active', extMode.checked);
         extRow.classList.toggle('disabled', !modeVegas.checked);
       }
- 
+
       // 比洞賽子項目顯示控制
       const matchSub = document.getElementById('matchSubArea');
       const matchOn = canCompete && modeMatch.checked;
       if (matchSub) matchSub.style.display = matchOn ? 'grid' : 'none';
       if (matchOn) renderMatchPlayersArea();
- 
+
       // 抓PAR 子項目顯示控制
       const parSub = document.getElementById('parSubArea');
       const parOn = canCompete && modePar.checked;
       if (parSub) parSub.style.display = parOn ? 'grid' : 'none';
       if (parOn) renderParPlayersArea();
- 
+
       playerIDs.forEach(i => {
         syncPlayerSmallMode(i, 'm', matchOn && activePlayers.includes(i));
         syncPlayerSmallMode(i, 'p', parOn && activePlayers.includes(i));
       });
- 
+
       if (changedMode === 'modeMatch' && modeMatch.checked) resetAllMatchDefaults();
       if (changedMode === 'modePar' && modePar.checked) resetAllParDefaults();
- 
+
       const vegasRankArea = document.getElementById('vegas-rank-area');
       if (vegasRankArea) vegasRankArea.style.display = (canVegas && modeVegas.checked) ? 'block' : 'none';
- 
+
       applyPlayerConfigVisibility();
       normalizeMatchPairStates();
       renderVegasRankInputs();
     }
- 
+
     function setModeRow(rowId, active, disabled){
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.toggle('active', active && !disabled);
       row.classList.toggle('disabled', disabled);
     }
- 
+
     function syncPlayerSmallMode(playerId, suffix, enabled){
       const cb = document.getElementById(`p${playerId}_${suffix}`);
       if (!cb) return;
@@ -1403,7 +1403,7 @@
       cb.disabled = !enabled;
       setPlayerSmallBoxState(playerId, suffix);
     }
- 
+
     function togglePlayerSmallMode(playerId, suffix){
       const activePlayers = getActivePlayers();
       const parentOk = suffix === 'm' ? isMatchEnabled() : isParEnabled();
@@ -1414,7 +1414,7 @@
       setPlayerSmallBoxState(playerId, suffix);
       if (suffix === 'm') normalizeMatchPairStates();
     }
- 
+
     function initUI(){
       renderPlayerCards();
       renderVegasRankInputs();
@@ -1433,7 +1433,7 @@
         sel.addEventListener('touchend', () => setTimeout(handleSavedCourseSelect, 100));
       }
     }
- 
+
     function attachSettingAutoJump(){
       // 點數/倍率：pointVal → mB → mE4 → mE5 → mHIO（同大項內跳，mHIO不跳出）
       const rateFields = ['pointVal','mB','mE4','mE5','mHIO'];
@@ -1447,7 +1447,7 @@
         }
       });
     }
- 
+
     function renderPlayerCards(){
       let nameHtml = `<div class="card" style="padding:15px;"><h2>3. 玩家名稱</h2><div class="name-grid">`;
       playerIDs.forEach(i => {
@@ -1473,7 +1473,7 @@
           });
         }
       });
- 
+
       let html = `<div style="padding:8px 0 4px;"><div class="grid-2">`;
       playerIDs.forEach(i => {
         html += `
@@ -1521,7 +1521,7 @@
       applyPlayerConfigVisibility();
       refreshAllPairDisabledState();
     }
- 
+
     function renderVegasRankInputs(){
       const activePlayers = getActivePlayers();
       const vegasRankArea = document.getElementById('vegas-rank-area');
@@ -1544,10 +1544,10 @@
       if (isVegasEnabled()) document.getElementById('vegas-rank-area').style.display = 'block';
       updateVegasPreview();
     }
- 
+
     let lastActivePlayersSignature = '';
     let pendingHeavyNameRefresh = null;
- 
+
     function syncNameLabelsOnly(){
       playerIDs.forEach(i => {
         const nm = nameOf(i);
@@ -1562,7 +1562,7 @@
       });
       updateVegasPreview();
     }
- 
+
     function updateNames(forceHeavy=false){
       syncNameLabelsOnly();
       const activeSignature = getActivePlayers().join(',');
@@ -1579,7 +1579,7 @@
         pendingHeavyNameRefresh = null;
       }, 0);
     }
- 
+
     function refreshAllPairDisabledState(){
       const activePlayers = getActivePlayers();
       playerIDs.forEach(i => {
@@ -1600,7 +1600,7 @@
         });
       });
     }
- 
+
     function syncPairModeUI(i,j){
       const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value || 'general';
       document.getElementById(`pair-mode-general-chip-${i}-${j}`)?.classList.toggle('active', mode === 'general');
@@ -1608,7 +1608,7 @@
       document.getElementById(`pair-general-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'general');
       document.getElementById(`pair-special-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'special');
     }
- 
+
     function setPairHandicapMode(i,j,mode,fromSync=false){
       const el = document.getElementById(`pair-mode-${i}-${j}`);
       if (!el) return;
@@ -1617,7 +1617,7 @@
       if (!fromSync) setPairHandicapMode(j,i,el.value,true);
       scheduleAutoSave();
     }
- 
+
     function handlePairSpecialInput(i,j,kind,fromSync=false){
       const input = document.getElementById(`pair-special-${kind}-${i}-${j}`);
       if (!input) return;
@@ -1635,7 +1635,7 @@
       }
       scheduleAutoSave();
     }
- 
+
     function setPairState(i,j,checked,value,fromSync=false){
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
@@ -1657,7 +1657,7 @@
         setPairState(j,i,cb.checked,mirroredValue,true);
       }
     }
- 
+
     function togglePair(i,j){
       const activePlayers = getActivePlayers();
       const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
@@ -1668,7 +1668,7 @@
       else setPairState(i,j,true,currentValue === '' ? 0 : currentValue);
       refreshAllPairDisabledState();
     }
- 
+
     function handlePairStrokeInput(i,j){
       const activePlayers = getActivePlayers();
       const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
@@ -1679,7 +1679,7 @@
       refreshAllPairDisabledState();
       scheduleAutoSave();
     }
- 
+
     function toggleDetailCard(id){
       const body = document.getElementById(`body-${id}`);
       const icon = document.getElementById(`icon-${id}`);
@@ -1688,7 +1688,7 @@
       body.style.display = isOpen ? 'none' : 'block';
       if (icon) icon.textContent = isOpen ? '▶' : '▼';
     }
- 
+
     function toggleResultCollapse(id){
       const body = document.getElementById(`body-${id}`);
       const icon = document.querySelector(`#card-${id} .result-collapse-icon`);
@@ -1697,7 +1697,7 @@
       body.style.display = isOpen ? 'none' : 'block';
       if (icon) icon.textContent = isOpen ? '▶' : '▼';
     }
- 
+
     // ── 讓洞設定收折 ──
     function toggleSubCollapse(id){
       const body = document.getElementById(`body-${id}`);
@@ -1707,11 +1707,11 @@
       body.style.display = isOpen ? 'none' : 'block';
       if (icon) icon.textContent = isOpen ? '▶' : '▼';
     }
- 
+
     // 保留舊函式名稱以防其他地方呼叫
     function toggleHandicapCollapse(){ toggleSubCollapse('handicap'); }
     function toggleParPlayersCollapse(){ toggleSubCollapse('parPlayers'); }
- 
+
     function renderParPlayersArea(){
       const activePlayers = getActivePlayers();
       if (!activePlayers.length) { document.getElementById('par-players-area').innerHTML = ''; return; }
@@ -1724,7 +1724,7 @@
       html += `</div>`;
       document.getElementById('par-players-area').innerHTML = html;
     }
- 
+
     function renderMatchPlayersArea(){
       const activePlayers = getActivePlayers();
       if (!activePlayers.length) { document.getElementById('match-players-area').innerHTML = ''; return; }
@@ -1737,7 +1737,7 @@
       html += `</div>`;
       document.getElementById('match-players-area').innerHTML = html;
     }
- 
+
     // ── 球場名稱輸入處理（含新球場偵測）──
     let courseNameInputTimer = null;
     function handleCourseNameInput(){
@@ -1757,7 +1757,7 @@
         }
       }, 600);
     }
- 
+
     // ── 新球場彈窗 ──
     function showNewCourseDialog(name){
       const nameInput = document.getElementById('newCourseNameInput');
@@ -1849,7 +1849,7 @@
         }
       });
     }
- 
+
     function start27ZoneInput(){
       document.getElementById('newCourse27ZoneStep').style.display = 'none';
       renderNewCourseHoleInputs(27);
@@ -1898,7 +1898,7 @@
       closeNewCourseDialog();
       showZoneSelectDialog(name);
     }
- 
+
     // ── 27洞選區彈窗 ──
     function showZoneSelectDialog(name){
       const all = getSavedCourses();
@@ -1976,7 +1976,7 @@
       ], z1Key);
       showWarning(`已載入 ${name}（${z1Name}＋${z2Name}）。`, 'global');
     }
- 
+
     // 更新27洞起始洞UI
     function updateStartHoleUI27(zones, defaultZoneKey){
       document.getElementById('startHoleArea18').style.display = 'none';
@@ -1987,7 +1987,7 @@
       document.getElementById('startHole27Num').value = 1;
       updateStartHole27();
     }
- 
+
     // 27洞起始洞變更時更新startHole並重新計算HDCP
     function updateStartHole27(){
       const zoneKey = document.getElementById('startZone')?.value;
@@ -2015,7 +2015,7 @@
       if (startHoleEl) startHoleEl.value = actualStartHole;
       renderScoreboard();
     }
- 
+
     function apply27ZoneCourse(course, zone1, zone2, startZoneKey){
       const z1 = course.zones[zone1];
       const z2 = course.zones[zone2];
@@ -2041,7 +2041,7 @@
       }
       applyCourseData({ name: course.name, par, hdcp, _is27zone: true });
     }
- 
+
     // ── 計分頁球洞編輯彈窗 ──
     function openCourseEditDialog(){
       const name = (document.getElementById('courseName')?.value || '').trim();
@@ -2102,21 +2102,21 @@
       scheduleAutoSave();
       closeCourseEditDialog();
     }
- 
+
     function bindCourseAutoLoad(){
       // 球場現改為下拉選單選擇，此函式保留供initUI呼叫
     }
- 
- 
+
+
     function getSavedCourses(){
       try { return JSON.parse(localStorage.getItem('golfSavedCoursesV21') || '{}'); }
       catch(e){ return {}; }
     }
- 
+
     function setSavedCourses(data){
       localStorage.setItem('golfSavedCoursesV21', JSON.stringify(data));
     }
- 
+
     function buildCoursesBackupPayload(){
       return {
         version: 1,
@@ -2126,7 +2126,7 @@
         courses: getSavedCourses()
       };
     }
- 
+
     function exportCoursesJson(){
       const courses = getSavedCourses();
       const keys = Object.keys(courses);
@@ -2147,11 +2147,11 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       showWarning(`球場資料已匯出：${filename}`, 'scoring');
     }
- 
+
     function triggerImportCoursesJson(){
       document.getElementById('importCoursesFile')?.click();
     }
- 
+
     function normalizeImportedCourses(raw){
       if (!raw || typeof raw !== 'object') throw new Error('格式錯誤');
       const sourceCourses = raw.courses && typeof raw.courses === 'object' ? raw.courses : raw;
@@ -2193,7 +2193,7 @@
       });
       return normalized;
     }
- 
+
     function importCoursesJson(event){
       const file = event?.target?.files?.[0];
       if (!file) return;
@@ -2219,16 +2219,16 @@
       };
       reader.readAsText(file, 'utf-8');
     }
- 
+
     function refreshSavedCourseSelect(selectedKey=''){
       const sel = document.getElementById('savedCourseSelect');
       if (!sel) return;
       const all = getSavedCourses();
       const favorites = getFavorites();
- 
+
       // 筆劃排序
       const strokeSort = (a, b) => (all[a].name || '').localeCompare(all[b].name || '', 'zh-TW', { sensitivity: 'base' });
- 
+
       // 依地區分組
       const groups = {};
       Object.keys(all).forEach(k => {
@@ -2237,32 +2237,32 @@
         groups[region].push(k);
       });
       Object.keys(groups).forEach(r => groups[r].sort(strokeSort));
- 
+
       // 最愛球場
       const favKeys = favorites.filter(k => all[k]);
- 
+
       let html = `<option value="">請選擇已儲存球場</option>`;
- 
+
       if (favKeys.length) {
         html += `<optgroup label="⭐ 最愛球場">`;
         favKeys.forEach(k => { html += `<option value="${k}">${all[k].name}</option>`; });
         html += `</optgroup>`;
       }
- 
+
       // 地區排序：有地區的按地區名排，未分類放最後
       const regionKeys = Object.keys(groups).filter(r => r !== '未分類').sort((a,b) => a.localeCompare(b, 'zh-TW'));
       if (groups['未分類']) regionKeys.push('未分類');
- 
+
       regionKeys.forEach(region => {
         html += `<optgroup label="${region}">`;
         groups[region].forEach(k => { html += `<option value="${k}">${all[k].name}</option>`; });
         html += `</optgroup>`;
       });
- 
+
       sel.innerHTML = html;
       if (selectedKey && all[selectedKey]) sel.value = selectedKey;
     }
- 
+
     function getFavorites(){
       try { return JSON.parse(localStorage.getItem('golfFavoritesV1') || '[]'); }
       catch(e){ return []; }
@@ -2294,7 +2294,7 @@
       btn.textContent = favs.includes(key) ? '⭐' : '☆';
       btn.title = favs.includes(key) ? '取消最愛' : '加入最愛';
     }
- 
+
     // PAR/HDCP 以 courseData 為主要來源，span 只負責顯示
     function getCellValue(id){
       const match = id.match(/^cell_(P|Hd)_(\d+)$/);
@@ -2319,7 +2319,7 @@
       if (el.tagName === 'SPAN') el.textContent = val ?? '';
       else el.value = val ?? '';
     }
- 
+
     function gatherCourseData(){
       const par = {}, hdcp = {};
       for (let h=1; h<=18; h++) {
@@ -2328,7 +2328,7 @@
       }
       return { name: (document.getElementById('courseName').value || '').trim(), par, hdcp };
     }
- 
+
     function applyCourseData(data){
       if (!data) return;
       const courseNameEl = document.getElementById('courseName');
@@ -2350,12 +2350,12 @@
       // 重繪計分頁讓小計列HDCP欄更新
       renderScoreboard();
     }
- 
+
     function handleFavoriteToggle(){
       const key = document.getElementById('savedCourseSelect')?.value;
       if (key) toggleFavorite(key);
     }
- 
+
     function handleSavedCourseSelect(){
       const key = document.getElementById('savedCourseSelect').value;
       const favArea = document.getElementById('favoriteArea');
@@ -2379,7 +2379,7 @@
         showWarning('已載入球場資料。', 'global');
       }
     }
- 
+
     function saveCourseProfile(){
       const data = gatherCourseData();
       if (!data.name) {
@@ -2393,7 +2393,7 @@
       refreshSavedCourseSelect(key);
       showWarning('球場資料已儲存。', 'scoring');
     }
- 
+
     function deleteCourseProfile(){
       const name = (document.getElementById('courseName').value || '').trim();
       if (!name) { alert('目前沒有可刪除的球場名稱。'); return; }
@@ -2406,7 +2406,7 @@
       refreshSavedCourseSelect('');
       showWarning('球場資料已刪除。', 'scoring');
     }
- 
+
     function renderScoreboard(){
       const order = getPlayOrder();
       const { frontLastIdx, backLastIdx } = getNineSummaryInsertIndexes(order);
@@ -2424,7 +2424,7 @@
       document.getElementById('rowH').innerHTML = rowH;
       document.getElementById('rowP').innerHTML = '';
       document.getElementById('rowHd').innerHTML = '';
- 
+
       let body = '';
       order.forEach((hole, idx) => {
         body += `<tr>`;
@@ -2435,21 +2435,21 @@
           body += `<td class="score-cell"><div id="mark_${p}_${hole}"></div><input type="number" min="1" id="cell_${p}_${hole}" oninput="drawMark(${p}, ${hole}, true)"></td>`;
         });
         body += `</tr>`;
- 
+
         if (idx === frontLastIdx) {
           const frontHdcp = currentZoneLabels ? currentZoneLabels.front : '-';
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="out_P">0</td><td class="sticky-hdcp">${frontHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="out_${p}">0</td>`; });
           body += `</tr>`;
         }
- 
+
         if (idx === backLastIdx) {
           const backHdcp = currentZoneLabels ? currentZoneLabels.back : '-';
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">小計</th><td class="sticky-par" id="in_P">0</td><td class="sticky-hdcp">${backHdcp}</td>`;
           activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
         }
- 
+
         if (idx === order.length - 1) {
           body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
           activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
@@ -2475,14 +2475,14 @@
       });
       updateNames();
     }
- 
+
     function handleCourseInput(orderIdx, type, hole){
       updateParTotals();
       if (type === 'P') {
         document.getElementById(`cell_Hd_${hole}`).focus();
       }
     }
- 
+
     function updateParTotals(){
       let out = 0, inn = 0;
       for (let h=1; h<=9; h++) out += parseFloat(getCellValue(`cell_P_${h}`)) || 0;
@@ -2494,7 +2494,7 @@
       if (ip) ip.innerText = inn;
       if (tp) tp.innerText = out + inn;
     }
- 
+
     function drawMark(player, hole, jump=true){
       const el = document.getElementById(`cell_${player}_${hole}`);
       const score = parseFloat(el?.value) || 0;
@@ -2512,7 +2512,7 @@
       updatePlayerTotals(player);
       if (jump) jumpPlayerCell(player, hole);
     }
- 
+
     function jumpPlayerCell(player, hole){
       const order = getPlayOrder();
       const idx = order.indexOf(hole);
@@ -2522,7 +2522,7 @@
       if (rowIdx < activePlayers.length - 1) document.getElementById(`cell_${activePlayers[rowIdx+1]}_${hole}`)?.focus();
       else if (idx < order.length - 1) document.getElementById(`cell_${activePlayers[0]}_${order[idx+1]}`)?.focus();
     }
- 
+
     function updatePlayerTotals(player){
       let out=0, inn=0;
       for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
@@ -2531,18 +2531,18 @@
       document.getElementById(`in_${player}`).innerText = inn;
       document.getElementById(`tot_${player}`).innerText = out + inn;
     }
- 
+
     function getHoleInfo(hole){
       return {
         par: parseFloat(getCellValue(`cell_P_${hole}`)) || 0,
         hdcp: parseInt(getCellValue(`cell_Hd_${hole}`)) || 0
       };
     }
- 
+
     function getPlayerScore(player, hole){
       return parseFloat(document.getElementById(`cell_${player}_${hole}`)?.value) || 0;
     }
- 
+
     function getGrossLabel(score, par){
       if (!score || !par) return {points:0, type:'none'};
       if (score === 1) return { points: parseFloat(document.getElementById('mHIO').value) || 0, type:'hio' };
@@ -2556,16 +2556,16 @@
       }
       return { points: 0, type:'none' };
     }
- 
+
     function getMatchMultiplier(score, par){
       const label = getGrossLabel(score, par);
       return label.points > 0 ? label.points : 1;
     }
- 
+
     function getActiveParPlayers(){
       return getActivePlayers().filter(i => document.getElementById(`p${i}_p`)?.checked && isParEnabled());
     }
- 
+
     function getPairMeta(i,j){
       const checked = !!document.getElementById(`pair-check-${i}-${j}`)?.checked;
       let value = document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '';
@@ -2578,7 +2578,7 @@
       };
       return { checked, value, mode, specials };
     }
- 
+
     function getStrokeAllowance(pairValue, hole){
       const info = getHoleInfo(hole);
       const par = info.par;
@@ -2597,12 +2597,12 @@
       if (hd > 0 && hd <= abs) return 1;
       return 0;
     }
- 
+
     function getSpecialStrokeAllowance(value, par){
       if (!value || !par) return 0;
       return value < 0 ? Math.abs(value) : 0;
     }
- 
+
     function getNetScoreForPair(player, opponent, hole){
       const meta = getPairMeta(player, opponent);
       const gross = getPlayerScore(player, hole);
@@ -2617,7 +2617,7 @@
       }
       return gross - allowance;
     }
- 
+
     function buildMatchPairs(){
       const pairs = [];
       const activePlayers = getActivePlayers();
@@ -2633,7 +2633,7 @@
       });
       return pairs;
     }
- 
+
     function validateBeforeResult(){
       const warnings = [];
       const errors = [];
@@ -2647,17 +2647,17 @@
       if (sorted.length !== 18 || sorted.some((v,i)=>v!==should[i])) {
         warnings.push('球場 HDCP 建議為 1~18 且不可重複。');
       }
- 
+
       const start = parseInt(document.getElementById('startHole').value);
       if (!(start >= 1 && start <= 18)) errors.push('起始洞必須為 1~18。');
- 
+
       if (isVegasEnabled()) {
         const ranks = getActivePlayers().map(i => document.getElementById(`vegasRank${i}`)?.value || '');
         if (ranks.some(v => !v)) errors.push('Vegas 起始洞排名未填完整。');
         const unique = new Set(ranks);
         if (unique.size !== 4) errors.push('Vegas 起始洞排名不可重複。');
       }
- 
+
       if (isMatchEnabled()) {
         const pairs = buildMatchPairs();
         pairs.forEach(([a,b]) => {
@@ -2676,12 +2676,12 @@
           }
         });
       }
- 
+
       showWarning(warnings.join('\n'), 'scoring');
       showDanger(errors.join('\n'), 'scoring');
       return { warnings, errors };
     }
- 
+
     function showWarning(msg, area='global'){
       const map = { global:'global-warning', scoring:'scoring-warning' };
       const el = document.getElementById(map[area] || 'global-warning');
@@ -2690,7 +2690,7 @@
       el.style.display='block';
       el.innerText = msg;
     }
- 
+
     function showDanger(msg, area='scoring'){
       const map = { scoring:'scoring-danger' };
       const el = document.getElementById(map[area] || 'scoring-danger');
@@ -2699,20 +2699,20 @@
       el.style.display='block';
       el.innerText = msg;
     }
- 
+
     function getVegasStartTeams(){
       const mapping = {};
       getActivePlayers().forEach(i => { mapping[parseInt(document.getElementById(`vegasRank${i}`).value)] = i; });
       return [[mapping[1], mapping[4]], [mapping[2], mapping[3]]];
     }
- 
- 
+
+
     let currentVegasRankPickerPlayer = null;
- 
+
     function getVegasRankLabel(value){
       return value ? `第${value}名` : '請選擇';
     }
- 
+
     function openVegasRankPicker(playerId){
       currentVegasRankPickerPlayer = playerId;
       const title = document.getElementById('rankPickerTitle');
@@ -2727,13 +2727,13 @@
       }).join('');
       document.getElementById('rankPickerOverlay').classList.add('show');
     }
- 
+
     function closeVegasRankPicker(event){
       if (event && event.target !== document.getElementById('rankPickerOverlay')) return;
       document.getElementById('rankPickerOverlay').classList.remove('show');
       currentVegasRankPickerPlayer = null;
     }
- 
+
     function setVegasRank(playerId, value){
       const input = document.getElementById(`vegasRank${playerId}`);
       const btn = document.getElementById(`vegasRankBtn${playerId}`);
@@ -2742,7 +2742,7 @@
       closeVegasRankPicker();
       updateVegasPreview();
     }
- 
+
     function updateVegasPreview(){
       const preview = document.getElementById('vegasStartPreview');
       if (!preview) return;
@@ -2755,7 +2755,7 @@
       const [[a,b],[c,d]] = getVegasStartTeams();
       preview.innerText = `起始洞分組：${nameOf(a)} + ${nameOf(b)} / ${nameOf(c)} + ${nameOf(d)}`;
     }
- 
+
     function comparePlayersByBacktrack(a,b,currentOrderIndex,order){
       for (let step = currentOrderIndex-1; step >= 0; step--) {
         const hole = order[step];
@@ -2767,7 +2767,7 @@
       const rb = parseInt(document.getElementById(`vegasRank${b}`).value) || 99;
       return ra - rb;
     }
- 
+
     function rankPlayersForVegas(currentOrderIndex, order){
       const arr = [...getActivePlayers()];
       const prevHole = order[currentOrderIndex-1];
@@ -2779,11 +2779,11 @@
       });
       return arr;
     }
- 
+
     function formatSigned(value, suffix=''){
       return `${value > 0 ? '+' : ''}${value}${suffix}`;
     }
- 
+
     function escapeHtml(str=''){
       return String(str)
         .replace(/&/g, '&amp;')
@@ -2792,7 +2792,7 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
- 
+
     function toggleCollapse(button){
       const block = button.closest('.collapse-block');
       if (!block) return;
@@ -2800,13 +2800,13 @@
       const icon = button.querySelector('.collapse-icon');
       if (icon) icon.textContent = isOpen ? '˄' : '˅';
     }
- 
+
     function buildCollapseBlock(title, innerHtml, open=false, level='minor'){
       const cls = `collapse-block ${level} ${open ? 'open' : ''}`.trim();
       const icon = open ? '˄' : '˅';
       return `<div class="${cls}"><button type="button" class="collapse-head ${level}" onclick="toggleCollapse(this)"><span class="collapse-title">${title}</span><span class="collapse-icon">${icon}</span></button><div class="collapse-body">${innerHtml}</div></div>`;
     }
- 
+
     function splitLogsByNine(logs){
       const startHole = parseInt(document.getElementById('startHole')?.value) || 1;
       const isBackFirst = startHole >= 10;
@@ -2823,14 +2823,14 @@
         backLabel: isBackFirst ? '前 9 洞' : '後 9 洞'
       };
     }
- 
- 
+
+
     function renderSortedRows(values, names, activePlayers){
       const arr = activePlayers.map(i => ({ i, name:names[i], pts: values[i] ?? 0 }));
       arr.sort((a,b) => b.pts - a.pts || a.i - b.i);
       return arr.map(x => `<div class="res-row"><span>${escapeHtml(x.name)}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
     }
- 
+
     function buildMatchDetails(order, names){
       const pairs = buildMatchPairs();
       return pairs.map(([a,b]) => {
@@ -2859,7 +2859,7 @@
         return { a, b, front, back, total: front + back, logs };
       });
     }
- 
+
     function buildMatrixTable(title, matrix, totals, activePlayers, names, showPlus=false){
       const numberText = (value) => {
         if (value === null || value === undefined || Number.isNaN(value)) return '-';
@@ -2875,7 +2875,7 @@
       html += `</table>`;
       return html;
     }
- 
+
     function buildParResults(order, activePlayers){
       const matrix = playerIDs.map(() => playerIDs.map(() => 0));
       const totals = [0,0,0,0];
@@ -2902,7 +2902,7 @@
       });
       return { matrix, totals };
     }
- 
+
     function buildInlineStyleCss(){
       let css = '';
       Array.from(document.styleSheets || []).forEach(sheet => {
@@ -2911,7 +2911,7 @@
       css += `*{box-sizing:border-box;} body{margin:0 !important;} .export-wrap{display:none !important;} table{border-collapse:collapse;} input,select,button{font-family:inherit;}`;
       return css;
     }
- 
+
     function inlineFormValues(root){
       root.querySelectorAll('input, textarea, select').forEach(el => {
         const tag = el.tagName.toLowerCase();
@@ -2933,21 +2933,21 @@
         if (tag === 'textarea') el.textContent = el.value || '';
       });
     }
- 
- 
+
+
     let exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
- 
+
     function sanitizeFileNamePart(str){
       return String(str || '').trim().replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '') || '未命名';
     }
- 
+
     function buildExportFileName(parts){
       const course = sanitizeFileNamePart(document.getElementById('courseName')?.value || '球場');
       const stamp = new Date();
       const date = `${stamp.getFullYear()}${String(stamp.getMonth()+1).padStart(2,'0')}${String(stamp.getDate()).padStart(2,'0')}`;
       return `${date}_${course}_${parts.join('+')}.png`;
     }
- 
+
     function downloadPreviewImage(){
       if (!exportPreviewState.dataUrl) return;
       const a = document.createElement('a');
@@ -2957,7 +2957,7 @@
       a.click();
       a.remove();
     }
- 
+
     function gatherScorecardRows(order, activePlayers){
       const summaryFor = (player, holes) => holes.reduce((sum, h) => sum + (parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0), 0);
       return activePlayers.map(player => ({
@@ -2969,7 +2969,7 @@
         total: summaryFor(player, order)
       }));
     }
- 
+
     function drawRoundedRect(ctx, x, y, w, h, r, fill){
       ctx.beginPath();
       ctx.moveTo(x + r, y);
@@ -2981,14 +2981,14 @@
       if (fill) ctx.fill();
       else ctx.stroke();
     }
- 
+
     function closeExportPreview(event){
       if (event && event.target !== document.getElementById('exportPreviewOverlay')) return;
       document.getElementById('exportPreviewOverlay').classList.remove('show');
       document.getElementById('exportPreviewImage').src = '';
       exportPreviewState = { dataUrl:'', filename:'golf-score.png' };
     }
- 
+
     function clearCurrentRoundData(keepPreview=true){
       document.getElementById('courseName').value = '';
       document.getElementById('startHole').value = '1';
@@ -3033,7 +3033,7 @@
       if (!keepPreview) closeExportPreview();
       scheduleAutoSave();
     }
- 
+
     function exportResultPreview(type){
       try {
         const includeResult = (type === 'result');
@@ -3050,7 +3050,7 @@
           alert('目前沒有可輸出的結算資料。');
           return;
         }
- 
+
         const activePlayers = getActivePlayers();
         const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
         const order = getPlayOrder();
@@ -3060,7 +3060,7 @@
         const timeText = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
         const course = (document.getElementById('courseName')?.value || '').trim() || '未填寫球場';
         const filename = buildExportFileName([type === 'result' ? '比賽結果' : '成績卡']);
- 
+
         // 收集各模式點數（比賽結果用）
         const modeRows = [];
         if (includeResult) {
@@ -3092,19 +3092,19 @@
             if (vegasItems.length) modeRows.push({ title: 'Vegas', items: vegasItems });
           }
         }
- 
+
         const pad = 28;
         const cardPad = 18;
         const width = 1600;
         let currentY = pad;
         const sections = [];
- 
+
         // 先用暫時canvas量所有表格的最佳寬度，取最大值
         const tmpCanvas = document.createElement('canvas');
         const tmpCtx = tmpCanvas.getContext('2d');
         let unifiedW = 0;
         let allColWidthsMap = {}; // 儲存每個mode的欄寬
- 
+
         if (includeResult) {
           // 量總結算欄寬
           tmpCtx.font = '900 18px sans-serif';
@@ -3120,7 +3120,7 @@
           const summaryTotalW = summaryColW.reduce((a,b) => a+b, 0);
           if (summaryTotalW > unifiedW) unifiedW = summaryTotalW;
           allColWidthsMap['result'] = summaryColW;
- 
+
           // 量各模式矩陣欄寬
           modeRows.forEach((mode, mi) => {
             if (mode.rows) {
@@ -3152,7 +3152,7 @@
             }
           });
         }
- 
+
         if (includeResult) {
           // 總結算用統一寬度，欄寬等比縮放
           const rawColW = allColWidthsMap['result'] || [];
@@ -3165,7 +3165,7 @@
           const sectionW = unifiedW + cardPad * 2;
           sections.push({ type:'result', x: pad, y: currentY, w: sectionW, h: sectionH, colWidths, rowH, titleH });
           currentY += sectionH + 18;
- 
+
           // 各模式匯總區塊
           modeRows.forEach((mode, mi) => {
             const mRowH = 48;
@@ -3180,7 +3180,7 @@
             currentY += mSectionH + 14;
           });
         }
- 
+
         if (includeScorecard) {
           const holeW = 58;
           const sideW = 64;
@@ -3192,7 +3192,7 @@
           sections.push({ type:'scorecard', x: pad, y: currentY, w: width - pad * 2, h: sectionH, sideW, holeW, summaryW, rowH, headH });
           currentY += sectionH + 18;
         }
- 
+
         const height = currentY + pad;
         // 找最寬的section決定canvas寬度
         const maxSectionW = sections.reduce((m, s) => Math.max(m, s.x + s.w + pad), pad * 2);
@@ -3203,17 +3203,17 @@
         canvas.height = Math.round(height * scale);
         const ctx = canvas.getContext('2d');
         ctx.scale(scale, scale);
- 
+
         ctx.fillStyle = '#eef4ec';
         ctx.fillRect(0, 0, canvasWidth, height);
- 
+
         sections.forEach(section => {
           ctx.fillStyle = '#ffffff';
           drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, true);
           ctx.strokeStyle = '#d6e2d3';
           ctx.lineWidth = 1;
           drawRoundedRect(ctx, section.x, section.y, section.w, section.h, 22, false);
- 
+
           ctx.fillStyle = '#1e4d2b';
           ctx.font = '900 34px sans-serif';
           ctx.textAlign = 'left';
@@ -3231,7 +3231,7 @@
             ctx.fillText(APP_VERSION, section.x + section.w - cardPad, section.y + 42);
             ctx.textAlign = 'left';
           }
- 
+
           if (section.type === 'result') {
             let y = section.y + section.titleH;
             let xStart = section.x + cardPad;
@@ -3397,7 +3397,7 @@
             });
           }
         });
- 
+
         const dataUrl = canvas.toDataURL('image/png');
         exportPreviewState = { dataUrl, filename };
         document.getElementById('exportPreviewImage').src = dataUrl;
@@ -3409,7 +3409,7 @@
         alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
       }
     }
- 
+
     function calculateFinal(){
       const validation = validateBeforeResult();
       if (validation.errors.length) {
@@ -3421,7 +3421,7 @@
       const pointValue = parseFloat(document.getElementById('pointVal').value) || 0;
       const order = getPlayOrder();
       updateVegasPreview();
- 
+
       const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
       const matchPoints = [0,0,0,0];
       const matchPairs = buildMatchPairs();
@@ -3447,11 +3447,11 @@
         matchMatrix[b][a] = bScore;
       });
       activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
- 
+
       const parResult = buildParResults(order, activePlayers);
       const parPoints = parResult.totals;
       const parMatrix = parResult.matrix;
- 
+
       const vegasPoints = [0,0,0,0];
       const vegasHoleWins = [];
       if (isVegasEnabled() && activePlayers.length === 4) {
@@ -3483,10 +3483,10 @@
           carry = 1;
         });
       }
- 
+
       const totalPoints = [0,0,0,0];
       activePlayers.forEach(i => { totalPoints[i] = matchPoints[i] + parPoints[i] + vegasPoints[i]; });
- 
+
       const matchDetails = buildMatchDetails(order, names);
       renderMatchOutput(matchMatrix, matchPoints, names, activePlayers);
       renderMatchDetailOutput(matchDetails, names);
@@ -3497,7 +3497,7 @@
       renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers);
       openTab('result');
     }
- 
+
     function renderMatchOutput(matrix, totals, names, activePlayers){
       if (!isMatchEnabled()) {
         document.getElementById('match-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
@@ -3505,7 +3505,7 @@
       }
       document.getElementById('match-output').innerHTML = buildMatrixTable('比洞賽', matrix, totals, activePlayers, names, false);
     }
- 
+
     function renderMatchDetailOutput(details, names){
       if (!isMatchEnabled()) {
         document.getElementById('match-detail-output').innerHTML = `<div class="center-note">本日未啟用比洞賽</div>`;
@@ -3548,7 +3548,7 @@
       html += `</div>`;
       document.getElementById('match-detail-output').innerHTML = html;
     }
- 
+
     function renderParOutput(matrix, totals, names, activePlayers){
       if (!isParEnabled()) {
         document.getElementById('par-output').innerHTML = `<div class="center-note">本日未啟用抓PAR</div>`;
@@ -3561,7 +3561,7 @@
       }
       document.getElementById('par-output').innerHTML = buildMatrixTable('抓PAR', matrix, totals, participants, names, false) + `<div class="matrix-note">右側總計就是每位玩家抓PAR點數的來源。</div>`;
     }
- 
+
     function renderVegasOutput(points, names, activePlayers){
       if (!isVegasEnabled()) {
         document.getElementById('vegas-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
@@ -3569,7 +3569,7 @@
       }
       document.getElementById('vegas-output').innerHTML = renderSortedRows(points, names, activePlayers);
     }
- 
+
     function renderVegasHoleOutput(logs, names){
       if (!isVegasEnabled()) {
         document.getElementById('vegas-hole-output').innerHTML = `<div class="center-note">本日未啟用 Vegas</div>`;
@@ -3617,11 +3617,11 @@
       };
       document.getElementById('vegas-hole-output').innerHTML = `<div class="detail-unified-list">${buildHalf(split.frontLabel, split.front, 0)}${buildHalf(split.backLabel, split.back, 1)}</div>`;
     }
- 
+
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
       return;
     }
- 
+
     function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers){
       const rows = activePlayers.map(i => ({ i, name:names[i], match: matchPoints[i], par: parPoints[i], vegas: vegasPoints[i], total: totalPoints[i], money: Math.round(totalPoints[i] * pointValue) })).sort((a,b) => b.total - a.total || a.i - b.i);
       let html = `<table class="summary-table"><tr><th>玩家</th>${isMatchEnabled()?'<th>比洞賽</th>':''}${isParEnabled()?'<th>抓PAR</th>':''}${isVegasEnabled()?'<th>Vegas</th>':''}<th>總點數</th><th>金額</th></tr>`;
@@ -3633,11 +3633,11 @@
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
     }
- 
- 
+
+
     const AUTO_SAVE_KEY = 'golfAutoSaveBeta15';
     let autoSaveTimer = null;
- 
+
     function collectAppState(){
       const state = {
         version: APP_VERSION,
@@ -3688,14 +3688,14 @@
       });
       return state;
     }
- 
+
     function scheduleAutoSave(){
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         try { localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(collectAppState())); } catch (e) {}
       }, 200);
     }
- 
+
     function restoreAutoSave(){
       try {
         const raw = localStorage.getItem(AUTO_SAVE_KEY);
@@ -3760,13 +3760,13 @@
         console.error(e);
       }
     }
- 
+
     function startNewGame(){
       localStorage.removeItem(AUTO_SAVE_KEY);
       clearCurrentRoundData(false);
       showWarning('已開始新球局。', 'global');
     }
- 
+
     window.onload = () => {
       initUI();
       restoreAutoSave();
