@@ -896,7 +896,7 @@
         <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
         <div id="favoriteArea" style="display:none; align-items:center; gap:8px;">
           <button id="favoriteBtn" onclick="handleFavoriteToggle()" style="font-size:1.4rem; background:none; border:none; cursor:pointer; padding:4px 8px;" title="加入最愛">☆</button>
-          <span id="favoriteLabel" style="font-size:.9rem; color:var(--muted);"></span>
+          <span id="favoriteLabel" style="font-size:.9rem; color:var(--muted);">我的最愛</span>
         </div>
         <!-- 起始洞設定：18洞顯示輸入框，27洞顯示區域+洞號 -->
         <div id="startHoleArea18" style="display:flex; align-items:center; gap:10px;">
@@ -912,7 +912,7 @@
         </div>
         <button type="button" class="new-game-btn" onclick="triggerImportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯入球場資料</button>
         <button type="button" class="new-game-btn" onclick="exportCoursesJson()" style="background:linear-gradient(180deg,#607d8b,#546e7a);">匯出球場資料</button>
-        <div class="small-note" style="margin-top:-4px; margin-bottom:4px;">建議定期匯出以防資料遺失</div>
+        <div class="small-note" style="margin-top:-4px; margin-bottom:4px;">每次新增球場後請立即匯出備份，系統更新可能導致資料遺失</div>
         <button type="button" class="new-game-btn" onclick="showNewCourseDialog('')">新增球場</button>
         <button type="button" class="new-game-btn" onclick="startNewGame()">開新球局</button>
       </div>
@@ -2359,7 +2359,6 @@
     function handleSavedCourseSelect(){
       const key = document.getElementById('savedCourseSelect').value;
       const favArea = document.getElementById('favoriteArea');
-      const favLabel = document.getElementById('favoriteLabel');
       if (!key) {
         if (favArea) favArea.style.display = 'none';
         return;
@@ -2367,7 +2366,6 @@
       if (favArea) favArea.style.display = 'flex';
       updateFavoriteBtn(key);
       const all = getSavedCourses();
-      if (favLabel) favLabel.textContent = all[key]?.name || '';
       if (!all[key]) return;
       const course = all[key];
       if (course.type === 27) {
