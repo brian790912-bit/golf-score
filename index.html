@@ -530,8 +530,13 @@
 .player-extra.hidden { display: none; }
 .matrix-table { min-width: 100% !important; table-layout: auto !important; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .matrix-table th, .matrix-table td { height: auto; padding: 9px 10px; font-size: .96rem; }
-.matrix-table th { background: #f3f7f1; color: var(--primary-dark); }
-.matrix-table td.total-col, .matrix-table th.total-col { background: #eef5ec; }
+.matrix-table .matrix-head-row th { background: #3a7a4a; color: #fff; font-weight: 900; }
+.matrix-table .matrix-row-even td, .matrix-table .matrix-row-even th { background: #f3f7f1; color: var(--primary-dark); }
+.matrix-table .matrix-row-odd td, .matrix-table .matrix-row-odd th { background: #ffffff; color: var(--primary-dark); }
+.matrix-table td.total-col { background: #eef5ec; font-weight: 900; }
+.matrix-table th.total-col { background: #2f6b3f; color: #fff; font-weight: 900; }
+.matrix-table .matrix-row-even td.total-col { background: #f3f7f1; }
+.matrix-table .matrix-row-odd td.total-col { background: #ffffff; }
 .matrix-note { margin-top: 8px; font-size: .88rem; color: #667561; }
 .capture-section { margin-top: 14px; }
 .capture-section .capture-title { font-size: 1.02rem; font-weight: 900; margin: 0 0 8px; color: #fff; }
@@ -1054,9 +1059,9 @@
         </div>
       </div>
       <div class="result-stack">
-        <div class="card"><h2>🎯 抓PAR 矩陣</h2><div id="par-output"></div></div>
-        <div class="card"><h2>🎲 Vegas 點數</h2><div id="vegas-output"></div></div>
-        <div class="card"><h2>🏆 比洞賽矩陣</h2><div id="match-output"></div></div>
+        <div class="card"><h2>🎯 抓PAR</h2><div id="par-output"></div></div>
+        <div class="card"><h2>🎲 Vegas</h2><div id="vegas-output"></div></div>
+        <div class="card"><h2>🏆 比洞賽</h2><div id="match-output"></div></div>
         <div class="card result-collapse-card" id="card-match-detail">
           <div class="result-collapse-head" onclick="toggleResultCollapse('match-detail')">
             <h2 style="margin:0;">📝 比洞賽每組結果</h2>
@@ -2886,10 +2891,11 @@
         if (value === 0) return '0';
         return showPlus && value > 0 ? `+${value}` : String(value);
       };
-      let html = `<table class="matrix-table"><tr><th></th>${activePlayers.map(i => `<th>${escapeHtml(names[i])}</th>`).join('')}<th class="total-col">總計</th></tr>`;
-      activePlayers.forEach(i => {
-        html += `<tr><th>${escapeHtml(names[i])}</th>`;
-        activePlayers.forEach(j => { html += `<td>${i === j ? '-' : numberText(matrix[i]?.[j] ?? 0)}</td>`; });
+      let html = `<table class="matrix-table"><tr class="matrix-head-row"><th></th>${activePlayers.map(i => `<th>${escapeHtml(names[i])}</th>`).join('')}<th class="total-col">總計</th></tr>`;
+      activePlayers.forEach((i, rIdx) => {
+        const rowClass = rIdx % 2 === 0 ? 'matrix-row-even' : 'matrix-row-odd';
+        html += `<tr class="${rowClass}"><th>${escapeHtml(names[i])}</th>`;
+        activePlayers.forEach(j => { html += `<td>${i === j ? '–' : numberText(matrix[i]?.[j] ?? 0)}</td>`; });
         html += `<td class="total-col">${numberText(totals[i] ?? 0)}</td></tr>`;
       });
       html += `</table>`;
@@ -3302,15 +3308,18 @@
               } else if (Array.isArray(row)) {
                 // Matrix table rows — 用measureText自動欄寬
                 const colWidths = section.matrixColWidths;
+                const lastCol = row.length - 1;
                 let x = xStart;
                 row.forEach((cell, cIdx) => {
                   const w = colWidths ? colWidths[cIdx] : (matrixW / row.length);
-                  ctx.fillStyle = rIdx === 0 ? '#3a7a4a' : (rIdx % 2 === 0 ? '#f8fbf7' : '#ffffff');
+                  const isTotalCol = cIdx === lastCol;
+                  const isHeadRow = rIdx === 0;
+                  ctx.fillStyle = isHeadRow ? '#3a7a4a' : isTotalCol && rIdx === 0 ? '#2f6b3f' : isTotalCol ? (rIdx % 2 === 1 ? '#f3f7f1' : '#ffffff') : (rIdx % 2 === 1 ? '#f3f7f1' : '#ffffff');
                   ctx.fillRect(x, y, w, section.mRowH);
                   ctx.strokeStyle = '#e4ebe2';
                   ctx.strokeRect(x, y, w, section.mRowH);
-                  ctx.fillStyle = rIdx === 0 ? '#ffffff' : '#18311f';
-                  ctx.font = rIdx === 0 ? '900 18px sans-serif' : '800 18px sans-serif';
+                  ctx.fillStyle = isHeadRow ? '#ffffff' : '#18311f';
+                  ctx.font = isHeadRow ? '900 18px sans-serif' : isTotalCol ? '900 18px sans-serif' : '800 18px sans-serif';
                   ctx.textAlign = 'center';
                   ctx.textBaseline = 'middle';
                   ctx.fillText(cell, x + w / 2, y + section.mRowH / 2);
