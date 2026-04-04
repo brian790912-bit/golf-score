@@ -894,6 +894,10 @@
       <h2>1. 球場</h2>
       <div style="display:flex; flex-direction:column; gap:8px;">
         <select id="savedCourseSelect" onchange="handleSavedCourseSelect()"></select>
+        <div id="favoriteArea" style="display:none; align-items:center; gap:8px;">
+          <button id="favoriteBtn" onclick="handleFavoriteToggle()" style="font-size:1.4rem; background:none; border:none; cursor:pointer; padding:4px 8px;" title="加入最愛">☆</button>
+          <span id="favoriteLabel" style="font-size:.9rem; color:var(--muted);"></span>
+        </div>
         <!-- 起始洞設定：18洞顯示輸入框，27洞顯示區域+洞號 -->
         <div id="startHoleArea18" style="display:flex; align-items:center; gap:10px;">
           <span style="font-size:.96rem; font-weight:900; color:var(--text);">起始洞</span>
@@ -1088,6 +1092,10 @@
         <div style="margin-bottom:12px;">
           <label class="new-course-hole-label" style="margin-bottom:4px;">球場名稱</label>
           <input type="text" id="newCourseNameInput" class="new-course-input" placeholder="請輸入球場名稱" style="width:100%; min-height:48px; padding:10px 12px; font-size:1rem;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label class="new-course-hole-label" style="margin-bottom:4px;">地區（選填）</label>
+          <input type="text" id="newCourseRegionInput" class="new-course-input" placeholder="例如：台中、台南" style="width:100%; min-height:48px; padding:10px 12px; font-size:1rem;">
         </div>
         <div id="newCourseTypeButtons">
           <div style="font-size:.94rem; color:var(--muted); margin-bottom:12px;">請選擇球場洞數：</div>
@@ -1766,6 +1774,8 @@
       if (holeArea) { holeArea.innerHTML = ''; holeArea.style.display = 'none'; }
       const typeBtn = document.getElementById('newCourseTypeButtons');
       if (typeBtn) typeBtn.style.display = 'block';
+      const regionInput = document.getElementById('newCourseRegionInput');
+      if (regionInput) regionInput.value = '';
     }
     function selectNewCourseType(type){
       document.getElementById('newCourseTypeButtons').style.display = 'none';
@@ -1847,6 +1857,7 @@
     function saveNewCourse18(){
       const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
       if (!name) { alert('請輸入球場名稱。'); return; }
+      const region = (document.getElementById('newCourseRegionInput')?.value || '').trim();
       const all = getSavedCourses();
       const key = normalizeCourseName(name);
       if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
@@ -1855,7 +1866,7 @@
         par[h] = document.getElementById(`nc_P_${h}`)?.value || '';
         hdcp[h] = document.getElementById(`nc_Hd_${h}`)?.value || '';
       }
-      all[key] = { name, type: 18, par, hdcp };
+      all[key] = { name, type: 18, par, hdcp, ...(region ? { region } : {}) };
       setSavedCourses(all);
       applyCourseData(all[key]);
       refreshSavedCourseSelect(key);
@@ -1865,6 +1876,7 @@
     function saveNewCourse27(){
       const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
       if (!name) { alert('請輸入球場名稱。'); return; }
+      const region = (document.getElementById('newCourseRegionInput')?.value || '').trim();
       const all = getSavedCourses();
       const key = normalizeCourseName(name);
       if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
@@ -1880,7 +1892,7 @@
         zones[zone] = { par, hdcp, name: zoneName };
         zoneNames[zone] = zoneName;
       });
-      all[key] = { name, type: 27, zones, zoneNames };
+      all[key] = { name, type: 27, zones, zoneNames, ...(region ? { region } : {}) };
       setSavedCourses(all);
       refreshSavedCourseSelect(key);
       closeNewCourseDialog();
@@ -2170,9 +2182,13 @@
               name: item.zones[zone].name || item.zoneNames?.[zone] || `${zone}區`
             };
           });
-          normalized[normalizeCourseName(name)] = { name, type: 27, zones, zoneNames: item.zoneNames || {} };
+          const entry = { name, type: 27, zones, zoneNames: item.zoneNames || {} };
+          if (item.region) entry.region = item.region;
+          normalized[normalizeCourseName(name)] = entry;
         } else {
-          normalized[normalizeCourseName(name)] = { name, par, hdcp };
+          const entry = { name, par, hdcp };
+          if (item.region) entry.region = item.region;
+          normalized[normalizeCourseName(name)] = entry;
         }
       });
       return normalized;
@@ -2188,11 +2204,9 @@
           const imported = normalizeImportedCourses(parsed);
           const keys = Object.keys(imported);
           if (!keys.length) throw new Error('找不到可匯入的球場資料');
-          const existing = getSavedCourses();
-          const merged = { ...existing, ...imported };
-          setSavedCourses(merged);
+          setSavedCourses(imported);
           refreshSavedCourseSelect();
-          showWarning(`已匯入 ${keys.length} 個球場資料。`, 'scoring');
+          showWarning(`已匯入 ${keys.length} 個球場資料。`, 'global');
         } catch (err) {
           alert('匯入失敗，請確認你選的是本系統匯出的 JSON 檔案。');
         } finally {
@@ -2210,13 +2224,75 @@
       const sel = document.getElementById('savedCourseSelect');
       if (!sel) return;
       const all = getSavedCourses();
-      const keys = Object.keys(all).sort((a,b) => (all[a].name || '').localeCompare(all[b].name || ''));
-      let html = `<option value="">請選擇已儲存球場</option>`;
-      keys.forEach(k => {
-        html += `<option value="${k}">${all[k].name}</option>`;
+      const favorites = getFavorites();
+ 
+      // 筆劃排序
+      const strokeSort = (a, b) => (all[a].name || '').localeCompare(all[b].name || '', 'zh-TW', { sensitivity: 'base' });
+ 
+      // 依地區分組
+      const groups = {};
+      Object.keys(all).forEach(k => {
+        const region = all[k].region || '未分類';
+        if (!groups[region]) groups[region] = [];
+        groups[region].push(k);
       });
+      Object.keys(groups).forEach(r => groups[r].sort(strokeSort));
+ 
+      // 最愛球場
+      const favKeys = favorites.filter(k => all[k]);
+ 
+      let html = `<option value="">請選擇已儲存球場</option>`;
+ 
+      if (favKeys.length) {
+        html += `<optgroup label="⭐ 最愛球場">`;
+        favKeys.forEach(k => { html += `<option value="${k}">${all[k].name}</option>`; });
+        html += `</optgroup>`;
+      }
+ 
+      // 地區排序：有地區的按地區名排，未分類放最後
+      const regionKeys = Object.keys(groups).filter(r => r !== '未分類').sort((a,b) => a.localeCompare(b, 'zh-TW'));
+      if (groups['未分類']) regionKeys.push('未分類');
+ 
+      regionKeys.forEach(region => {
+        html += `<optgroup label="${region}">`;
+        groups[region].forEach(k => { html += `<option value="${k}">${all[k].name}</option>`; });
+        html += `</optgroup>`;
+      });
+ 
       sel.innerHTML = html;
       if (selectedKey && all[selectedKey]) sel.value = selectedKey;
+    }
+ 
+    function getFavorites(){
+      try { return JSON.parse(localStorage.getItem('golfFavoritesV1') || '[]'); }
+      catch(e){ return []; }
+    }
+    function setFavorites(arr){
+      localStorage.setItem('golfFavoritesV1', JSON.stringify(arr));
+    }
+    function toggleFavorite(key){
+      const all = getSavedCourses();
+      if (!all[key]) return;
+      let favs = getFavorites();
+      if (favs.includes(key)) {
+        favs = favs.filter(k => k !== key);
+      } else {
+        if (favs.length >= 3) {
+          alert('最多只能設定 3 個最愛球場。');
+          return;
+        }
+        favs.push(key);
+      }
+      setFavorites(favs);
+      updateFavoriteBtn(key);
+      refreshSavedCourseSelect(key);
+    }
+    function updateFavoriteBtn(key){
+      const btn = document.getElementById('favoriteBtn');
+      if (!btn) return;
+      const favs = getFavorites();
+      btn.textContent = favs.includes(key) ? '⭐' : '☆';
+      btn.title = favs.includes(key) ? '取消最愛' : '加入最愛';
     }
  
     // PAR/HDCP 以 courseData 為主要來源，span 只負責顯示
@@ -2275,10 +2351,23 @@
       renderScoreboard();
     }
  
+    function handleFavoriteToggle(){
+      const key = document.getElementById('savedCourseSelect')?.value;
+      if (key) toggleFavorite(key);
+    }
+ 
     function handleSavedCourseSelect(){
       const key = document.getElementById('savedCourseSelect').value;
-      if (!key) return;
+      const favArea = document.getElementById('favoriteArea');
+      const favLabel = document.getElementById('favoriteLabel');
+      if (!key) {
+        if (favArea) favArea.style.display = 'none';
+        return;
+      }
+      if (favArea) favArea.style.display = 'flex';
+      updateFavoriteBtn(key);
       const all = getSavedCourses();
+      if (favLabel) favLabel.textContent = all[key]?.name || '';
       if (!all[key]) return;
       const course = all[key];
       if (course.type === 27) {
