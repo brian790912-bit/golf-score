@@ -1881,18 +1881,37 @@
       });
     }
 
+    function validateHdcp18(hdcpMap){
+      const oddHoles = [1,3,5,7,9,11,13,15,17];
+      const evenHoles = [2,4,6,8,10,12,14,16,18];
+      const oddVals = oddHoles.map(h => parseInt(hdcpMap[h])).filter(v => !isNaN(v));
+      const evenVals = evenHoles.map(h => parseInt(hdcpMap[h])).filter(v => !isNaN(v));
+      const oddDup = oddVals.length !== new Set(oddVals).size;
+      const evenDup = evenVals.length !== new Set(evenVals).size;
+      if (oddDup && evenDup) return '奇數洞與偶數洞的 HDCP 各有重複，請檢查後再儲存。';
+      if (oddDup) return '奇數洞（1,3,5...17）的 HDCP 有重複，請檢查後再儲存。';
+      if (evenDup) return '偶數洞（2,4,6...18）的 HDCP 有重複，請檢查後再儲存。';
+      return null;
+    }
+    function validateHdcp27Zone(hdcpMap, zoneName){
+      const vals = Object.values(hdcpMap).map(v => parseInt(v)).filter(v => !isNaN(v));
+      return vals.length !== new Set(vals).size ? `${zoneName} 的 HDCP 有重複，請檢查後再儲存。` : null;
+    }
+
     function saveNewCourse18(){
       const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
       if (!name) { alert('請輸入球場名稱。'); return; }
       const region = (document.getElementById('newCourseRegionInput')?.value || '').trim();
-      const all = getSavedCourses();
-      const key = normalizeCourseName(name);
-      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
       const par = {}, hdcp = {};
       for(let h=1; h<=18; h++){
         par[h] = document.getElementById(`nc_P_${h}`)?.value || '';
         hdcp[h] = document.getElementById(`nc_Hd_${h}`)?.value || '';
       }
+      const hdcpErr = validateHdcp18(hdcp);
+      if (hdcpErr) { alert(hdcpErr); return; }
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
       all[key] = { name, type: 18, par, hdcp, ...(region ? { region } : {}) };
       setSavedCourses(all);
       applyCourseData(all[key]);
@@ -1904,11 +1923,9 @@
       const name = (document.getElementById('newCourseNameInput')?.value || '').trim();
       if (!name) { alert('請輸入球場名稱。'); return; }
       const region = (document.getElementById('newCourseRegionInput')?.value || '').trim();
-      const all = getSavedCourses();
-      const key = normalizeCourseName(name);
-      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
       const zones = {};
       const zoneNames = {};
+      const errors = [];
       ['A','B','C'].forEach(zone => {
         const par = {}, hdcp = {};
         for(let h=1; h<=9; h++){
@@ -1916,9 +1933,15 @@
           hdcp[h] = document.getElementById(`nc_${zone}_Hd_${h}`)?.value || '';
         }
         const zoneName = (document.getElementById(`nc_zonename_${zone}`)?.value || '').trim() || `${zone}區`;
+        const err = validateHdcp27Zone(hdcp, zoneName);
+        if (err) errors.push(err);
         zones[zone] = { par, hdcp, name: zoneName };
         zoneNames[zone] = zoneName;
       });
+      if (errors.length) { alert(errors.join('\n')); return; }
+      const all = getSavedCourses();
+      const key = normalizeCourseName(name);
+      if (all[key] && !confirm(`「${all[key].name}」已存在，確定要覆蓋嗎？`)) return;
       all[key] = { name, type: 27, zones, zoneNames, ...(region ? { region } : {}) };
       setSavedCourses(all);
       refreshSavedCourseSelect(key);
@@ -2662,17 +2685,6 @@
     function validateBeforeResult(){
       const warnings = [];
       const errors = [];
-      const hdcpNums = [];
-      for (let h=1; h<=18; h++) {
-        const v = parseInt(getCellValue(`cell_Hd_${h}`));
-        if (!Number.isNaN(v)) hdcpNums.push(v);
-      }
-      const sorted = [...hdcpNums].sort((a,b)=>a-b);
-      const should = Array.from({length:18}, (_,i)=>i+1);
-      if (sorted.length !== 18 || sorted.some((v,i)=>v!==should[i])) {
-        warnings.push('球場 HDCP 建議為 1~18 且不可重複。');
-      }
-
       const start = parseInt(document.getElementById('startHole').value);
       if (!(start >= 1 && start <= 18)) errors.push('起始洞必須為 1~18。');
 
