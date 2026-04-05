@@ -1249,17 +1249,22 @@
     }
 
     function getPlayOrder(){
-      let start = parseInt(document.getElementById('startHole').value) || 1;
+      // 固定1~18洞順序，計分表顯示用
+      return Array.from({length:18}, (_,i) => i+1);
+    }
+
+    function getVegasOrder(){
+      // Vegas/比洞/抓PAR計算用，依起始洞重排
+      let start = parseInt(document.getElementById('startHole')?.value) || 1;
       if (start < 1 || start > 18) start = 1;
       const arr = [];
-      for (let i=0;i<18;i++) arr.push(((start - 1 + i) % 18) + 1);
+      for (let i=0; i<18; i++) arr.push(((start - 1 + i) % 18) + 1);
       return arr;
     }
 
     function getNineSummaryInsertIndexes(order){
-      const frontLastIdx = Math.max(...order.map((hole, idx) => hole <= 9 ? idx : -1));
-      const backLastIdx = Math.max(...order.map((hole, idx) => hole >= 10 ? idx : -1));
-      return { frontLastIdx, backLastIdx };
+      // 固定第9洞後為前9小計，第18洞後為後9小計
+      return { frontLastIdx: 8, backLastIdx: 17 };
     }
 
     function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
@@ -2845,20 +2850,11 @@
     }
 
     function splitLogsByNine(logs){
-      const startHole = parseInt(document.getElementById('startHole')?.value) || 1;
-      const isBackFirst = startHole >= 10;
-      const first = isBackFirst
-        ? logs.filter(x => x.hole >= 10 && x.hole <= 18)
-        : logs.filter(x => x.hole >= 1 && x.hole <= 9);
-      const second = isBackFirst
-        ? logs.filter(x => x.hole >= 1 && x.hole <= 9)
-        : logs.filter(x => x.hole >= 10 && x.hole <= 18);
-      return {
-        front: first,
-        back: second,
-        frontLabel: isBackFirst ? '後 9 洞' : '前 9 洞',
-        backLabel: isBackFirst ? '前 9 洞' : '後 9 洞'
-      };
+      const front = logs.filter(x => x.hole >= 1 && x.hole <= 9);
+      const back = logs.filter(x => x.hole >= 10 && x.hole <= 18);
+      const frontLabel = currentZoneLabels ? currentZoneLabels.front : '前 9 洞';
+      const backLabel = currentZoneLabels ? currentZoneLabels.back : '後 9 洞';
+      return { front, back, frontLabel, backLabel };
     }
 
 
@@ -3460,7 +3456,7 @@
       const activePlayers = getActivePlayers();
       const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
       const pointValue = parseFloat(document.getElementById('pointVal').value) || 0;
-      const order = getPlayOrder();
+      const order = getVegasOrder();
       updateVegasPreview();
 
       const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
