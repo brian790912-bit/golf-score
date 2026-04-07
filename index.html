@@ -71,6 +71,79 @@
       transition: .18s ease;
     }
     .tab-btn.active { color: var(--primary-dark); border-bottom: 4px solid var(--primary); background: linear-gradient(180deg, rgba(47,107,63,.03), rgba(47,107,63,.01)); }
+
+    /* ── 設定引導進度條 ── */
+    .setup-guide-bar {
+      position: sticky;
+      top: 57px;
+      z-index: 999;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(47,107,63,.10);
+      padding: 8px 12px;
+      display: none;
+    }
+    .setup-guide-bar.show { display: block; }
+    .setup-guide-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .setup-guide-steps::-webkit-scrollbar { display: none; }
+    .setup-step {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .setup-step-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 4px 2px;
+      cursor: default;
+      font-family: inherit;
+    }
+    .setup-step-btn.clickable { cursor: pointer; }
+    .setup-step-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e0e8de;
+      color: #8a9e87;
+      font-size: .72rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s, color .2s;
+    }
+    .setup-step-icon.done {
+      background: var(--primary);
+      color: #fff;
+    }
+    .setup-step-label {
+      font-size: .78rem;
+      font-weight: 900;
+      color: #8a9e87;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .setup-step-label.done { color: var(--primary-dark); }
+    .setup-step-label.cta { color: var(--primary-dark); text-decoration: underline; }
+    .setup-arrow {
+      font-size: .72rem;
+      color: #c0cbbe;
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
     .content { padding: 12px; display: none; max-width: 1380px; margin: 0 auto; }
     .content.active { display: block; }
     .card {
@@ -906,6 +979,46 @@
     <div class="mobile-version-badge">Beta 1.61</div>
   </div>
 
+  <!-- 設定引導進度條 -->
+  <div class="setup-guide-bar show" id="setupGuideBar">
+    <div class="setup-guide-steps">
+      <div class="setup-step">
+        <button type="button" class="setup-step-btn" id="guideStep1Btn">
+          <span class="setup-step-icon" id="guideStep1Icon">1</span>
+          <span class="setup-step-label" id="guideStep1Label">選球場</span>
+        </button>
+      </div>
+      <span class="setup-arrow">›</span>
+      <div class="setup-step">
+        <button type="button" class="setup-step-btn" id="guideStep2Btn">
+          <span class="setup-step-icon" id="guideStep2Icon">2</span>
+          <span class="setup-step-label" id="guideStep2Label">點數倍率</span>
+        </button>
+      </div>
+      <span class="setup-arrow">›</span>
+      <div class="setup-step">
+        <button type="button" class="setup-step-btn" id="guideStep3Btn">
+          <span class="setup-step-icon" id="guideStep3Icon">3</span>
+          <span class="setup-step-label" id="guideStep3Label">填玩家</span>
+        </button>
+      </div>
+      <span class="setup-arrow">›</span>
+      <div class="setup-step">
+        <button type="button" class="setup-step-btn" id="guideStep4Btn">
+          <span class="setup-step-icon" id="guideStep4Icon">4</span>
+          <span class="setup-step-label" id="guideStep4Label">比賽模式</span>
+        </button>
+      </div>
+      <span class="setup-arrow">›</span>
+      <div class="setup-step">
+        <button type="button" class="setup-step-btn clickable" id="guideStep5Btn" onclick="openTab('scoring')">
+          <span class="setup-step-icon" id="guideStep5Icon">5</span>
+          <span class="setup-step-label cta" id="guideStep5Label">去計分 →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="setting" class="content active">
     <input type="hidden" id="courseName" value="">
     <div id="global-warning" class="warning-box"></div>
@@ -969,7 +1082,7 @@
       <span>Vegas</span>
     </div>
     <div id="vegasSubArea" class="mode-child-group">
-      <div class="mode-sub-row" id="modeRowExt" onclick="toggleMainMode('extMode')">
+      <div class="mode-row" id="modeRowExt" onclick="toggleMainMode('extMode')" style="margin-left:18px;">
         <input type="checkbox" id="extMode">
         <span>平手遞延</span>
       </div>
@@ -1191,6 +1304,7 @@
           }
         }
       }
+      updateSetupGuide();
     }
 
     function nameOf(i){
@@ -1278,6 +1392,7 @@
       if (id === 'extMode' && !isVegasEnabled()) return;
       cb.checked = !cb.checked;
       applyModeStates(id);
+      updateSetupGuide();
     }
 
     function setPlayerSmallBoxState(playerId, suffix){
@@ -2404,6 +2519,7 @@
       playerIDs.forEach(p => { for (let h=1; h<=18; h++) drawMark(p,h,false); });
       // 重繪計分頁讓小計列HDCP欄更新
       renderScoreboard();
+      updateSetupGuide();
     }
 
     function handleFavoriteToggle(){
@@ -2634,10 +2750,17 @@
 
     function getStrokeAllowance(pairValue, hole){
       const info = getHoleInfo(hole);
+      const par = info.par;
       const hd = info.hdcp;
       if (!pairValue) return 0;
       const abs = Math.abs(pairValue);
       if (pairValue > 0) {
+        return 0;
+      }
+      if (abs === 18) {
+        if (par === 5) return 2;
+        if (par === 4) return 1;
+        if (par === 3) return 0.5;
         return 0;
       }
       if (hd > 0 && hd <= abs) return 1;
@@ -3726,6 +3849,44 @@
       }, 200);
     }
 
+    function updateSetupGuide(){
+      const bar = document.getElementById('setupGuideBar');
+      if (!bar) return;
+      const settingTab = document.getElementById('setting');
+      const isSettingActive = settingTab && settingTab.classList.contains('active');
+      bar.classList.toggle('show', isSettingActive);
+      if (!isSettingActive) return;
+      const step1Done = !!(document.getElementById('courseName')?.value || '').trim();
+      const step2Done = !!(parseFloat(document.getElementById('pointVal')?.value) > 0);
+      const step3Done = getActivePlayers().some(i => (document.getElementById(`name${i}`)?.value || '').trim());
+      const step4Done = isVegasEnabled() || isMatchEnabled() || isParEnabled();
+      const steps = [
+        { icon: 'guideStep1Icon', label: 'guideStep1Label', done: step1Done },
+        { icon: 'guideStep2Icon', label: 'guideStep2Label', done: step2Done },
+        { icon: 'guideStep3Icon', label: 'guideStep3Label', done: step3Done },
+        { icon: 'guideStep4Icon', label: 'guideStep4Label', done: step4Done },
+      ];
+      steps.forEach((s, idx) => {
+        const iconEl = document.getElementById(s.icon);
+        const labelEl = document.getElementById(s.label);
+        if (!iconEl || !labelEl) return;
+        if (s.done) {
+          iconEl.textContent = '✓';
+          iconEl.classList.add('done');
+          labelEl.classList.add('done');
+        } else {
+          iconEl.textContent = String(idx + 1);
+          iconEl.classList.remove('done');
+          labelEl.classList.remove('done');
+        }
+      });
+      const allDone = step1Done && step2Done && step3Done && step4Done;
+      const icon5 = document.getElementById('guideStep5Icon');
+      const label5 = document.getElementById('guideStep5Label');
+      if (icon5) { icon5.textContent = allDone ? '✓' : '5'; icon5.classList.toggle('done', allDone); }
+      if (label5) { label5.classList.toggle('done', allDone); }
+    }
+
     function restoreAutoSave(){
       try {
         const raw = localStorage.getItem(AUTO_SAVE_KEY);
@@ -3795,6 +3956,7 @@
       localStorage.removeItem(AUTO_SAVE_KEY);
       clearCurrentRoundData(false);
       showWarning('已開始新球局。', 'global');
+      updateSetupGuide();
     }
 
     window.onload = () => {
@@ -3802,6 +3964,9 @@
       restoreAutoSave();
       document.addEventListener('input', scheduleAutoSave, true);
       document.addEventListener('change', scheduleAutoSave, true);
+      document.addEventListener('input', updateSetupGuide, true);
+      document.addEventListener('change', updateSetupGuide, true);
+      updateSetupGuide();
     };
   </script>
 
