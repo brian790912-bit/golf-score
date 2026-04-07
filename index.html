@@ -1289,6 +1289,8 @@ button.action-btn.danger { background: #c62828; }
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(t).classList.add('active');
       document.getElementById('tab-' + (t==='setting'?'set':t==='scoring'?'score':'res')).classList.add('active');
+      const guideBar = document.getElementById('setupGuideBar');
+      if (guideBar) guideBar.classList.toggle('show', t === 'setting');
       if (t === 'scoring') {
         refreshSavedCourseSelect();
       }
