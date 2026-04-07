@@ -2840,6 +2840,7 @@ button.action-btn.danger { background: #c62828; }
       return { warnings, errors };
     }
 
+    let warningTimers = {};
     function showWarning(msg, area='global'){
       const map = { global:'global-warning', scoring:'scoring-warning' };
       const el = document.getElementById(map[area] || 'global-warning');
@@ -2847,6 +2848,11 @@ button.action-btn.danger { background: #c62828; }
       if (!msg) { el.style.display='none'; el.innerText=''; return; }
       el.style.display='block';
       el.innerText = msg;
+      if (warningTimers[area]) clearTimeout(warningTimers[area]);
+      warningTimers[area] = setTimeout(() => {
+        el.style.display='none';
+        el.innerText='';
+      }, 5000);
     }
 
     function showDanger(msg, area='scoring'){
