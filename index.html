@@ -2634,17 +2634,10 @@
 
     function getStrokeAllowance(pairValue, hole){
       const info = getHoleInfo(hole);
-      const par = info.par;
       const hd = info.hdcp;
       if (!pairValue) return 0;
       const abs = Math.abs(pairValue);
       if (pairValue > 0) {
-        return 0;
-      }
-      if (abs === 18) {
-        if (par === 5) return 2;
-        if (par === 4) return 1;
-        if (par === 3) return 0.5;
         return 0;
       }
       if (hd > 0 && hd <= abs) return 1;
