@@ -766,7 +766,7 @@ background: #fff;
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: linear-gradient(180deg, var(–primary), var(–primary-dark));
+background: linear-gradient(180deg, #2f6b3f, #1e4d2b);
 color: #fff;
 padding: 12px 14px;
 font-size: 1rem;
@@ -3716,7 +3716,7 @@ max-width: none !important;
               <span class="detail-card-icon" id="icon-${cardId}">▶</span>
             </span>
           </div>
-          <div class="detail-card-body" id="body-${cardId}" style="display:none;">
+          <div class="detail-card-body" id="body-${cardId}" style="display:block;">
             <div class="detail-halves">${buildHalf(split.frontLabel, split.front, item.front)}${buildHalf(split.backLabel, split.back, item.back)}</div>
           </div>
         </div>`;
