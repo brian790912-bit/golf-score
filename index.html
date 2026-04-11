@@ -28,6 +28,7 @@
       --text: #18311f;
     }
     * { box-sizing: border-box; }
+    button { -webkit-appearance: none; appearance: none; }
     body {
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
       background: linear-gradient(180deg, #f4f8f2 0%, var(--bg) 100%);
@@ -672,7 +673,7 @@ box-shadow: 0 8px 18px rgba(24,49,31,.12);
 }
 .section-grid-3 { display:grid; grid-template-columns: 2fr 1.3fr 1fr; gap:12px; }
 
-.new-game-btn { width:100%; min-height:50px; border:none; border-radius:12px; background:linear-gradient(180deg, var(–primary), var(–primary-dark)); color:#fff; font-size:1rem; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(24,49,31,.12); }
+.new-game-btn { width:100%; min-height:50px; border:none; border-radius:12px; background:linear-gradient(180deg, var(–primary), var(–primary-dark)); color:#fff; font-size:1rem; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(24,49,31,.12); -webkit-appearance: none; opacity: 1; }
 .setting-section-title { margin-bottom:12px; }
 .setting-subcard { background:#fff; border:1px solid var(–border); border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(31,66,40,.04); margin-bottom:14px; }
 .export-option-grid {
