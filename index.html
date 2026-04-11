@@ -2654,9 +2654,12 @@ max-width: none !important;
     }
 
     function updateParTotals(){
+      const order = getPlayOrder();
+      const frontHoles = order.slice(0, 9);
+      const backHoles = order.slice(9, 18);
       let out = 0, inn = 0;
-      for (let h=1; h<=9; h++) out += parseFloat(getCellValue(`cell_P_${h}`)) || 0;
-      for (let h=10; h<=18; h++) inn += parseFloat(getCellValue(`cell_P_${h}`)) || 0;
+      frontHoles.forEach(h => out += parseFloat(getCellValue(`cell_P_${h}`)) || 0);
+      backHoles.forEach(h => inn += parseFloat(getCellValue(`cell_P_${h}`)) || 0);
       const op = document.getElementById('out_P');
       const ip = document.getElementById('in_P');
       const tp = document.getElementById('tot_P');
@@ -2694,9 +2697,12 @@ max-width: none !important;
     }
 
     function updatePlayerTotals(player){
+      const order = getPlayOrder();
+      const frontHoles = order.slice(0, 9);
+      const backHoles = order.slice(9, 18);
       let out=0, inn=0;
-      for (let h=1; h<=9; h++) out += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
-      for (let h=10; h<=18; h++) inn += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0;
+      frontHoles.forEach(h => out += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0);
+      backHoles.forEach(h => inn += parseFloat(document.getElementById(`cell_${player}_${h}`)?.value) || 0);
       document.getElementById(`out_${player}`).innerText = out;
       document.getElementById(`in_${player}`).innerText = inn;
       document.getElementById(`tot_${player}`).innerText = out + inn;
