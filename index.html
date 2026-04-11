@@ -2982,8 +2982,11 @@ max-width: none !important;
     }
 
     function splitLogsByNine(logs){
-      const front = logs.filter(x => x.hole >= 1 && x.hole <= 9);
-      const back = logs.filter(x => x.hole >= 10 && x.hole <= 18);
+      const order = getPlayOrder();
+      const frontHoles = new Set(order.slice(0, 9));
+      const backHoles = new Set(order.slice(9, 18));
+      const front = logs.filter(x => frontHoles.has(x.hole));
+      const back = logs.filter(x => backHoles.has(x.hole));
       const frontLabel = currentZoneLabels ? currentZoneLabels.front : '前 9 洞';
       const backLabel = currentZoneLabels ? currentZoneLabels.back : '後 9 洞';
       return { front, back, frontLabel, backLabel };
