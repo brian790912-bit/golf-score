@@ -441,13 +441,14 @@ button.action-btn.danger { background: #c62828; }
   font-size: .96rem;
   color: var(--text);
 }
-.summary-table { width: 100%; min-width: unset; table-layout: auto; border-collapse: separate; border-spacing: 0; }
+.summary-table { width: 100%; min-width: unset; table-layout: auto; border-collapse: collapse; border: 1px solid #d6e2d3; border-radius: 14px; overflow: hidden; }
 .summary-table th, .summary-table td { height: auto; padding: 10px 8px; font-size: .96rem; }
-.summary-table th { background: var(--primary); color: #fff; border-bottom: 1px solid var(--primary-dark); }
-.summary-table td { background: rgba(255,255,255,.96); color: var(--text); border-bottom: 1px solid #e5eee2; font-weight: 700; }
+.summary-table th { background: #3a7a4a; color: #fff; font-weight: 900; }
+.summary-table td { color: #18311f; border-bottom: 1px solid #e8efe6; font-weight: 700; }
 .summary-table tr:last-child td { border-bottom: none; }
-.summary-table td:first-child, .summary-table th:first-child { border-top-left-radius: 12px; }
-.summary-table td:last-child, .summary-table th:last-child { border-top-right-radius: 12px; }
+.summary-table tbody tr:nth-child(even) td { background: #f3f7f1; }
+.summary-table tbody tr:nth-child(odd) td { background: #ffffff; }
+
 .center-note { text-align: center; color: #72806f; padding: 8px 0 2px; font-size: .95rem; }
 .result-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 12px; }
 .result-stack { display: grid; gap: 12px; }
@@ -1170,7 +1171,6 @@ max-width: none !important;
       </div>
       <div class="result-stack">
         <div class="card"><h2>🎯 抓PAR</h2><div id="par-output"></div></div>
-        <div class="card"><h2>🎲 Vegas</h2><div id="vegas-output"></div></div>
         <div class="card"><h2>🏆 比洞賽</h2><div id="match-output"></div></div>
         <div class="card result-collapse-card" id="card-match-detail">
           <div class="result-collapse-head" onclick="toggleResultCollapse('match-detail')">
@@ -1181,6 +1181,7 @@ max-width: none !important;
             <div id="match-detail-output"></div>
           </div>
         </div>
+        <div class="card"><h2>🎲 Vegas</h2><div id="vegas-output"></div></div>
         <div class="card result-collapse-card" id="card-vegas-hole">
           <div class="result-collapse-head" onclick="toggleResultCollapse('vegas-hole')">
             <h2 style="margin:0;">📝 Vegas 每洞勝負</h2>
@@ -2992,7 +2993,14 @@ max-width: none !important;
     function renderSortedRows(values, names, activePlayers){
       const arr = activePlayers.map(i => ({ i, name:names[i], pts: values[i] ?? 0 }));
       arr.sort((a,b) => b.pts - a.pts || a.i - b.i);
-      return arr.map(x => `<div class="res-row"><span>${escapeHtml(x.name)}</span><span class="${x.pts>0?'red-text':x.pts<0?'':'muted'}">${x.pts>0?'+':''}${x.pts} 點</span></div>`).join('');
+      let html = `<table class="matrix-table"><tr class="matrix-head-row"><th>玩家</th><th>點數</th></tr>`;
+      arr.forEach((x, idx) => {
+        const rowClass = idx % 2 === 0 ? 'matrix-row-even' : 'matrix-row-odd';
+        const ptsCls = x.pts > 0 ? 'red-text' : x.pts < 0 ? '' : 'muted';
+        html += `<tr class="${rowClass}"><th>${escapeHtml(x.name)}</th><td class="${ptsCls} total-col">${x.pts>0?'+':''}${x.pts}</td></tr>`;
+      });
+      html += `</table>`;
+      return html;
     }
 
     function buildMatchDetails(order, names){
