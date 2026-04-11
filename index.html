@@ -1360,8 +1360,12 @@ max-width: none !important;
     }
 
     function getPlayOrder(){
-      // 固定1~18洞順序，計分表顯示用
-      return Array.from({length:18}, (_,i) => i+1);
+      // 依起始洞重排，計分表顯示用
+      let start = parseInt(document.getElementById('startHole')?.value) || 1;
+      if (start < 1 || start > 18) start = 1;
+      const arr = [];
+      for (let i=0; i<18; i++) arr.push(((start - 1 + i) % 18) + 1);
+      return arr;
     }
 
     function getVegasOrder(){
@@ -1374,8 +1378,10 @@ max-width: none !important;
     }
 
     function getNineSummaryInsertIndexes(order){
-      // 固定第9洞後為前9小計，第18洞後為後9小計
-      return { frontLastIdx: 8, backLastIdx: 17 };
+      // 依實際打球順序，打完9洞插前9小計，打完18洞插後9小計
+      const frontLastIdx = 8;
+      const backLastIdx = 17;
+      return { frontLastIdx, backLastIdx };
     }
 
     function isMatchEnabled(){ return document.getElementById('modeMatch').checked; }
@@ -2615,13 +2621,11 @@ max-width: none !important;
           activePlayers.forEach(p => { body += `<td id="in_${p}">0</td>`; });
           body += `</tr>`;
         }
-
-        if (idx === order.length - 1) {
-          body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
-          activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
-          body += `</tr>`;
-        }
       });
+      // 總桿永遠在最後
+      body += `<tr class="summary-row"><th class="sticky-col sticky-hole">總桿</th><td class="sticky-par" id="tot_P">0</td><td class="sticky-hdcp">-</td>`;
+      activePlayers.forEach(p => { body += `<td id="tot_${p}">0</td>`; });
+      body += `</tr>`;
       document.getElementById('playerRows').innerHTML = body;
       attachSelectAllBehavior(document.getElementById('mainTable'));
       applyNumericKeyboardHints(document.getElementById('mainTable'));
