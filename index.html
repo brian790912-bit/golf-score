@@ -3262,7 +3262,7 @@ max-width: none !important;
           if (isVegasEnabled()) {
             const vegasDiv = document.getElementById('vegas-output');
             const vegasTable = vegasDiv ? vegasDiv.querySelector('.matrix-table') : null;
-            const vegasItems = vegasTable ? Array.from(vegasTable.querySelectorAll('tbody tr')).map(row => {
+            const vegasItems = vegasTable ? Array.from(vegasTable.querySelectorAll('tr')).slice(1).map(row => {
               const cells = row.querySelectorAll('th, td');
               return [cells[0]?.textContent.trim()||'', cells[1]?.textContent.trim()||''];
             }).filter(r=>r[0]) : [];
