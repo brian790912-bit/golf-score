@@ -609,8 +609,10 @@ cursor: pointer;
 .matrix-table .matrix-head-row th { background: #3a7a4a; color: #fff; font-weight: 900; }
 .matrix-table .matrix-row-even td, .matrix-table .matrix-row-even th { background: #f3f7f1; color: #1e4d2b; }
 .matrix-table .matrix-row-odd td, .matrix-table .matrix-row-odd th { background: #ffffff; color: #1e4d2b; }
-.matrix-table td .red-text, .matrix-table th .red-text { color: #c33232; }
-.matrix-table td .muted, .matrix-table th .muted { color: #7c8879; }
+.matrix-table td .red-text, .matrix-table th .red-text, .matrix-table td.red-text { color: #c33232; }
+.matrix-table td .muted, .matrix-table th .muted, .matrix-table td.muted { color: #7c8879; }
+.summary-table td.red-text { color: #c33232; }
+.summary-table td.muted { color: #7c8879; }
 .matrix-table td.total-col { background: #eef5ec; font-weight: 900; }
 .matrix-table th.total-col { background: #2f6b3f; color: #fff; font-weight: 900; }
 .matrix-table .matrix-row-even td.total-col { background: #f3f7f1; }
@@ -3813,10 +3815,14 @@ max-width: none !important;
     function renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers){
       const rows = activePlayers.map(i => ({ i, name:names[i], match: matchPoints[i], par: parPoints[i], vegas: vegasPoints[i], total: totalPoints[i], money: Math.round(totalPoints[i] * pointValue) })).sort((a,b) => b.total - a.total || a.i - b.i);
       let html = `<table class="summary-table"><tr><th>玩家</th>${isMatchEnabled()?'<th>比洞賽</th>':''}${isParEnabled()?'<th>抓PAR</th>':''}${isVegasEnabled()?'<th>Vegas</th>':''}<th>總點數</th><th>金額</th></tr>`;
+      const numCell = (val, showPlus=false) => {
+        const cls = val > 0 ? 'red-text' : val < 0 ? '' : 'muted';
+        const txt = showPlus && val > 0 ? `+${val}` : String(val);
+        return `<td class="${cls}">${txt}</td>`;
+      };
       rows.forEach(r => {
-        const totalCls = r.total > 0 ? 'red-text' : r.total < 0 ? '' : 'muted';
         const moneyCls = r.money > 0 ? 'red-text' : r.money < 0 ? '' : 'muted';
-        html += `<tr><td>${r.name}</td>${isMatchEnabled()?`<td>${r.match}</td>`:''}${isParEnabled()?`<td>${r.par}</td>`:''}${isVegasEnabled()?`<td>${r.vegas}</td>`:''}<td class="${totalCls}">${r.total > 0 ? '+' : ''}${r.total}</td><td class="${moneyCls}">${r.money > 0 ? '+' : ''}${r.money} 元</td></tr>`;
+        html += `<tr><td>${r.name}</td>${isMatchEnabled()?numCell(r.match):''}${isParEnabled()?numCell(r.par):''}${isVegasEnabled()?numCell(r.vegas):''}${numCell(r.total, true)}<td class="${moneyCls}">${r.money > 0 ? '+' : ''}${r.money} 元</td></tr>`;
       });
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
