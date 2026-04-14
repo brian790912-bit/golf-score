@@ -3261,9 +3261,10 @@ max-width: none !important;
           }
           if (isVegasEnabled()) {
             const vegasDiv = document.getElementById('vegas-output');
-            const vegasItems = vegasDiv ? Array.from(vegasDiv.querySelectorAll('.res-row')).map(row => {
-              const spans = row.querySelectorAll('span');
-              return [spans[0]?.textContent.trim()||'', spans[1]?.textContent.trim()||''];
+            const vegasTable = vegasDiv ? vegasDiv.querySelector('.matrix-table') : null;
+            const vegasItems = vegasTable ? Array.from(vegasTable.querySelectorAll('tbody tr')).map(row => {
+              const cells = row.querySelectorAll('th, td');
+              return [cells[0]?.textContent.trim()||'', cells[1]?.textContent.trim()||''];
             }).filter(r=>r[0]) : [];
             if (vegasItems.length) modeRows.push({ title: 'Vegas', items: vegasItems });
           }
