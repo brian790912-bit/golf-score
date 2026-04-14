@@ -609,6 +609,8 @@ cursor: pointer;
 .matrix-table .matrix-head-row th { background: #3a7a4a; color: #fff; font-weight: 900; }
 .matrix-table .matrix-row-even td, .matrix-table .matrix-row-even th { background: #f3f7f1; color: #1e4d2b; }
 .matrix-table .matrix-row-odd td, .matrix-table .matrix-row-odd th { background: #ffffff; color: #1e4d2b; }
+.matrix-table td .red-text, .matrix-table th .red-text { color: #c33232; }
+.matrix-table td .muted, .matrix-table th .muted { color: #7c8879; }
 .matrix-table td.total-col { background: #eef5ec; font-weight: 900; }
 .matrix-table th.total-col { background: #2f6b3f; color: #fff; font-weight: 900; }
 .matrix-table .matrix-row-even td.total-col { background: #f3f7f1; }
@@ -3036,10 +3038,12 @@ max-width: none !important;
     }
 
     function buildMatrixTable(title, matrix, totals, activePlayers, names, showPlus=false){
-      const numberText = (value) => {
+      const numberText = (value, forceColor=false) => {
         if (value === null || value === undefined || Number.isNaN(value)) return '-';
-        if (value === 0) return '0';
-        return showPlus && value > 0 ? `+${value}` : String(value);
+        if (value === 0) return '<span class="muted">0</span>';
+        const txt = showPlus && value > 0 ? `+${value}` : String(value);
+        if (value > 0) return `<span class="red-text">${txt}</span>`;
+        return txt;
       };
       let html = `<table class="matrix-table"><tr class="matrix-head-row"><th></th>${activePlayers.map(i => `<th>${escapeHtml(names[i])}</th>`).join('')}<th class="total-col">總計</th></tr>`;
       activePlayers.forEach((i, rIdx) => {
@@ -3420,7 +3424,8 @@ max-width: none !important;
                 ctx.fillRect(x, y, w, section.rowH);
                 ctx.strokeStyle = '#d6e2d3';
                 ctx.strokeRect(x, y, w, section.rowH);
-                const isPos = rIdx > 0 && typeof cell === 'string' && cell.startsWith('+');
+                const numV = parseFloat(cell);
+                const isPos = rIdx > 0 && !isNaN(numV) && numV > 0;
                 ctx.fillStyle = rIdx === 0 ? '#ffffff' : isPos ? '#c33232' : '#18311f';
                 ctx.font = rIdx === 0 ? '900 18px sans-serif' : '800 18px sans-serif';
                 ctx.textAlign = 'center';
@@ -3470,7 +3475,8 @@ max-width: none !important;
                   ctx.fillRect(x, y, w, section.mRowH);
                   ctx.strokeStyle = '#e4ebe2';
                   ctx.strokeRect(x, y, w, section.mRowH);
-                  const isPosVal = !isHeadRow && typeof cell === 'string' && cell.startsWith('+');
+                  const numVal = parseFloat(cell);
+                  const isPosVal = !isHeadRow && !isNaN(numVal) && numVal > 0;
                   ctx.fillStyle = isHeadRow ? '#ffffff' : isPosVal ? '#c33232' : '#18311f';
                   ctx.font = isHeadRow ? '900 18px sans-serif' : isTotalCol ? '900 18px sans-serif' : '800 18px sans-serif';
                   ctx.textAlign = 'center';
