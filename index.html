@@ -3004,7 +3004,7 @@ max-width: none !important;
       arr.forEach((x, idx) => {
         const rowClass = idx % 2 === 0 ? 'matrix-row-even' : 'matrix-row-odd';
         const ptsCls = x.pts > 0 ? 'red-text' : x.pts < 0 ? '' : 'muted';
-        html += `<tr class="${rowClass}"><th>${escapeHtml(x.name)}</th><td class="${ptsCls} total-col">${x.pts}</td></tr>`;
+        html += `<tr class="${rowClass}"><th>${escapeHtml(x.name)}</th><td class="${ptsCls} total-col">${x.pts > 0 ? '+' : ''}${x.pts}</td></tr>`;
       });
       html += `</table>`;
       return html;
@@ -3822,7 +3822,7 @@ max-width: none !important;
       };
       rows.forEach(r => {
         const moneyCls = r.money > 0 ? 'red-text' : r.money < 0 ? '' : 'muted';
-        html += `<tr><td>${r.name}</td>${isMatchEnabled()?numCell(r.match):''}${isParEnabled()?numCell(r.par):''}${isVegasEnabled()?numCell(r.vegas):''}${numCell(r.total, true)}<td class="${moneyCls}">${r.money > 0 ? '+' : ''}${r.money} 元</td></tr>`;
+        html += `<tr><td>${r.name}</td>${isMatchEnabled()?numCell(r.match, true):''}${isParEnabled()?numCell(r.par, true):''}${isVegasEnabled()?numCell(r.vegas, true):''}${numCell(r.total, true)}<td class="${moneyCls}">${r.money > 0 ? '+' : ''}${r.money} 元</td></tr>`;
       });
       html += `</table>`;
       document.getElementById('final-money').innerHTML = html;
