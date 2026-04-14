@@ -3693,7 +3693,7 @@ max-width: none !important;
         document.getElementById('match-output').innerHTML = `<div class="center-note">本日未啟用比洞</div>`;
         return;
       }
-      document.getElementById('match-output').innerHTML = buildMatrixTable('比洞賽', matrix, totals, activePlayers, names, false);
+      document.getElementById('match-output').innerHTML = buildMatrixTable('比洞賽', matrix, totals, activePlayers, names, true);
     }
 
     function renderMatchDetailOutput(details, names){
@@ -3749,7 +3749,7 @@ max-width: none !important;
         document.getElementById('par-output').innerHTML = `<div class="center-note">沒有玩家參與抓PAR</div>`;
         return;
       }
-      document.getElementById('par-output').innerHTML = buildMatrixTable('抓PAR', matrix, totals, participants, names, false) + `<div class="matrix-note">右側總計就是每位玩家抓PAR點數的來源。</div>`;
+      document.getElementById('par-output').innerHTML = buildMatrixTable('抓PAR', matrix, totals, participants, names, true) + `<div class="matrix-note">右側總計就是每位玩家抓PAR點數的來源。</div>`;
     }
 
     function renderVegasOutput(points, names, activePlayers){
