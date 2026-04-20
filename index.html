@@ -3398,8 +3398,8 @@
               const matchNotes = [];
               buildMatchPairs().forEach(([a, b]) => {
                 const meta = getPairMeta(a, b);
-                if (!meta.checked || meta.mode !== 'general') return;
-                if (!meta.value || parseFloat(meta.value) === 0 || isNaN(parseFloat(meta.value))) return;
+                if (!meta.checked || meta.mode !== 'general') { alert(`${a}-${b} 跳過: checked=${meta.checked} mode=${meta.mode}`); return; }
+                if (!meta.value || parseFloat(meta.value) === 0 || isNaN(parseFloat(meta.value))) { alert(`${a}-${b} 讓洞過濾: value=${meta.value}`); return; }
                 const nameA = nameOf(a), nameB = nameOf(b);
                 if (!nameA || !nameB) return;
                 const strokes = meta.value || 0;
