@@ -3518,7 +3518,9 @@
             const mNoteH = 28;
             const dataRows = mode.rows || mode.items || [];
             const notes = mode.notes || [];
-            const mSectionH = mTitleH + dataRows.length * mRowH + (notes.length ? notes.length * mNoteH + 10 : 0) + 20;
+            // 估算備註行數（每行約 30 個字）
+            const estNoteLines = notes.reduce((sum, n) => sum + Math.ceil((n.length + 2) / 30), 0);
+            const mSectionH = mTitleH + dataRows.length * mRowH + (notes.length ? estNoteLines * mNoteH + 10 : 0) + 20;
             const rawMColW = allColWidthsMap[`mode-${mi}`] || [];
             const rawMTotal = rawMColW.reduce((a,b) => a+b, 0) || unifiedW;
             const mScale = unifiedW / rawMTotal;
@@ -3653,17 +3655,34 @@
               }
               y += section.mRowH;
             });
-            // 繪製備註
+            // 繪製備註（支援自動換行）
             const notes = section.mode.notes || [];
             if (notes.length) {
               y += 10;
+              const maxW = section.w - cardPad * 2 - 10;
+              ctx.fillStyle = '#7a5800';
+              ctx.font = '600 16px sans-serif';
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'middle';
               notes.forEach(note => {
-                ctx.fillStyle = '#7a5800';
-                ctx.font = '600 16px sans-serif';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`• ${note}`, section.x + cardPad, y + section.mNoteH / 2);
-                y += section.mNoteH;
+                const fullText = `• ${note}`;
+                const words = fullText.split('');
+                let line = '';
+                const lines = [];
+                for (const ch of words) {
+                  const test = line + ch;
+                  if (ctx.measureText(test).width > maxW && line) {
+                    lines.push(line);
+                    line = ch;
+                  } else {
+                    line = test;
+                  }
+                }
+                if (line) lines.push(line);
+                lines.forEach(l => {
+                  ctx.fillText(l, section.x + cardPad, y + section.mNoteH / 2);
+                  y += section.mNoteH;
+                });
               });
             }
           } else {
