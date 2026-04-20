@@ -1183,6 +1183,7 @@
   </div>
 
   <div id="result" class="content">
+    <div id="result-warning" class="warning-box"></div>
     <div class="result-grid">
       <div class="result-stack">
         <div style="margin-bottom:8px;">
@@ -2993,7 +2994,7 @@
 
     let warningTimers = {};
     function showWarning(msg, area='global'){
-      const map = { global:'global-warning', scoring:'scoring-warning' };
+      const map = { global:'global-warning', scoring:'scoring-warning', result:'result-warning' };
       const el = document.getElementById(map[area] || 'global-warning');
       if (!el) return;
       if (!msg) { el.style.display='none'; el.innerText=''; return; }
@@ -4012,8 +4013,7 @@
       });
       activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
       saveHdcpMemory(matchMatrix, names, activePlayers);
-      showWarning('比賽結束，讓洞記錄已儲存。', 'global');
-      openTab('result');
+      showWarning('✅ 讓洞記錄已儲存。', 'result');
     }
 
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
