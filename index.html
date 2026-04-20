@@ -3403,8 +3403,21 @@
                 const nameA = nameOf(a), nameB = nameOf(b);
                 if (!nameA || !nameB) return;
                 const strokes = meta.value || 0;
-                const aScore = activePlayers.includes(a) && activePlayers.includes(b) ?
-                  (lastMatchMatrix[a]?.[b] ?? 0) : 0;
+                // 從 DOM 重新計算 aScore，不依賴 lastMatchMatrix
+                let aScore = 0;
+                if (activePlayers.includes(a) && activePlayers.includes(b)) {
+                  const order = getVegasOrder();
+                  order.forEach(hole => {
+                    const grossA = getPlayerScore(a, hole);
+                    const grossB = getPlayerScore(b, hole);
+                    if (!grossA || !grossB) return;
+                    const netA = getNetScoreForPair(a, b, hole);
+                    const netB = getNetScoreForPair(b, a, hole);
+                    const holePar = getHoleInfo(hole).par;
+                    if (netA < netB) aScore += getMatchMultiplier(grossA, holePar);
+                    else if (netB < netA) aScore -= getMatchMultiplier(grossB, holePar);
+                  });
+                }
                 const absScore = Math.abs(aScore);
                 if (absScore < 3) return;
                 const adjust = Math.floor(absScore / 3);
