@@ -3430,6 +3430,8 @@
                 const absNew = Math.abs(newStrokes);
                 matchNotes.push(`${giver} 讓 ${receiver} ${absStrokes} 洞，${winnerName} 贏 ${absScore} 點，下次調整為 ${newGiver} 讓 ${newReceiver} ${absNew} 洞`);
               });
+              // 測試：強制加一筆
+              if (!matchNotes.length) matchNotes.push('（無符合條件的讓洞記錄）');
               if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows, notes: matchNotes });
             }
           }
