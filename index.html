@@ -3394,32 +3394,29 @@
               const mRows = Array.from(matchTable.querySelectorAll('tr')).map(tr =>
                 Array.from(tr.children).map(td => (td.innerText||td.textContent||'').trim())
               ).filter(r=>r.length);
-              // 計算比洞賽備註（直接用 pairKeys 不依賴 buildMatchPairs）
+              // 計算比洞賽備註
               const matchNotes = [];
               pairKeys.forEach(key => {
                 const [a, b] = key.split('_').map(Number);
                 if (!activePlayers.includes(a) || !activePlayers.includes(b)) return;
                 const meta = getPairMeta(a, b);
-                if (!meta.checked || meta.mode !== 'general') return;
-                if (!meta.value || parseFloat(meta.value) === 0 || isNaN(parseFloat(meta.value))) return;
+                if (!meta.checked) return;
                 const nameA = nameOf(a), nameB = nameOf(b);
                 if (!nameA || !nameB) return;
                 const strokes = meta.value || 0;
-                // 從 DOM 重新計算 aScore，不依賴 lastMatchMatrix
+                // 從 DOM 重新計算 aScore
                 let aScore = 0;
-                if (activePlayers.includes(a) && activePlayers.includes(b)) {
-                  const order = getVegasOrder();
-                  order.forEach(hole => {
-                    const grossA = getPlayerScore(a, hole);
-                    const grossB = getPlayerScore(b, hole);
-                    if (!grossA || !grossB) return;
-                    const netA = getNetScoreForPair(a, b, hole);
-                    const netB = getNetScoreForPair(b, a, hole);
-                    const holePar = getHoleInfo(hole).par;
-                    if (netA < netB) aScore += getMatchMultiplier(grossA, holePar);
-                    else if (netB < netA) aScore -= getMatchMultiplier(grossB, holePar);
-                  });
-                }
+                const order = getVegasOrder();
+                order.forEach(hole => {
+                  const grossA = getPlayerScore(a, hole);
+                  const grossB = getPlayerScore(b, hole);
+                  if (!grossA || !grossB) return;
+                  const netA = getNetScoreForPair(a, b, hole);
+                  const netB = getNetScoreForPair(b, a, hole);
+                  const holePar = getHoleInfo(hole).par;
+                  if (netA < netB) aScore += getMatchMultiplier(grossA, holePar);
+                  else if (netB < netA) aScore -= getMatchMultiplier(grossB, holePar);
+                });
                 const absScore = Math.abs(aScore);
                 if (absScore < 3) return;
                 const adjust = Math.floor(absScore / 3);
