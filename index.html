@@ -3430,6 +3430,7 @@
                 const absNew = Math.abs(newStrokes);
                 matchNotes.push(`${giver} 讓 ${receiver} ${absStrokes} 洞，${winnerName} 贏 ${absScore} 點，下次調整為 ${newGiver} 讓 ${newReceiver} ${absNew} 洞`);
               });
+              alert('mRows:'+mRows.length+' matchNotes:'+matchNotes.length+(matchNotes.length?(' | '+matchNotes[0]):''));
               if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows, notes: matchNotes });
             }
           }
