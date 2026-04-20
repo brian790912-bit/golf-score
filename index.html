@@ -29,51 +29,77 @@
     }
     * { box-sizing: border-box; }
     button { -webkit-appearance: none; appearance: none; }
-    body {
-      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      background: linear-gradient(180deg, #f4f8f2 0%, #eef4ec 100%);
-      margin: 0;
-      padding-bottom: 34px;
-      font-weight: 700;
-      color: #18311f;
-      letter-spacing: .01em;
-    }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .tab-nav {
-      display: flex;
-      align-items: stretch;
-      background: rgba(255,255,255,.96);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(47,107,63,.08);
-      box-shadow: 0 4px 18px rgba(18,45,26,.08);
-    }
-    .tab-btn-group {
-      flex: 1;
-      display: flex;
-      min-width: 0;
-    }
-    .mobile-version-badge {
-      display: none;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 18px 8px;
-      border: none;
-      background: none;
-      font-size: 1.08rem;
-      font-weight: 900;
-      color: #6f7a6f;
-      border-bottom: 4px solid transparent;
-      cursor: pointer;
-      transition: .18s ease;
-    }
-    .tab-btn.active { color: #1e4d2b; border-bottom: 4px solid #2f6b3f; background: linear-gradient(180deg, rgba(47,107,63,.03), rgba(47,107,63,.01)); }
+/* ── 讓洞記憶提醒 ── */
+.hdcp-memory-toast {
+  background: #fff8e6;
+  border: 2px solid #f0c060;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  font-size: .88rem;
+  line-height: 1.6;
+  color: #5a4200;
+}
+.hdcp-memory-toast .hdcp-toast-title {
+  font-size: .9rem;
+  font-weight: 900;
+  color: #7a5800;
+  margin-bottom: 4px;
+}
+.hdcp-memory-toast .hdcp-toast-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0e0a0;
+}
+.hdcp-memory-toast .hdcp-toast-row:last-child { border-bottom: none; }
 
 ```
+body {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(180deg, #f4f8f2 0%, #eef4ec 100%);
+  margin: 0;
+  padding-bottom: 34px;
+  font-weight: 700;
+  color: #18311f;
+  letter-spacing: .01em;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.tab-nav {
+  display: flex;
+  align-items: stretch;
+  background: rgba(255,255,255,.96);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(47,107,63,.08);
+  box-shadow: 0 4px 18px rgba(18,45,26,.08);
+}
+.tab-btn-group {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+}
+.mobile-version-badge {
+  display: none;
+}
+.tab-btn {
+  flex: 1;
+  padding: 18px 8px;
+  border: none;
+  background: none;
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #6f7a6f;
+  border-bottom: 4px solid transparent;
+  cursor: pointer;
+  transition: .18s ease;
+}
+.tab-btn.active { color: #1e4d2b; border-bottom: 4px solid #2f6b3f; background: linear-gradient(180deg, rgba(47,107,63,.03), rgba(47,107,63,.01)); }
+
 /* ── 設定引導進度條 ── */
 .setup-guide-bar {
   position: sticky;
@@ -975,14 +1001,14 @@ max-width: none !important;
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.63</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.7</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
       <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
       <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
     </div>
-    <div class="mobile-version-badge">Beta 1.63</div>
+    <div class="mobile-version-badge">Beta 1.7</div>
   </div>
 
   <!-- 設定引導進度條 -->
@@ -1110,6 +1136,7 @@ max-width: none !important;
     <span class="sub-collapse-icon" id="icon-handicap">▶</span>
   </div>
   <div id="body-handicap" style="display:none;" class="mode-child">
+    <div id="hdcp-memory-toast-area"></div>
     <div class="small-note" style="padding:10px 14px 4px; color:#7c8879; line-height:1.6;">一般讓法：輸入讓洞數，系統依 HDCP 決定哪些洞生效。<br>特殊讓法：依 Par 3 / Par 4 / Par 5 分別設定讓洞數。</div>
     <div id="player-config-area"></div>
   </div>
@@ -1276,7 +1303,7 @@ max-width: none !important;
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.63';
+    const APP_VERSION = 'Golf Score Beta 1.7';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -1737,6 +1764,7 @@ max-width: none !important;
         applyModeStates();
         renderVegasRankInputs();
         renderScoreboard();
+        applyHdcpMemoryAndNotify();
         pendingHeavyNameRefresh = null;
       }, 0);
     }
@@ -2303,7 +2331,8 @@ max-width: none !important;
         exportedAt: new Date().toISOString(),
         app: 'Golf Score',
         storageKey: 'golfSavedCoursesV21',
-        courses: getSavedCourses()
+        courses: getSavedCourses(),
+        hdcpMemory: getHdcpMemory()
       };
     }
 
@@ -2385,6 +2414,9 @@ max-width: none !important;
           const keys = Object.keys(imported);
           if (!keys.length) throw new Error('找不到可匯入的球場資料');
           setSavedCourses(imported);
+          if (parsed.hdcpMemory && typeof parsed.hdcpMemory === 'object') {
+            setHdcpMemory(parsed.hdcpMemory);
+          }
           refreshSavedCourseSelect();
           showWarning(`已匯入 ${keys.length} 個球場資料。`, 'global');
         } catch (err) {
@@ -2852,6 +2884,110 @@ max-width: none !important;
       showWarning(warnings.join('\n'), 'scoring');
       showDanger(errors.join('\n'), 'scoring');
       return { warnings, errors };
+    }
+
+
+    // ── 讓洞記憶系統 ──
+    const HDCP_MEMORY_KEY = 'golfHdcpMemoryV1';
+
+    function getHdcpMemory(){
+      try { return JSON.parse(localStorage.getItem(HDCP_MEMORY_KEY) || '{}'); } catch(e){ return {}; }
+    }
+    function setHdcpMemory(data){
+      localStorage.setItem(HDCP_MEMORY_KEY, JSON.stringify(data));
+    }
+    function hdcpMemoryKey(nameA, nameB){
+      // 用名字排序確保 A vs B 和 B vs A 是同一筆記錄
+      return [nameA, nameB].sort().join('|');
+    }
+
+    function saveHdcpMemory(matchMatrix, names, activePlayers){
+      if (!isMatchEnabled()) return;
+      const memory = getHdcpMemory();
+      const course = (document.getElementById('courseName')?.value || '').trim() || '未知球場';
+      const now = new Date();
+      const date = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+      buildMatchPairs().forEach(([a, b]) => {
+        const meta = getPairMeta(a, b);
+        if (!meta.checked || meta.mode !== 'general') return;
+        const nameA = names[a], nameB = names[b];
+        if (!nameA || !nameB) return;
+        const strokes = meta.value || 0; // 正數 = A讓B，負數 = B讓A
+        const aScore = matchMatrix[a][b] ?? 0; // A對B的點數，正=A贏
+        const key = hdcpMemoryKey(nameA, nameB);
+        // 計算調整量
+        const absScore = Math.abs(aScore);
+        const adjust = absScore >= 3 ? Math.floor(absScore / 3) : 0;
+        let newStrokes = strokes;
+        if (adjust > 0) {
+          // aScore > 0 表示 A 贏，A 應該多讓（strokes 增加）
+          // aScore < 0 表示 B 贏，A 應該少讓（strokes 減少）
+          newStrokes = aScore > 0 ? strokes + adjust : strokes - adjust;
+        }
+        memory[key] = {
+          nameA, nameB,
+          date, course,
+          strokes,       // 這場的讓洞數
+          aScore,        // A對B點數
+          newStrokes,    // 調整後建議讓洞數
+          adjusted: adjust > 0
+        };
+      });
+      setHdcpMemory(memory);
+    }
+
+    function applyHdcpMemoryAndNotify(){
+      if (!isMatchEnabled()) return;
+      const memory = getHdcpMemory();
+      const activePlayers = getActivePlayers();
+      if (activePlayers.length < 2) return;
+      const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
+      const toasts = [];
+      buildMatchPairs().forEach(([a, b]) => {
+        const nameA = names[a], nameB = names[b];
+        if (!nameA || !nameB) return;
+        const key = hdcpMemoryKey(nameA, nameB);
+        const rec = memory[key];
+        if (!rec) return;
+        // 自動帶入調整後的讓洞數
+        const strokeInput = document.getElementById(`pair-strokes-${a}-${b}`);
+        if (strokeInput) {
+          strokeInput.value = rec.newStrokes;
+          setPairState(a, b, true, String(rec.newStrokes), true);
+        }
+        // 組提醒文字
+        const giver = rec.strokes >= 0 ? rec.nameA : rec.nameB;
+        const receiver = rec.strokes >= 0 ? rec.nameB : rec.nameA;
+        const absStrokes = Math.abs(rec.strokes);
+        const winner = rec.aScore > 0 ? rec.nameA : rec.nameA === rec.nameA ? rec.nameB : rec.nameA;
+        const loser = winner === rec.nameA ? rec.nameB : rec.nameA;
+        const absScore = Math.abs(rec.aScore);
+        // 重新判斷誰贏
+        const winnerName = rec.aScore > 0 ? rec.nameA : rec.nameB;
+        const loserName = rec.aScore > 0 ? rec.nameB : rec.nameA;
+        let msg = `${rec.date} ${rec.course}｜${giver} 讓 ${receiver} ${absStrokes} 洞`;
+        if (absScore === 0) {
+          msg += `｜平手，讓洞不變`;
+        } else {
+          msg += `｜${winnerName} 贏 ${loserName} ${absScore} 點`;
+          if (rec.adjusted) {
+            const newGiver = rec.newStrokes >= 0 ? rec.nameA : rec.nameB;
+            const newReceiver = rec.newStrokes >= 0 ? rec.nameB : rec.nameA;
+            msg += `，已調整為 ${newGiver} 讓 ${newReceiver} ${Math.abs(rec.newStrokes)} 洞`;
+          } else {
+            msg += `，讓洞不變`;
+          }
+        }
+        toasts.push({ a, b, nameA, nameB, msg });
+      });
+      // 顯示提醒
+      const area = document.getElementById('hdcp-memory-toast-area');
+      if (!area) return;
+      if (!toasts.length) { area.innerHTML = ''; return; }
+      area.innerHTML = `<div class="hdcp-memory-toast">
+        <div class="hdcp-toast-title">⚠️ 讓洞記錄提醒</div>
+        ${toasts.map(t => `<div class="hdcp-toast-row"><span>${t.msg}</span></div>`).join('')}
+      </div>`;
     }
 
     let warningTimers = {};
@@ -3685,6 +3821,7 @@ max-width: none !important;
       renderVegasHoleOutput(vegasHoleWins, names);
       renderFinalOutput(matchPoints, parPoints, vegasPoints, totalPoints, pointValue, names, activePlayers);
       renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers);
+      saveHdcpMemory(matchMatrix, names, activePlayers);
       openTab('result');
     }
 
