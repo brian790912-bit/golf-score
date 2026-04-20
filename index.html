@@ -1001,14 +1001,14 @@ max-width: none !important;
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.7</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.71</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
       <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
       <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
     </div>
-    <div class="mobile-version-badge">Beta 1.7</div>
+    <div class="mobile-version-badge">Beta 1.71</div>
   </div>
 
   <!-- 設定引導進度條 -->
@@ -1303,7 +1303,7 @@ max-width: none !important;
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.7';
+    const APP_VERSION = 'Golf Score Beta 1.71';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -3389,7 +3389,30 @@ max-width: none !important;
               const mRows = Array.from(matchTable.querySelectorAll('tr')).map(tr =>
                 Array.from(tr.children).map(td => (td.innerText||td.textContent||'').trim())
               ).filter(r=>r.length);
-              if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows });
+              // 計算比洞賽備註
+              const matchNotes = [];
+              buildMatchPairs().forEach(([a, b]) => {
+                const meta = getPairMeta(a, b);
+                if (!meta.checked || meta.mode !== 'general') return;
+                const nameA = nameOf(a), nameB = nameOf(b);
+                if (!nameA || !nameB) return;
+                const strokes = meta.value || 0;
+                const aScore = activePlayers.includes(a) && activePlayers.includes(b) ?
+                  (matchMatrix[a]?.[b] ?? 0) : 0;
+                const absScore = Math.abs(aScore);
+                if (absScore < 3) return;
+                const adjust = Math.floor(absScore / 3);
+                const newStrokes = aScore > 0 ? strokes + adjust : strokes - adjust;
+                const giver = strokes >= 0 ? nameA : nameB;
+                const receiver = strokes >= 0 ? nameB : nameA;
+                const absStrokes = Math.abs(strokes);
+                const winnerName = aScore > 0 ? nameA : nameB;
+                const newGiver = newStrokes >= 0 ? nameA : nameB;
+                const newReceiver = newStrokes >= 0 ? nameB : nameA;
+                const absNew = Math.abs(newStrokes);
+                matchNotes.push(`${giver} 讓 ${receiver} ${absStrokes} 洞，${winnerName} 贏 ${absScore} 點，下次調整為 ${newGiver} 讓 ${newReceiver} ${absNew} 洞`);
+              });
+              if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows, notes: matchNotes });
             }
           }
           if (isParEnabled()) {
@@ -3489,13 +3512,15 @@ max-width: none !important;
           modeRows.forEach((mode, mi) => {
             const mRowH = 48;
             const mTitleH = 56;
+            const mNoteH = 28;
             const dataRows = mode.rows || mode.items || [];
-            const mSectionH = mTitleH + dataRows.length * mRowH + 20;
+            const notes = mode.notes || [];
+            const mSectionH = mTitleH + dataRows.length * mRowH + (notes.length ? notes.length * mNoteH + 10 : 0) + 20;
             const rawMColW = allColWidthsMap[`mode-${mi}`] || [];
             const rawMTotal = rawMColW.reduce((a,b) => a+b, 0) || unifiedW;
             const mScale = unifiedW / rawMTotal;
             const scaledColW = rawMColW.map(w => w * mScale);
-            sections.push({ type:'mode-summary', x: pad, y: currentY, w: unifiedW + cardPad * 2, h: mSectionH, mRowH, mTitleH, mode, matrixW: unifiedW, matrixColWidths: mode.rows ? scaledColW : null, vegasCols: mode.items ? scaledColW : null });
+            sections.push({ type:'mode-summary', x: pad, y: currentY, w: unifiedW + cardPad * 2, h: mSectionH, mRowH, mTitleH, mNoteH, mode, matrixW: unifiedW, matrixColWidths: mode.rows ? scaledColW : null, vegasCols: mode.items ? scaledColW : null });
             currentY += mSectionH + 14;
           });
         }
@@ -3625,6 +3650,19 @@ max-width: none !important;
               }
               y += section.mRowH;
             });
+            // 繪製備註
+            const notes = section.mode.notes || [];
+            if (notes.length) {
+              y += 10;
+              notes.forEach(note => {
+                ctx.fillStyle = '#7a5800';
+                ctx.font = '600 16px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`• ${note}`, section.x + cardPad, y + section.mNoteH / 2);
+                y += section.mNoteH;
+              });
+            }
           } else {
             const x0 = section.x + cardPad;
             const y0 = section.y + section.headH;
