@@ -1183,6 +1183,7 @@
   </div>
 
   <div id="result" class="content">
+    <div id="result-warning" class="warning-box"></div>
     <div class="result-grid">
       <div class="result-stack">
         <div style="margin-bottom:8px;">
@@ -2996,7 +2997,7 @@
 
     let warningTimers = {};
     function showWarning(msg, area='global'){
-      const map = { global:'global-warning', scoring:'scoring-warning' };
+      const map = { global:'global-warning', scoring:'scoring-warning', result:'result-warning' };
       const el = document.getElementById(map[area] || 'global-warning');
       if (!el) return;
       if (!msg) { el.style.display='none'; el.innerText=''; return; }
@@ -4024,8 +4025,7 @@
         const activePlayers = getActivePlayers();
         const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
         saveHdcpMemory(lastMatchMatrix, names, activePlayers);
-        showWarning('✅ 讓洞記錄已儲存。', 'global');
-        openTab('result');
+        showWarning('✅ 讓洞記錄已儲存。', 'result');
       } catch(e) {
         console.error(e);
         alert('儲存失敗，請再試一次。');
