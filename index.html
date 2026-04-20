@@ -1736,6 +1736,7 @@
 
     let lastActivePlayersSignature = '';
     let pendingHeavyNameRefresh = null;
+    let lastMatchMatrix = playerIDs.map(() => playerIDs.map(() => 0));
 
     function syncNameLabelsOnly(){
       playerIDs.forEach(i => {
@@ -3400,7 +3401,7 @@
                 if (!nameA || !nameB) return;
                 const strokes = meta.value || 0;
                 const aScore = activePlayers.includes(a) && activePlayers.includes(b) ?
-                  (matchMatrix[a]?.[b] ?? 0) : 0;
+                  (lastMatchMatrix[a]?.[b] ?? 0) : 0;
                 const absScore = Math.abs(aScore);
                 if (absScore < 3) return;
                 const adjust = Math.floor(absScore / 3);
@@ -3813,6 +3814,7 @@
         matchMatrix[b][a] = bScore;
       });
       activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
+      lastMatchMatrix = matchMatrix.map(row => [...row]);
 
       const parResult = buildParResults(order, activePlayers);
       const parPoints = parResult.totals;
@@ -3985,34 +3987,9 @@
     }
 
     function finishGame(){
-      // 需要重新計算 matchMatrix 來儲存讓洞記憶
       const activePlayers = getActivePlayers();
       const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
-      const order = getVegasOrder();
-      const matchMatrix = playerIDs.map(() => playerIDs.map(() => null));
-      const matchPairs = buildMatchPairs();
-      matchPairs.forEach(([a,b]) => {
-        let aScore = 0, bScore = 0;
-        order.forEach(hole => {
-          const grossA = getPlayerScore(a, hole);
-          const grossB = getPlayerScore(b, hole);
-          if (!grossA || !grossB) return;
-          const netA = getNetScoreForPair(a,b,hole);
-          const netB = getNetScoreForPair(b,a,hole);
-          const holePar = getHoleInfo(hole).par;
-          if (netA < netB) {
-            const pts = getMatchMultiplier(grossA, holePar);
-            aScore += pts; bScore -= pts;
-          } else if (netB < netA) {
-            const pts = getMatchMultiplier(grossB, holePar);
-            bScore += pts; aScore -= pts;
-          }
-        });
-        matchMatrix[a][b] = aScore;
-        matchMatrix[b][a] = bScore;
-      });
-      activePlayers.forEach(i => activePlayers.forEach(j => { matchMatrix[i][j] = i === j ? 0 : (matchMatrix[i][j] ?? 0); }));
-      saveHdcpMemory(matchMatrix, names, activePlayers);
+      saveHdcpMemory(lastMatchMatrix, names, activePlayers);
       showWarning('✅ 讓洞記錄已儲存。', 'result');
     }
 
