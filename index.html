@@ -3397,6 +3397,7 @@
               buildMatchPairs().forEach(([a, b]) => {
                 const meta = getPairMeta(a, b);
                 if (!meta.checked || meta.mode !== 'general') return;
+                if (!meta.value || meta.value === 0 || meta.value === '0') return;
                 const nameA = nameOf(a), nameB = nameOf(b);
                 if (!nameA || !nameB) return;
                 const strokes = meta.value || 0;
