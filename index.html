@@ -3773,7 +3773,7 @@
         scheduleAutoSave();
       } catch (err) {
         console.error(err);
-        alert('圖片輸出失敗，請把這個版本回傳給我，我再幫你修。');
+        alert('圖片輸出失敗：' + (err && err.message ? err.message : String(err)));
       }
     }
 
@@ -3987,10 +3987,14 @@
     }
 
     function finishGame(){
-      const activePlayers = getActivePlayers();
-      const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
-      saveHdcpMemory(lastMatchMatrix, names, activePlayers);
-      showWarning('✅ 讓洞記錄已儲存。', 'result');
+      try {
+        const activePlayers = getActivePlayers();
+        const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
+        saveHdcpMemory(lastMatchMatrix, names, activePlayers);
+        const el = document.getElementById('result-warning');
+        if (el) { el.style.display='block'; el.innerText='✅ 讓洞記錄已儲存。'; setTimeout(()=>{el.style.display='none';el.innerText='';},5000); }
+        else { alert('✅ 讓洞記錄已儲存。'); }
+      } catch(e) { alert('錯誤：'+e.message); }
     }
 
     function renderCaptureSections(parMatrix, parPoints, vegasPoints, matchMatrix, matchPoints, names, activePlayers){
