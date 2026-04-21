@@ -1001,14 +1001,14 @@ max-width: none !important;
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.72</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.73</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
       <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
       <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
     </div>
-    <div class="mobile-version-badge">Beta 1.72</div>
+    <div class="mobile-version-badge">Beta 1.73</div>
   </div>
 
   <!-- 設定引導進度條 -->
@@ -1307,7 +1307,7 @@ max-width: none !important;
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.72';
+    const APP_VERSION = 'Golf Score Beta 1.73';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -1693,6 +1693,10 @@ max-width: none !important;
                           <input type="number" id="pair-special-p5-${i}-${j}" placeholder="Par 5" oninput="handlePairSpecialInput(${i},${j},'p5')">
                         </div>
                       </div>
+                      <div class="check-item" id="pair-offset-box-${i}-${j}" onclick="togglePairOffset(${i},${j})" style="justify-content:flex-start; gap:10px; margin-top:4px;">
+                        <input type="checkbox" id="pair-offset-${i}-${j}" style="pointer-events:none;">
+                        <span>倍率折抵</span>
+                      </div>
                     </div>
                   </div>
                 `).join('')}
@@ -1850,6 +1854,24 @@ max-width: none !important;
         const mirroredValue = cb.checked ? (value === '' || value === null || value === undefined ? '' : String(-1 * Number(value || 0))) : '';
         setPairState(j,i,cb.checked,mirroredValue,true);
       }
+    }
+
+    function togglePairOffset(i, j){
+      const cb = document.getElementById(`pair-offset-${i}-${j}`);
+      const box = document.getElementById(`pair-offset-box-${i}-${j}`);
+      const cbSym = document.getElementById(`pair-offset-${j}-${i}`);
+      const boxSym = document.getElementById(`pair-offset-box-${j}-${i}`);
+      if (!cb) return;
+      cb.checked = !cb.checked;
+      box?.classList.toggle('active', cb.checked);
+      // 雙向連動
+      if (cbSym) cbSym.checked = cb.checked;
+      boxSym?.classList.toggle('active', cb.checked);
+      scheduleAutoSave();
+    }
+
+    function isPairOffsetEnabled(i, j){
+      return !!document.getElementById(`pair-offset-${i}-${j}`)?.checked;
     }
 
     function togglePair(i,j){
@@ -2993,7 +3015,7 @@ max-width: none !important;
       if (!area) return;
       if (!toasts.length) { area.innerHTML = ''; return; }
       area.innerHTML = `<div class="hdcp-memory-toast">
-        <div class="hdcp-toast-title">⚠️ 讓洞記錄提醒（key: ${toasts.map(t=>hdcpMemoryKey(t.nameA,t.nameB)).join(', ')}）</div>
+        <div class="hdcp-toast-title">⚠️ 讓洞記錄提醒</div>
         ${toasts.map(t => `<div class="hdcp-toast-row"><span>${t.msg}</span></div>`).join('')}
       </div>`;
     }
@@ -3840,11 +3862,25 @@ max-width: none !important;
           const netB = getNetScoreForPair(b,a,hole);
           const holePar = getHoleInfo(hole).par;
           if (netA < netB) {
-            const pts = getMatchMultiplier(grossA, holePar);
-            aScore += pts; bScore -= pts; matchPoints[a] += pts; matchPoints[b] -= pts;
+            let pts;
+            if (isPairOffsetEnabled(a, b)) {
+              const valA = getGrossLabel(grossA, holePar).points;
+              const valB = getGrossLabel(grossB, holePar).points;
+              pts = Math.max(valA - valB, 0);
+            } else {
+              pts = getMatchMultiplier(grossA, holePar);
+            }
+            if (pts > 0) { aScore += pts; bScore -= pts; matchPoints[a] += pts; matchPoints[b] -= pts; }
           } else if (netB < netA) {
-            const pts = getMatchMultiplier(grossB, holePar);
-            bScore += pts; aScore -= pts; matchPoints[b] += pts; matchPoints[a] -= pts;
+            let pts;
+            if (isPairOffsetEnabled(a, b)) {
+              const valA = getGrossLabel(grossA, holePar).points;
+              const valB = getGrossLabel(grossB, holePar).points;
+              pts = Math.max(valB - valA, 0);
+            } else {
+              pts = getMatchMultiplier(grossB, holePar);
+            }
+            if (pts > 0) { bScore += pts; aScore -= pts; matchPoints[b] += pts; matchPoints[a] -= pts; }
           }
         });
         matchMatrix[a][b] = aScore;
@@ -4101,6 +4137,7 @@ max-width: none !important;
           checked: !!document.getElementById(`pair-check-${a}-${b}`)?.checked,
           value: document.getElementById(`pair-strokes-${a}-${b}`)?.value || '',
           mode: document.getElementById(`pair-mode-${a}-${b}`)?.value || 'general',
+          offset: !!document.getElementById(`pair-offset-${a}-${b}`)?.checked,
           special: {
             p3: document.getElementById(`pair-special-p3-${a}-${b}`)?.value || '',
             p4: document.getElementById(`pair-special-p4-${a}-${b}`)?.value || '',
@@ -4210,6 +4247,9 @@ max-width: none !important;
             if (el) el.value = pair.special?.[kind] || '';
           });
           setPairHandicapMode(Number(a), Number(b), pair.mode || 'general', true);
+          const offsetCb = document.getElementById(`pair-offset-${a}-${b}`);
+          const offsetBox = document.getElementById(`pair-offset-box-${a}-${b}`);
+          if (offsetCb) { offsetCb.checked = !!pair.offset; offsetBox?.classList.toggle('active', !!pair.offset); }
           syncPairModeUI(Number(a), Number(b));
           setPairState(Number(a), Number(b), !!pair.checked, pair.value || '0', true);
         });
