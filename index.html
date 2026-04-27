@@ -1894,57 +1894,52 @@ max-width: none !important;
     }
 
 
-    // ── 玩家拖曳排序 ──
-    let dragSrcPlayer = null;
-
+    // ── 玩家排序 ──
     function initPlayerDragSort(){
       playerIDs.forEach(i => {
-        const wrap = document.getElementById(`name-card-wrap-${i}`);
-        if (!wrap) return;
+        const handle = document.querySelector(`#name-card-wrap-${i} .drag-handle`);
+        if (!handle) return;
+        let pressTimer = null;
 
-        wrap.addEventListener('dragstart', e => {
-          dragSrcPlayer = i;
-          wrap.classList.add('dragging');
-          e.dataTransfer.effectAllowed = 'move';
-        });
+        const startPress = () => {
+          pressTimer = setTimeout(() => {
+            showSwapPicker(i);
+          }, 400);
+        };
+        const cancelPress = () => { clearTimeout(pressTimer); };
 
-        wrap.addEventListener('dragend', () => {
-          wrap.classList.remove('dragging');
-          dragSrcPlayer = null;
-        });
-
-        wrap.addEventListener('dragover', e => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-        });
-
-        wrap.addEventListener('drop', e => {
-          e.preventDefault();
-          if (dragSrcPlayer === null || dragSrcPlayer === i) return;
-          swapPlayers(dragSrcPlayer, i);
-        });
-
-        // 手機觸控支援
-        let touchStartY = 0;
-        wrap.addEventListener('touchstart', e => {
-          if (!e.target.classList.contains('drag-handle')) return;
-          touchStartY = e.touches[0].clientY;
-          dragSrcPlayer = i;
-        }, { passive: true });
-
-        wrap.addEventListener('touchend', e => {
-          if (dragSrcPlayer === null) return;
-          const touchEndY = e.changedTouches[0].clientY;
-          const diff = touchEndY - touchStartY;
-          if (Math.abs(diff) > 30) {
-            const targetPlayer = diff < 0 ? i - 1 : i + 1;
-            if (targetPlayer >= 0 && targetPlayer <= 3) {
-              swapPlayers(dragSrcPlayer, targetPlayer);
-            }
-          }
-          dragSrcPlayer = null;
-        }, { passive: true });
+        handle.addEventListener('touchstart', startPress, { passive: true });
+        handle.addEventListener('touchend', cancelPress, { passive: true });
+        handle.addEventListener('touchmove', cancelPress, { passive: true });
+        handle.addEventListener('mousedown', startPress);
+        handle.addEventListener('mouseup', cancelPress);
+        handle.addEventListener('mouseleave', cancelPress);
       });
+    }
+
+    function showSwapPicker(i){
+      const activePlayers = getActivePlayers();
+      const myName = nameOf(i) || `玩家${i+1}`;
+      const others = playerIDs.filter(j => j !== i && activePlayers.includes(j));
+      if (!others.length) return;
+      const buttons = others.map(j => {
+        const jName = nameOf(j) || `玩家${j+1}`;
+        return `<button type="button" onclick="swapPlayers(${i},${j}); closeSwapPicker();" style="display:block; width:100%; padding:14px 16px; margin-bottom:8px; background:#e8f0e6; border:none; border-radius:12px; font-size:1rem; font-weight:900; cursor:pointer; color:#1e4d2b;">與「${jName}」對調</button>`;
+      }).join('');
+      const overlay = document.createElement('div');
+      overlay.id = 'swap-picker-overlay';
+      overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; display:flex; align-items:flex-end; justify-content:center;';
+      overlay.innerHTML = `<div style="background:#fff; border-radius:20px 20px 0 0; padding:20px 16px 36px; width:100%; max-width:480px;">
+        <div style="font-size:.9rem; font-weight:900; color:#7c8879; margin-bottom:14px; text-align:center;">「${myName}」要與誰對調？</div>
+        ${buttons}
+        <button type="button" onclick="closeSwapPicker();" style="display:block; width:100%; padding:14px; background:#f0f0f0; border:none; border-radius:12px; font-size:1rem; font-weight:900; cursor:pointer; color:#666;">取消</button>
+      </div>`;
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeSwapPicker(); });
+      document.body.appendChild(overlay);
+    }
+
+    function closeSwapPicker(){
+      document.getElementById('swap-picker-overlay')?.remove();
     }
 
     function swapPlayers(a, b){
