@@ -1671,11 +1671,16 @@ max-width: none !important;
       let nameHtml = `<div class="card" style="padding:15px;"><h2>3. 玩家名稱</h2><div class="name-grid">`;
       playerIDs.forEach(i => {
         const isLast = i === playerIDs[playerIDs.length - 1];
-        nameHtml += `<div class="name-card name-card-wrap" id="name-card-wrap-${i}" draggable="true" data-player-id="${i}">
+        const canUp = i > 0;
+        const canDown = i < playerIDs.length - 1;
+        nameHtml += `<div class="name-card">
           <label><small>${placeholders[i]}</small></label>
           <div style="display:flex; gap:6px; align-items:center;">
-            <span class="drag-handle" title="拖曳調換順序">☰</span>
             <input type="text" id="name${i}" placeholder="${placeholders[i]}" autocomplete="off" enterkeyhint="${isLast ? 'done' : 'next'}" oninput="updateNames()" style="flex:1;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              ${canUp ? `<button type="button" onclick="swapPlayers(${i},${i-1})" style="background:#e8f0e6; border:none; border-radius:6px; width:28px; height:28px; font-size:.85rem; cursor:pointer; color:#1e4d2b;">↑</button>` : '<div style="width:28px;height:28px;"></div>'}
+              ${canDown ? `<button type="button" onclick="swapPlayers(${i},${i+1})" style="background:#e8f0e6; border:none; border-radius:6px; width:28px; height:28px; font-size:.85rem; cursor:pointer; color:#1e4d2b;">↓</button>` : '<div style="width:28px;height:28px;"></div>'}
+            </div>
           </div>
         </div>`;
       });
