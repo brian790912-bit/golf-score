@@ -1954,6 +1954,21 @@ max-width: none !important;
       if (document.getElementById(`name${a}`)) document.getElementById(`name${a}`).value = nameB;
       if (document.getElementById(`name${b}`)) document.getElementById(`name${b}`).value = nameA;
 
+      // 1b. 對調各模式參與勾選（比洞賽 _m、抓PAR _p）
+      ['m', 'p'].forEach(mode => {
+        const cbA = document.getElementById(`p${a}_${mode}`);
+        const cbB = document.getElementById(`p${b}_${mode}`);
+        const boxA = document.getElementById(`box_p${a}_${mode}`);
+        const boxB = document.getElementById(`box_p${b}_${mode}`);
+        if (cbA && cbB) {
+          const tmp = cbA.checked;
+          cbA.checked = cbB.checked;
+          cbB.checked = tmp;
+          boxA?.classList.toggle('active', cbA.checked);
+          boxB?.classList.toggle('active', cbB.checked);
+        }
+      });
+
       // 2. 對調桿數（18洞）
       for (let h=1; h<=18; h++){
         const cellA = document.getElementById(`cell_${a}_${h}`);
