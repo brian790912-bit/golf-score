@@ -3178,7 +3178,16 @@ max-width: none !important;
         if (strokeInput) {
           const adjustedStrokes = names[a] === rec.nameA ? rec.newStrokes : -rec.newStrokes;
           strokeInput.value = adjustedStrokes;
-          setPairState(a, b, true, String(adjustedStrokes), false);
+          // 同步鏡像
+          const mirrorInput = document.getElementById(`pair-strokes-${b}-${a}`);
+          if (mirrorInput) mirrorInput.value = -adjustedStrokes;
+          // 確保勾選框打開
+          const checkA = document.getElementById(`pair-check-${a}-${b}`);
+          const toggleA = document.getElementById(`pair-toggle-${a}-${b}`);
+          const checkB = document.getElementById(`pair-check-${b}-${a}`);
+          const toggleB = document.getElementById(`pair-toggle-${b}-${a}`);
+          if (checkA) { checkA.checked = true; toggleA?.classList.add('active'); }
+          if (checkB) { checkB.checked = true; toggleB?.classList.add('active'); }
         }
         // 組提醒文字
         const giver = rec.strokes >= 0 ? rec.nameA : rec.nameB;
