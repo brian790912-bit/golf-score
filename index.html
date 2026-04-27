@@ -2017,6 +2017,23 @@ max-width: none !important;
         const modeCA = document.getElementById(`pair-mode-${c}-${a}`);
         const modeCB = document.getElementById(`pair-mode-${c}-${b}`);
         if (modeCA && modeCB){ const tmp = modeCA.value; modeCA.value = modeCB.value; modeCB.value = tmp; }
+
+        // 特殊讓法 Par3/4/5
+        ['p3','p4','p5'].forEach(par => {
+          const spAC = document.getElementById(`pair-special-${par}-${a}-${c}`);
+          const spBC = document.getElementById(`pair-special-${par}-${b}-${c}`);
+          if (spAC && spBC){ const tmp = spAC.value; spAC.value = spBC.value; spBC.value = tmp; }
+          const spCA = document.getElementById(`pair-special-${par}-${c}-${a}`);
+          const spCB = document.getElementById(`pair-special-${par}-${c}-${b}`);
+          if (spCA && spCB){ const tmp = spCA.value; spCA.value = spCB.value; spCB.value = tmp; }
+        });
+      });
+
+      // a-b 之間的特殊讓法也對調
+      ['p3','p4','p5'].forEach(par => {
+        const spAB = document.getElementById(`pair-special-${par}-${a}-${b}`);
+        const spBA = document.getElementById(`pair-special-${par}-${b}-${a}`);
+        if (spAB && spBA){ const tmp = spAB.value; spAB.value = spBA.value; spBA.value = tmp; }
       });
 
       // 5. a-b 之間的讓洞也要對調方向（正負互換）
