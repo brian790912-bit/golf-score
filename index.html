@@ -3236,10 +3236,11 @@
         }
         toasts.push({ a, b, nameA, nameB, msg });
       });
-      // 顯示提醒
+      // 顯示提醒（先清空再重新顯示）
       const area = document.getElementById('hdcp-memory-toast-area');
       if (!area) return;
-      if (!toasts.length) { area.innerHTML = ''; return; }
+      area.innerHTML = '';
+      if (!toasts.length) return;
       area.innerHTML = `<div class="hdcp-memory-toast">
         <div class="hdcp-toast-title">⚠️ 讓洞記錄提醒</div>
         ${toasts.map(t => `<div class="hdcp-toast-row"><span>${t.msg}</span></div>`).join('')}
