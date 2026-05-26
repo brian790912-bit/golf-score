@@ -3184,6 +3184,7 @@
           checkedPairs.add(`${a}_${b}`);
         });
       });
+      alert('activePlayers:'+JSON.stringify(activePlayers)+' names:'+JSON.stringify(names)+' checkedPairs:'+[...checkedPairs].join(','));
       [...checkedPairs].forEach(pairKey => {
         const [a, b] = pairKey.split('_').map(Number);
         const nameA = names[a], nameB = names[b];
