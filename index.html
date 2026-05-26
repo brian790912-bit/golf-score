@@ -3401,11 +3401,16 @@
           let delta = 0;
           let text = `第 ${hole} 洞　平手 0`;
           if (netA < netB) {
-            delta = getMatchMultiplier(grossA, holePar);
-            text = `第 ${hole} 洞　${names[a]} 贏 ${names[b]} ${formatSigned(delta)}`;
+            delta = isPairOffsetEnabled(a,b)
+              ? Math.max(getGrossLabel(grossA,holePar).points - getGrossLabel(grossB,holePar).points, 0)
+              : getMatchMultiplier(grossA, holePar);
+            text = `第 ${hole} 洞　${names[a]} +${delta}`;
           } else if (netB < netA) {
-            delta = -getMatchMultiplier(grossB, holePar);
-            text = `第 ${hole} 洞　${names[b]} 贏 ${names[a]} ${formatSigned(Math.abs(delta))}`;
+            const pts = isPairOffsetEnabled(a,b)
+              ? Math.max(getGrossLabel(grossB,holePar).points - getGrossLabel(grossA,holePar).points, 0)
+              : getMatchMultiplier(grossB, holePar);
+            delta = -pts;
+            text = `第 ${hole} 洞　${names[a]} ${delta}`;
           }
           if (hole <= 9) front += delta; else back += delta;
           logs.push({ hole, delta, text });
@@ -3662,7 +3667,13 @@
                 const newGiver = newStrokes >= 0 ? nameA : nameB;
                 const newReceiver = newStrokes >= 0 ? nameB : nameA;
                 const absNew = Math.abs(newStrokes);
-                matchNotes.push(`${giver} 讓 ${receiver} ${absStrokes} 洞，${winnerName} 贏 ${absScore} 點，下次調整為 ${newGiver} 讓 ${newReceiver} ${absNew} 洞`);
+                let noteText = `${giver} 讓 ${receiver} ${absStrokes} 洞`;
+                if (aScore > 0) noteText += `，${nameA} 贏 ${absScore} 點`;
+                else if (aScore < 0) noteText += `，${nameB} 贏 ${absScore} 點`;
+                else noteText += `，平手`;
+                if (adjust > 0) noteText += `，調整為 ${newGiver} 讓 ${newReceiver} ${absNew} 洞`;
+                else noteText += `，維持 ${giver} 讓 ${receiver} ${absStrokes} 洞`;
+                matchNotes.push(noteText);
               });
               if (mRows.length) modeRows.push({ title: '比洞賽', rows: mRows, notes: matchNotes });
             }
