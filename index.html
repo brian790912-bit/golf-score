@@ -3657,8 +3657,7 @@
                   else if (netB < netA) aScore -= getMatchMultiplier(grossB, holePar);
                 });
                 const absScore = Math.abs(aScore);
-                if (absScore < 3) return;
-                const adjust = Math.floor(absScore / 3);
+                const adjust = absScore >= 3 ? Math.floor(absScore / 3) : 0;
                 const newStrokes = aScore > 0 ? strokes + adjust : strokes - adjust;
                 const giver = strokes >= 0 ? nameA : nameB;
                 const receiver = strokes >= 0 ? nameB : nameA;
