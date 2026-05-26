@@ -4512,6 +4512,8 @@
       clearCurrentRoundData(false);
       showWarning('已開始新球局。', 'global');
       updateSetupGuide();
+      isRestoringAutoSave = false;
+      setTimeout(() => applyHdcpMemoryAndNotify(), 100);
     }
 
     window.onload = () => {
