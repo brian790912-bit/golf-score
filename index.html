@@ -3163,9 +3163,26 @@
       if (activePlayers.length < 2) return;
       const names = Object.fromEntries(activePlayers.map(i => [i, nameOf(i)]));
       const toasts = [];
-      buildMatchPairs().forEach(([a, b]) => {
+      // 用所有可能的玩家配對查記憶，不限制是否勾選比洞賽
+      const checkedPairs = new Set();
+      activePlayers.forEach(a => {
+        activePlayers.forEach(b => {
+          if (a >= b) return;
+          const nameA = names[a], nameB = names[b];
+          if (!nameA || !nameB) return;
+          const key = hdcpMemoryKey(nameA, nameB);
+          const rec = memory[key];
+          if (!rec) return;
+          // 確認記憶裡的名字跟當前玩家名字一致
+          const memNames = [rec.nameA, rec.nameB].sort().join('|');
+          const curNames = [nameA, nameB].sort().join('|');
+          if (memNames !== curNames) return;
+          checkedPairs.add(`${a}_${b}`);
+        });
+      });
+      [...checkedPairs].forEach(pairKey => {
+        const [a, b] = pairKey.split('_').map(Number);
         const nameA = names[a], nameB = names[b];
-        if (!nameA || !nameB) return;
         const key = hdcpMemoryKey(nameA, nameB);
         const rec = memory[key];
         if (!rec) return;
