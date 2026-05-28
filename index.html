@@ -1813,6 +1813,8 @@
         renderVegasRankInputs();
         renderScoreboard();
         pendingHeavyNameRefresh = null;
+        const _ap = getActivePlayers();
+        alert('heavy refresh done, activePlayers:'+_ap.length+' isMatch:'+isMatchEnabled());
         setTimeout(() => applyHdcpMemoryAndNotify(), 300);
       }, 0);
     }
