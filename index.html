@@ -3121,7 +3121,6 @@
     }
 
     function saveHdcpMemory(matchMatrix, names, activePlayers){
-      if (!isMatchEnabled()) return;
       const memory = getHdcpMemory();
       const course = (document.getElementById('courseName')?.value || '').trim() || '未知球場';
       const now = new Date();
@@ -3245,6 +3244,7 @@
         }
         toasts.push({ a, b, nameA, nameB, msg });
       });
+      alert('toasts:'+toasts.length+' area:'+!!document.getElementById('hdcp-memory-toast-area'));
       // 顯示提醒（先清空再重新顯示）
       const area = document.getElementById('hdcp-memory-toast-area');
       if (!area) return;
