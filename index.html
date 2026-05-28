@@ -3157,7 +3157,7 @@
     }
 
     function applyHdcpMemoryAndNotify(){
-      if (isRestoringAutoSave) return;
+      if (isRestoringAutoSave) { alert('blocked by isRestoringAutoSave'); return; }
       // 先清空提醒，不管後面有沒有記錄
       const _area = document.getElementById('hdcp-memory-toast-area');
       if (_area) _area.innerHTML = '';
