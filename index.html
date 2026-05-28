@@ -1797,8 +1797,7 @@
         });
       });
       updateVegasPreview();
-      alert('syncNameLabelsOnly called, activePlayers:'+getActivePlayers().join(',')+' names:'+getActivePlayers().map(i=>nameOf(i)).join(','));
-      applyHdcpMemoryAndNotify();
+      scheduleHdcpMemoryNotify();
     }
 
     function updateNames(forceHeavy=false){
@@ -3155,6 +3154,12 @@
         };
       });
       setHdcpMemory(memory);
+    }
+
+    let hdcpMemoryTimer = null;
+    function scheduleHdcpMemoryNotify(){
+      clearTimeout(hdcpMemoryTimer);
+      hdcpMemoryTimer = setTimeout(() => applyHdcpMemoryAndNotify(), 800);
     }
 
     function applyHdcpMemoryAndNotify(){
