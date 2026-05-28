@@ -3196,7 +3196,7 @@
         // 自動帶入調整後的讓洞數
         // 記憶裡的 nameA 對應 rec.newStrokes 方向，若當前 a 對應的名字不是 rec.nameA 要反向
         // 只有勾選比洞賽才帶入讓洞數
-        if (!isMatchEnabled()) return;
+        if (isMatchEnabled()) {
         // 先確保讓洞設定區塊是展開的
         const handicapBody = document.getElementById('body-handicap');
         const handicapIcon = document.getElementById('icon-handicap');
@@ -3220,6 +3220,7 @@
             if (checkB) { checkB.checked = true; toggleB?.classList.add('active'); }
           }
         }, 100);
+        } // end isMatchEnabled
         // 組提醒文字
         const giver = rec.strokes >= 0 ? rec.nameA : rec.nameB;
         const receiver = rec.strokes >= 0 ? rec.nameB : rec.nameA;
