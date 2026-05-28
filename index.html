@@ -4438,9 +4438,9 @@
       isRestoringAutoSave = true;
       try {
         const raw = localStorage.getItem(AUTO_SAVE_KEY);
-        if (!raw) return;
+        if (!raw) { isRestoringAutoSave = false; return; }
         const state = JSON.parse(raw);
-        if (!state || typeof state !== 'object') return;
+        if (!state || typeof state !== 'object') { isRestoringAutoSave = false; return; }
         if (state.courseName !== undefined) {
           document.getElementById('courseName').value = state.courseName;
           // 同步下拉選單
