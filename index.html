@@ -1812,8 +1812,8 @@
         applyModeStates();
         renderVegasRankInputs();
         renderScoreboard();
-        applyHdcpMemoryAndNotify();
         pendingHeavyNameRefresh = null;
+        setTimeout(() => applyHdcpMemoryAndNotify(), 300);
       }, 0);
     }
 
