@@ -1813,8 +1813,6 @@
         renderVegasRankInputs();
         renderScoreboard();
         pendingHeavyNameRefresh = null;
-        const _ap = getActivePlayers();
-        alert('heavy refresh done, activePlayers:'+_ap.length+' isMatch:'+isMatchEnabled());
         setTimeout(() => applyHdcpMemoryAndNotify(), 300);
       }, 0);
     }
@@ -3167,7 +3165,6 @@
       // 先清空提醒，不管後面有沒有記錄
       const _area = document.getElementById('hdcp-memory-toast-area');
       if (_area) _area.innerHTML = '';
-      if (!isMatchEnabled()) return;
       const memory = getHdcpMemory();
       const activePlayers = getActivePlayers();
       if (activePlayers.length < 2) return;
@@ -3198,6 +3195,8 @@
         if (!rec) return;
         // 自動帶入調整後的讓洞數
         // 記憶裡的 nameA 對應 rec.newStrokes 方向，若當前 a 對應的名字不是 rec.nameA 要反向
+        // 只有勾選比洞賽才帶入讓洞數
+        if (!isMatchEnabled()) return;
         // 先確保讓洞設定區塊是展開的
         const handicapBody = document.getElementById('body-handicap');
         const handicapIcon = document.getElementById('icon-handicap');
