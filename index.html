@@ -3415,6 +3415,7 @@
 
     function buildMatchDetails(order, names){
       const pairs = buildMatchPairs();
+      const frontHoles = new Set(order.slice(0, 9));
       return pairs.map(([a,b]) => {
         const logs = [];
         let front = 0;
@@ -3440,7 +3441,7 @@
             delta = -pts;
             text = `第 ${hole} 洞　${names[a]} ${delta}`;
           }
-          if (hole <= 9) front += delta; else back += delta;
+          if (frontHoles.has(hole)) front += delta; else back += delta;
           logs.push({ hole, delta, text });
         });
         return { a, b, front, back, total: front + back, logs };
