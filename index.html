@@ -1032,14 +1032,14 @@
   </style>
 </head>
 <body>
-  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.74</div></div>
+  <div class="top-floating-bar"><div class="version-badge" id="floatingVersionBadge">Golf Score Beta 1.8</div></div>
   <div class="tab-nav">
     <div class="tab-btn-group">
       <button class="tab-btn active" id="tab-set" onclick="openTab('setting')">⚙️ 設定</button>
       <button class="tab-btn" id="tab-score" onclick="openTab('scoring')">⛳ 計分</button>
       <button class="tab-btn" id="tab-res" onclick="calculateFinal()">📊 結算</button>
     </div>
-    <div class="mobile-version-badge">Beta 1.74</div>
+    <div class="mobile-version-badge">Beta 1.8</div>
   </div>
 
   <!-- 設定引導進度條 -->
@@ -1144,6 +1144,22 @@
       <div class="mode-row" id="modeRowExt" onclick="toggleMainMode('extMode')" style="margin-left:18px;">
         <input type="checkbox" id="extMode">
         <span>平手遞延</span>
+      </div>
+      <div class="mode-row" id="modeRowVegasRotate" onclick="toggleVegasOption('vegasRotate')" style="margin-left:18px;">
+        <input type="checkbox" id="vegasRotate" checked>
+        <span>換組</span>
+      </div>
+      <div class="mode-row" id="modeRowVegasTotal" onclick="toggleVegasOption('vegasTotal')" style="margin-left:18px;">
+        <input type="checkbox" id="vegasTotal" checked>
+        <span>Total</span>
+      </div>
+      <div class="mode-row" id="modeRowVegasBest" onclick="toggleVegasOption('vegasBest')" style="margin-left:18px;">
+        <input type="checkbox" id="vegasBest">
+        <span>Best Ball</span>
+      </div>
+      <div class="mode-row" id="modeRowVegasBestMult" onclick="toggleVegasOption('vegasBestMult')" style="margin-left:18px;">
+        <input type="checkbox" id="vegasBestMult">
+        <span>Best Ball 倍率</span>
       </div>
     </div>
 
@@ -1335,7 +1351,7 @@
   </div>
 
   <script>
-    const APP_VERSION = 'Golf Score Beta 1.74';
+    const APP_VERSION = 'Golf Score Beta 1.8';
     const playerIDs = [0,1,2,3];
     const placeholders = ['玩家1','玩家2','玩家3','玩家4'];
     const pairKeys = ['0_1','0_2','0_3','1_2','1_3','2_3'];
@@ -1454,6 +1470,19 @@
     function isParEnabled(){ return document.getElementById('modePar').checked; }
     function isVegasEnabled(){ return document.getElementById('modeVegas').checked; }
     function isExtEnabled(){ return document.getElementById('extMode').checked; }
+    function isVegasRotate(){ return !!document.getElementById('vegasRotate')?.checked; }
+    function isVegasTotalEnabled(){ return !!document.getElementById('vegasTotal')?.checked; }
+    function isVegasBestEnabled(){ return !!document.getElementById('vegasBest')?.checked; }
+    function isVegasBestMultEnabled(){ return !!document.getElementById('vegasBestMult')?.checked; }
+
+    function toggleVegasOption(id){
+      const cb = document.getElementById(id);
+      if (!cb || cb.disabled) return;
+      cb.checked = !cb.checked;
+      document.getElementById('modeRow'+id.charAt(0).toUpperCase()+id.slice(1))?.classList.toggle('active', cb.checked);
+      applyModeStates();
+      scheduleAutoSave();
+    }
 
     function toggleMainMode(id){
       const cb = document.getElementById(id);
@@ -1567,6 +1596,16 @@
       modeMatch.disabled = !canCompete;
       modePar.disabled = !canCompete;
       extMode.disabled = !modeVegas.checked;
+      ['vegasRotate','vegasTotal','vegasBest','vegasBestMult'].forEach(id => {
+        const el = document.getElementById(id);
+        const row = document.getElementById('modeRow'+id.charAt(0).toUpperCase()+id.slice(1));
+        if (el) el.disabled = !modeVegas.checked;
+        if (row) row.classList.toggle('disabled', !modeVegas.checked);
+      });
+      const vegasBestMult = document.getElementById('vegasBestMult');
+      const vegasBestMultRow = document.getElementById('modeRowVegasBestMult');
+      if (vegasBestMult) vegasBestMult.disabled = !modeVegas.checked || !document.getElementById('vegasBest')?.checked;
+      if (vegasBestMultRow) vegasBestMultRow.classList.toggle('disabled', vegasBestMult?.disabled);
 
       // Vegas 子項目顯示控制
       const vegasSub = document.getElementById('vegasSubArea');
@@ -1582,6 +1621,8 @@
       const matchOn = canCompete && modeMatch.checked;
       if (matchSub) matchSub.style.display = matchOn ? 'grid' : 'none';
       if (matchOn) renderMatchPlayersArea();
+      if (matchOn && !lastMatchOnState) scheduleHdcpMemoryNotify();
+      lastMatchOnState = matchOn;
 
       // 抓PAR 子項目顯示控制
       const parSub = document.getElementById('parSubArea');
@@ -1781,6 +1822,7 @@
     }
 
     let lastActivePlayersSignature = '';
+    let lastMatchOnState = false;
     let pendingHeavyNameRefresh = null;
     let lastMatchMatrix = playerIDs.map(() => playerIDs.map(() => 0));
 
@@ -3157,7 +3199,7 @@
     let hdcpMemoryTimer = null;
     function scheduleHdcpMemoryNotify(){
       clearTimeout(hdcpMemoryTimer);
-      hdcpMemoryTimer = setTimeout(() => applyHdcpMemoryAndNotify(), 1500);
+      hdcpMemoryTimer = setTimeout(() => applyHdcpMemoryAndNotify(), 400);
     }
 
     function applyHdcpMemoryAndNotify(){
@@ -3218,6 +3260,7 @@
             const toggleB = document.getElementById(`pair-toggle-${b}-${a}`);
             if (checkA) { checkA.checked = true; toggleA?.classList.add('active'); }
             if (checkB) { checkB.checked = true; toggleB?.classList.add('active'); }
+            scheduleAutoSave();
           }
         }, 100);
         } // end isMatchEnabled
@@ -4144,10 +4187,15 @@
       const vegasPoints = [0,0,0,0];
       const vegasHoleWins = [];
       if (isVegasEnabled() && activePlayers.length === 4) {
+        const useTotal = isVegasTotalEnabled();
+        const useBest = isVegasBestEnabled();
+        const useBestMult = isVegasBestMultEnabled();
+        const useRotate = isVegasRotate();
         let currentTeams = getVegasStartTeams();
         let carry = 1;
         order.forEach((hole, idx) => {
-          if (idx > 0) {
+          // 換組邏輯
+          if (useRotate && idx > 0) {
             const prevTie = vegasHoleWins[vegasHoleWins.length-1]?.tie === true;
             if (!prevTie) {
               const ranked = rankPlayersForVegas(idx, order);
@@ -4155,20 +4203,60 @@
             }
           }
           const [teamA, teamB] = currentTeams;
-          const sumA = teamA.reduce((acc,p) => acc + getPlayerScore(p,hole), 0);
-          const sumB = teamB.reduce((acc,p) => acc + getPlayerScore(p,hole), 0);
+
+          // Total 計算
+          const sumA = teamA.reduce((acc,p) => acc + (getPlayerScore(p,hole)||0), 0);
+          const sumB = teamB.reduce((acc,p) => acc + (getPlayerScore(p,hole)||0), 0);
           if (!sumA || !sumB) return;
-          if (sumA === sumB) {
-            vegasHoleWins.push({ hole, tie: true, teams: currentTeams.map(t => [...t]), carry, carryAbandoned: idx === order.length - 1 });
+          const totalResult = sumA === sumB ? 0 : sumA < sumB ? 1 : -1; // 1=A贏
+
+          // Best Ball 計算
+          const bestA = Math.min(...teamA.map(p => getPlayerScore(p,hole)||99));
+          const bestB = Math.min(...teamB.map(p => getPlayerScore(p,hole)||99));
+          const bestResult = bestA === bestB ? 0 : bestA < bestB ? 1 : -1; // 1=A贏
+
+          // 判斷整洞是否平手（Total 和 Best 都平手才遞延）
+          const totalTie = !useTotal || totalResult === 0;
+          const bestTie = !useBest || bestResult === 0;
+          const holeTie = totalTie && bestTie;
+
+          if (holeTie) {
+            vegasHoleWins.push({ hole, tie: true, teams: currentTeams.map(t=>[...t]), carry, carryAbandoned: idx === order.length-1 });
             if (isExtEnabled()) carry += 1;
             return;
           }
+
           const used = isExtEnabled() ? carry : 1;
-          const winner = sumA < sumB ? teamA : teamB;
-          const loser = sumA < sumB ? teamB : teamA;
-          winner.forEach(p => vegasPoints[p] += used);
-          loser.forEach(p => vegasPoints[p] -= used);
-          vegasHoleWins.push({ hole, tie: false, winner: [...winner], teams: currentTeams.map(t => [...t]), points: used });
+          let holePoints = { A: 0, B: 0, totalResult: 0, bestResult: 0 };
+
+          // Total 得分
+          if (useTotal && totalResult !== 0) {
+            if (totalResult === 1) { teamA.forEach(p => vegasPoints[p] += used); teamB.forEach(p => vegasPoints[p] -= used); holePoints.A += used; }
+            else { teamB.forEach(p => vegasPoints[p] += used); teamA.forEach(p => vegasPoints[p] -= used); holePoints.B += used; }
+            holePoints.totalResult = totalResult;
+          }
+
+          // Best Ball 得分
+          if (useBest && bestResult !== 0) {
+            // 計算倍率
+            let bestPts = used;
+            if (useBestMult) {
+              const winnerBest = bestResult === 1 ? bestA : bestB;
+              const holePar = getHoleInfo(hole).par;
+              // 找到最優桿的玩家
+              const winTeam = bestResult === 1 ? teamA : teamB;
+              const bestPlayer = winTeam.find(p => getPlayerScore(p,hole) === winnerBest);
+              if (bestPlayer !== undefined) {
+                bestPts = used * getMatchMultiplier(winnerBest, holePar);
+              }
+            }
+            if (bestResult === 1) { teamA.forEach(p => vegasPoints[p] += bestPts); teamB.forEach(p => vegasPoints[p] -= bestPts); holePoints.A += bestPts; }
+            else { teamB.forEach(p => vegasPoints[p] += bestPts); teamA.forEach(p => vegasPoints[p] -= bestPts); holePoints.B += bestPts; }
+            holePoints.bestResult = bestResult;
+          }
+
+          const winner = holePoints.A > holePoints.B ? teamA : teamB;
+          vegasHoleWins.push({ hole, tie: false, winner: [...winner], teams: currentTeams.map(t=>[...t]), points: used, holePoints, totalResult: holePoints.totalResult, bestResult: holePoints.bestResult });
           carry = 1;
         });
       }
