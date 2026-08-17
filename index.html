@@ -1843,6 +1843,9 @@
 
     function updateNames(forceHeavy=false){
       syncNameLabelsOnly();
+      // 姓名每次輸入都重新排程讓洞記憶檢查（debounce），避免打到一半（姓名不完整）就比對、
+      // 之後打完卻不會再重新檢查的問題。跟下面的 heavy-refresh gate 分開判斷。
+      scheduleHdcpMemoryNotify();
       const activeSignature = getActivePlayers().join(',');
       if (!forceHeavy && activeSignature === lastActivePlayersSignature) {
         return;
@@ -1855,7 +1858,6 @@
         renderVegasRankInputs();
         renderScoreboard();
         pendingHeavyNameRefresh = null;
-        setTimeout(() => applyHdcpMemoryAndNotify(), 300);
       }, 0);
     }
 
