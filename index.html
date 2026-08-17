@@ -1491,6 +1491,7 @@
       cb.checked = !cb.checked;
       applyModeStates(id);
       updateSetupGuide();
+      scheduleAutoSave();
     }
 
     function setPlayerSmallBoxState(playerId, suffix){
@@ -1670,6 +1671,7 @@
       cb.checked = !cb.checked;
       setPlayerSmallBoxState(playerId, suffix);
       if (suffix === 'm') normalizeMatchPairStates();
+      scheduleAutoSave();
     }
 
     function initUI(){
@@ -2119,6 +2121,7 @@
       if (cb.checked) setPairState(i,j,false,'');
       else setPairState(i,j,true,currentValue === '' ? 0 : currentValue);
       refreshAllPairDisabledState();
+      scheduleAutoSave();
     }
 
     function handlePairStrokeInput(i,j){
@@ -2553,8 +2556,8 @@
         par[h] = document.getElementById(`edit_P_${h}`)?.value || '';
         hdcp[h] = document.getElementById(`edit_Hd_${h}`)?.value || '';
       }
-      // 透過applyCourseData統一更新courseData和span
-      applyCourseData({ name, par, hdcp });
+      // 透過applyCourseData統一更新courseData和span（保留當前27洞分區狀態，避免被誤清）
+      applyCourseData({ name, par, hdcp, _is27zone: !!currentZoneLabels });
       // 自動儲存
       if(name){
         const all = getSavedCourses();
@@ -2825,6 +2828,7 @@
       // 重繪計分頁讓小計列HDCP欄更新
       renderScoreboard();
       updateSetupGuide();
+      scheduleAutoSave();
     }
 
     function handleFavoriteToggle(){
@@ -3367,6 +3371,7 @@
       if (btn) btn.innerText = getVegasRankLabel(value);
       closeVegasRankPicker();
       updateVegasPreview();
+      scheduleAutoSave();
     }
 
     function updateVegasPreview(){
