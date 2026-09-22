@@ -4593,6 +4593,10 @@
           const offsetCb = document.getElementById(`pair-offset-${a}-${b}`);
           const offsetBox = document.getElementById(`pair-offset-box-${a}-${b}`);
           if (offsetCb) { offsetCb.checked = !!pair.offset; offsetBox?.classList.toggle('active', !!pair.offset); }
+          // 倍率折抵是雙向共用同一個布林值，恢復時鏡射邊也要同步，避免兩張卡片顯示不一致
+          const offsetCbSym = document.getElementById(`pair-offset-${b}-${a}`);
+          const offsetBoxSym = document.getElementById(`pair-offset-box-${b}-${a}`);
+          if (offsetCbSym) { offsetCbSym.checked = !!pair.offset; offsetBoxSym?.classList.toggle('active', !!pair.offset); }
           syncPairModeUI(Number(a), Number(b));
           setPairState(Number(a), Number(b), !!pair.checked, pair.value || '0', true);
         });
