@@ -3048,6 +3048,14 @@
       return label.points > 0 ? label.points : 1;
     }
 
+    // 倍率折抵：忽略讓桿，純比較兩人 gross 桿數的鳥/老鷹/標準桿等級差額。
+    // 只有贏家的等級確實比對手高才用差額，否則（含兩人都bogey以上、或等級打平）比照標準比洞賽固定給1分。
+    function getOffsetPoints(grossWinner, grossLoser, par){
+      const winnerPoints = getGrossLabel(grossWinner, par).points;
+      const loserPoints = getGrossLabel(grossLoser, par).points;
+      return winnerPoints > loserPoints ? winnerPoints - loserPoints : 1;
+    }
+
     function getActiveParPlayers(){
       return getActivePlayers().filter(i => document.getElementById(`p${i}_p`)?.checked && isParEnabled());
     }
@@ -3485,12 +3493,12 @@
           let text = `第 ${hole} 洞　平手 0`;
           if (netA < netB) {
             delta = isPairOffsetEnabled(a,b)
-              ? Math.max(getGrossLabel(grossA,holePar).points - getGrossLabel(grossB,holePar).points, 0)
+              ? getOffsetPoints(grossA, grossB, holePar)
               : getMatchMultiplier(grossA, holePar);
             text = `第 ${hole} 洞　${names[a]} +${delta}`;
           } else if (netB < netA) {
             const pts = isPairOffsetEnabled(a,b)
-              ? Math.max(getGrossLabel(grossB,holePar).points - getGrossLabel(grossA,holePar).points, 0)
+              ? getOffsetPoints(grossB, grossA, holePar)
               : getMatchMultiplier(grossB, holePar);
             delta = -pts;
             text = `第 ${hole} 洞　${names[a]} ${delta}`;
@@ -4166,24 +4174,14 @@
           const netB = getNetScoreForPair(b,a,hole);
           const holePar = getHoleInfo(hole).par;
           if (netA < netB) {
-            let pts;
-            if (isPairOffsetEnabled(a, b)) {
-              const valA = getGrossLabel(grossA, holePar).points;
-              const valB = getGrossLabel(grossB, holePar).points;
-              pts = Math.max(valA - valB, 0);
-            } else {
-              pts = getMatchMultiplier(grossA, holePar);
-            }
+            const pts = isPairOffsetEnabled(a, b)
+              ? getOffsetPoints(grossA, grossB, holePar)
+              : getMatchMultiplier(grossA, holePar);
             if (pts > 0) { aScore += pts; bScore -= pts; matchPoints[a] += pts; matchPoints[b] -= pts; }
           } else if (netB < netA) {
-            let pts;
-            if (isPairOffsetEnabled(a, b)) {
-              const valA = getGrossLabel(grossA, holePar).points;
-              const valB = getGrossLabel(grossB, holePar).points;
-              pts = Math.max(valB - valA, 0);
-            } else {
-              pts = getMatchMultiplier(grossB, holePar);
-            }
+            const pts = isPairOffsetEnabled(a, b)
+              ? getOffsetPoints(grossB, grossA, holePar)
+              : getMatchMultiplier(grossB, holePar);
             if (pts > 0) { bScore += pts; aScore -= pts; matchPoints[b] += pts; matchPoints[a] -= pts; }
           }
         });
