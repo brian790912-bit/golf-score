@@ -3049,11 +3049,13 @@
     }
 
     // 倍率折抵：忽略讓桿，純比較兩人 gross 桿數的鳥/老鷹/標準桿等級差額。
-    // 只有贏家的等級確實比對手高才用差額，否則（含兩人都bogey以上、或等級打平）比照標準比洞賽固定給1分。
+    // 差額為正才用差額折抵（例如birdie贏par只贏1點）；差額打平或非正數（含兩人都bogey以上、
+    // 或兩人等級相同，例如都birdie）則贏家拿自己本來完整的倍率，不打折。
     function getOffsetPoints(grossWinner, grossLoser, par){
       const winnerPoints = getGrossLabel(grossWinner, par).points;
       const loserPoints = getGrossLabel(grossLoser, par).points;
-      return winnerPoints > loserPoints ? winnerPoints - loserPoints : 1;
+      const diff = winnerPoints - loserPoints;
+      return diff > 0 ? diff : getMatchMultiplier(grossWinner, par);
     }
 
     function getActiveParPlayers(){
