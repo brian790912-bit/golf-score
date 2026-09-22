@@ -1544,6 +1544,8 @@
         setPairState(a,b,true,0);
         setPairHandicapMode(a,b,'general',true);
         syncPairModeUI(a,b);
+        // 倍率折抵屬少數玩法，每次重新啟用比洞賽都預設關閉，避免沿用上次殘留的設定
+        setPairOffset(a,b,false);
         ['p3','p4','p5'].forEach(kind => {
           const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
           if (el) el.value = '';
@@ -2094,17 +2096,19 @@
       scheduleAutoSave();
     }
 
-    function togglePairOffset(i, j){
+    function setPairOffset(i, j, checked){
       const cb = document.getElementById(`pair-offset-${i}-${j}`);
       const box = document.getElementById(`pair-offset-box-${i}-${j}`);
       const cbSym = document.getElementById(`pair-offset-${j}-${i}`);
       const boxSym = document.getElementById(`pair-offset-box-${j}-${i}`);
+      if (cb) { cb.checked = checked; box?.classList.toggle('active', checked); }
+      if (cbSym) { cbSym.checked = checked; boxSym?.classList.toggle('active', checked); }
+    }
+
+    function togglePairOffset(i, j){
+      const cb = document.getElementById(`pair-offset-${i}-${j}`);
       if (!cb) return;
-      cb.checked = !cb.checked;
-      box?.classList.toggle('active', cb.checked);
-      // 雙向連動
-      if (cbSym) cbSym.checked = cb.checked;
-      boxSym?.classList.toggle('active', cb.checked);
+      setPairOffset(i, j, !cb.checked);
       scheduleAutoSave();
     }
 
@@ -3663,6 +3667,8 @@
         setPairHandicapMode(a,b,'general',true);
         syncPairModeUI(a,b);
         setPairState(a,b,true,'0',true);
+        // 倍率折抵屬少數玩法，開新球局一律預設關閉
+        setPairOffset(a,b,false);
       });
       document.getElementById('final-money').innerHTML = '';
       document.getElementById('par-output').innerHTML = '';
