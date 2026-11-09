@@ -1447,10 +1447,21 @@
       return (name || '').replace(/\s+/g,' ').trim().toLowerCase();
     }
 
-    function getPlayOrder(){
-      // 依起始洞重排，計分表顯示用
+    function getStartHoleValue(){
       let start = parseInt(document.getElementById('startHole')?.value) || 1;
       if (start < 1 || start > 18) start = 1;
+      return start;
+    }
+
+    function getPlayOrder(){
+      // 計分表顯示用：以整個9洞為單位，起始洞在哪個9洞就先排那9洞（例如從15開球 → 10~18、1~9）
+      const front = [1,2,3,4,5,6,7,8,9];
+      const back = [10,11,12,13,14,15,16,17,18];
+      return getStartHoleValue() >= 10 ? [...back, ...front] : [...front, ...back];
+    }
+
+    function getRotationOrder(start){
+      // 從指定洞一路往下打、18洞打完接1洞的連續順序
       const arr = [];
       for (let i=0; i<18; i++) arr.push(((start - 1 + i) % 18) + 1);
       return arr;
@@ -1476,19 +1487,20 @@
 
     function seedHoleEntryOrderFromScores(){
       // 舊存檔沒有輸入順序時，已有成績的洞依起始洞順序補上
-      holeEntryOrder = getPlayOrder().filter(h => holeHasAnyScore(h));
+      holeEntryOrder = getRotationOrder(getStartHoleValue()).filter(h => holeHasAnyScore(h));
     }
 
     function getVegasOrder(){
       // Vegas/比洞/抓PAR計算用：先依實際輸入成績的順序，其餘未打的洞依起始洞順序補在後面
       const played = holeEntryOrder.filter(h => h >= 1 && h <= 18 && holeHasAnyScore(h));
       const seen = new Set(played);
-      return [...played, ...getPlayOrder().filter(h => !seen.has(h))];
+      return [...played, ...getRotationOrder(getStartHoleValue()).filter(h => !seen.has(h))];
     }
 
     function isVegasOrderSkipped(){
+      // 以第一個打的洞為起點，連續往下打就不算跳洞
       const actual = getVegasOrder();
-      return getPlayOrder().some((h, i) => h !== actual[i]);
+      return getRotationOrder(actual[0]).some((h, i) => h !== actual[i]);
     }
 
     function getNineSummaryInsertIndexes(order){
@@ -3102,8 +3114,12 @@
       const activePlayers = getActivePlayers();
       const rowIdx = activePlayers.indexOf(player);
       if (idx === -1 || rowIdx === -1) return;
-      if (rowIdx < activePlayers.length - 1) document.getElementById(`cell_${activePlayers[rowIdx+1]}_${hole}`)?.focus();
-      else if (idx < order.length - 1) document.getElementById(`cell_${activePlayers[0]}_${order[idx+1]}`)?.focus();
+      if (rowIdx < activePlayers.length - 1) { document.getElementById(`cell_${activePlayers[rowIdx+1]}_${hole}`)?.focus(); return; }
+      // 這洞輸入完：跳到計分表往下（到底再從頭）第一個還沒輸入成績的洞，避免跳到已有成績的洞而被覆蓋
+      for (let step = 1; step < order.length; step++) {
+        const next = order[(idx + step) % order.length];
+        if (!holeHasAnyScore(next)) { document.getElementById(`cell_${activePlayers[0]}_${next}`)?.focus(); return; }
+      }
     }
 
     function updatePlayerTotals(player){
