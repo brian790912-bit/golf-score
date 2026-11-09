@@ -455,7 +455,7 @@
     .pair-score-input { padding: 10px 8px; font-size: .98rem; min-height: 44px; }
     .pair-score-input:disabled { background: #f4f5f3; color: #aaa; }
     .pair-main { display:grid; gap:6px; }
-    .pair-mode-switch { display:flex; gap:8px; }
+    .pair-mode-switch { display:flex; flex-wrap:wrap; gap:6px 8px; min-width:0; }
     .pair-mode-chip {
       border: 2px solid #cfdbcf;
       background:#fff;
@@ -473,6 +473,10 @@
     .pair-input-wrap.show { display:block; }
     .pair-special-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; }
     .pair-special-grid input { min-height: 44px; padding: 10px 8px; font-size: .95rem; }
+    .pair-split-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:8px; }
+    .pair-split-grid label { display:flex; flex-direction:column; gap:4px; font-size:.82rem; font-weight:900; color:#5d6b5a; }
+    .pair-split-grid input { min-height: 44px; padding: 10px 8px; font-size: .95rem; }
+    .pair-split-result { margin-top:6px; font-size:.84rem; font-weight:800; color:#1e4d2b; }
     .rank-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .action-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
     button.action-btn {
@@ -1182,7 +1186,7 @@
       </div>
       <div id="body-handicap" style="display:none;" class="mode-child">
         <div id="hdcp-memory-toast-area"></div>
-        <div class="small-note" style="padding:10px 14px 4px; color:#7c8879; line-height:1.6;">一般讓法：輸入讓洞數，系統依 HDCP 決定哪些洞生效。<br>特殊讓法：依 Par 3 / Par 4 / Par 5 分別設定讓洞數。</div>
+        <div class="small-note" style="padding:10px 14px 4px; color:#7c8879; line-height:1.6;">一般讓法：輸入讓洞數，系統依 HDCP 決定哪些洞生效。<br>特殊讓法：依 Par 3 / Par 4 / Par 5 分別設定讓洞數。<br>前後9分開：前9、後9各自設定，讓 N 洞＝該9洞最難的 N 洞；可前9先填0，看前9結果再填後9。</div>
         <div id="player-config-area"></div>
       </div>
     </div>
@@ -1414,7 +1418,9 @@
       root.querySelectorAll('input[type="number"]').forEach(el => {
         const id = el.id || '';
         const cls = el.className || '';
-        if (cls.includes('pair-score-input') || id.startsWith('pair-strokes-')) {
+        if (cls.includes('pair-score-input') || id.startsWith('pair-strokes-') || id.startsWith('pair-special-')) {
+          // 讓洞可能有 0.5，需要有小數點的鍵盤
+          el.setAttribute('step', 'any');
           el.setAttribute('inputmode', 'decimal');
           el.setAttribute('enterkeyhint', 'done');
           return;
@@ -1450,13 +1456,39 @@
       return arr;
     }
 
+    // 實際打球順序：依手動輸入成績的先後記錄每一洞（處理前組太慢而跳洞的情況）
+    let holeEntryOrder = [];
+
+    function holeHasAnyScore(hole){
+      return getActivePlayers().some(p => getPlayerScore(p, hole) > 0);
+    }
+
+    function trackHoleEntry(hole){
+      hole = Number(hole);
+      const idx = holeEntryOrder.indexOf(hole);
+      if (holeHasAnyScore(hole)) {
+        if (idx === -1) holeEntryOrder.push(hole);
+      } else if (idx !== -1) {
+        // 整洞成績都清空，視為輸入錯洞，從實際順序中移除
+        holeEntryOrder.splice(idx, 1);
+      }
+    }
+
+    function seedHoleEntryOrderFromScores(){
+      // 舊存檔沒有輸入順序時，已有成績的洞依起始洞順序補上
+      holeEntryOrder = getPlayOrder().filter(h => holeHasAnyScore(h));
+    }
+
     function getVegasOrder(){
-      // Vegas/比洞/抓PAR計算用，依起始洞重排
-      let start = parseInt(document.getElementById('startHole')?.value) || 1;
-      if (start < 1 || start > 18) start = 1;
-      const arr = [];
-      for (let i=0; i<18; i++) arr.push(((start - 1 + i) % 18) + 1);
-      return arr;
+      // Vegas/比洞/抓PAR計算用：先依實際輸入成績的順序，其餘未打的洞依起始洞順序補在後面
+      const played = holeEntryOrder.filter(h => h >= 1 && h <= 18 && holeHasAnyScore(h));
+      const seen = new Set(played);
+      return [...played, ...getPlayOrder().filter(h => !seen.has(h))];
+    }
+
+    function isVegasOrderSkipped(){
+      const actual = getVegasOrder();
+      return getPlayOrder().some((h, i) => h !== actual[i]);
     }
 
     function getNineSummaryInsertIndexes(order){
@@ -1769,6 +1801,7 @@
                       <div class="pair-mode-switch">
                         <div class="pair-mode-chip active" id="pair-mode-general-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'general')">一般讓法</div>
                         <div class="pair-mode-chip" id="pair-mode-special-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'special')">特殊讓法</div>
+                        <div class="pair-mode-chip" id="pair-mode-split-chip-${i}-${j}" onclick="setPairHandicapMode(${i},${j},'split')">前後9分開</div>
                       </div>
                       <input type="hidden" id="pair-mode-${i}-${j}" value="general">
                       <div class="pair-input-wrap show" id="pair-general-wrap-${i}-${j}">
@@ -1780,6 +1813,13 @@
                           <input type="number" id="pair-special-p4-${i}-${j}" placeholder="Par 4" oninput="handlePairSpecialInput(${i},${j},'p4')">
                           <input type="number" id="pair-special-p5-${i}-${j}" placeholder="Par 5" oninput="handlePairSpecialInput(${i},${j},'p5')">
                         </div>
+                      </div>
+                      <div class="pair-input-wrap" id="pair-split-wrap-${i}-${j}">
+                        <div class="pair-split-grid">
+                          <label>前9讓洞<input type="number" id="pair-split-front-${i}-${j}" placeholder="0" oninput="handlePairSplitInput(${i},${j},'front')"></label>
+                          <label>後9讓洞<input type="number" id="pair-split-back-${i}-${j}" placeholder="前9打完再填" oninput="handlePairSplitInput(${i},${j},'back')"></label>
+                        </div>
+                        <div class="pair-split-result" id="pair-split-result-${i}-${j}"></div>
                       </div>
                     </div>
                   </div>
@@ -1882,6 +1922,10 @@
             const el = document.getElementById(`pair-special-${kind}-${i}-${j}`);
             if (el) el.disabled = !playerEnabled || !active;
           });
+          ['front','back'].forEach(kind => {
+            const el = document.getElementById(`pair-split-${kind}-${i}-${j}`);
+            if (el) el.disabled = !playerEnabled || !active;
+          });
         });
       });
     }
@@ -1892,12 +1936,15 @@
       document.getElementById(`pair-mode-special-chip-${i}-${j}`)?.classList.toggle('active', mode === 'special');
       document.getElementById(`pair-general-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'general');
       document.getElementById(`pair-special-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'special');
+      document.getElementById(`pair-mode-split-chip-${i}-${j}`)?.classList.toggle('active', mode === 'split');
+      document.getElementById(`pair-split-wrap-${i}-${j}`)?.classList.toggle('show', mode === 'split');
+      if (mode === 'split') updateSplitFrontResults();
     }
 
     function setPairHandicapMode(i,j,mode,fromSync=false){
       const el = document.getElementById(`pair-mode-${i}-${j}`);
       if (!el) return;
-      el.value = mode === 'special' ? 'special' : 'general';
+      el.value = (mode === 'special' || mode === 'split') ? mode : 'general';
       syncPairModeUI(i,j);
       if (!fromSync) setPairHandicapMode(j,i,el.value,true);
       scheduleAutoSave();
@@ -1921,6 +1968,41 @@
       scheduleAutoSave();
     }
 
+    // 前後9分開讓洞：正數 = i 讓 j，負數 = j 讓 i（跟一般讓法同方向），對面自動帶相反數
+    function handlePairSplitInput(i,j,kind){
+      const input = document.getElementById(`pair-split-${kind}-${i}-${j}`);
+      if (!input) return;
+      const activePlayers = getActivePlayers();
+      const playersReady = activePlayers.includes(i) && activePlayers.includes(j) && isMatchEnabled() && !!document.getElementById(`p${i}_m`)?.checked && !!document.getElementById(`p${j}_m`)?.checked;
+      if (!playersReady) return;
+      setPairState(i,j,true,document.getElementById(`pair-strokes-${i}-${j}`)?.value ?? '0');
+      const raw = input.value;
+      const other = document.getElementById(`pair-split-${kind}-${j}-${i}`);
+      if (other) other.value = raw === '' ? '' : String(-1 * Number(raw || 0));
+      updateSplitFrontResults();
+      scheduleAutoSave();
+    }
+
+    function getFrontNineHoles(){ return getPlayOrder().slice(0, 9); }
+    function getBackNineHoles(){ return getPlayOrder().slice(9, 18); }
+
+    // 依前9比洞結果，在後9輸入框下方顯示「前9：誰贏幾點」，方便現場討論後9要讓幾洞
+    function updateSplitFrontResults(){
+      const front = getFrontNineHoles();
+      playerIDs.forEach(i => playerIDs.forEach(j => {
+        if (i === j) return;
+        const el = document.getElementById(`pair-split-result-${i}-${j}`);
+        if (!el) return;
+        const mode = document.getElementById(`pair-mode-${i}-${j}`)?.value;
+        if (mode !== 'split') { el.textContent = ''; return; }
+        const r = computePairPoints(i, j, front);
+        if (!r.played) { el.textContent = '前9尚無成績'; return; }
+        const status = r.played < 9 ? `前9（已打 ${r.played} 洞）` : '前9結果';
+        if (r.score === 0) el.textContent = `${status}：平手`;
+        else el.textContent = `${status}：${nameOf(r.score > 0 ? i : j)} 贏 ${Math.abs(r.score)} 點`;
+      }));
+    }
+
     function setPairState(i,j,checked,value,fromSync=false){
       const cb = document.getElementById(`pair-check-${i}-${j}`);
       const tg = document.getElementById(`pair-toggle-${i}-${j}`);
@@ -1935,6 +2017,10 @@
       inp.value = cb.checked ? (value ?? '') : '';
       ['p3','p4','p5'].forEach(kind => {
         const el = document.getElementById(`pair-special-${kind}-${i}-${j}`);
+        if (el) el.disabled = !cb.checked;
+      });
+      ['front','back'].forEach(kind => {
+        const el = document.getElementById(`pair-split-${kind}-${i}-${j}`);
         if (el) el.disabled = !cb.checked;
       });
       if (!fromSync) {
@@ -2072,6 +2158,15 @@
           const spCB = document.getElementById(`pair-special-${par}-${c}-${b}`);
           if (spCA && spCB){ const tmp = spCA.value; spCA.value = spCB.value; spCB.value = tmp; }
         });
+        // 前後9分開讓洞
+        ['front','back'].forEach(kind => {
+          const sAC = document.getElementById(`pair-split-${kind}-${a}-${c}`);
+          const sBC = document.getElementById(`pair-split-${kind}-${b}-${c}`);
+          if (sAC && sBC){ const tmp = sAC.value; sAC.value = sBC.value; sBC.value = tmp; }
+          const sCA = document.getElementById(`pair-split-${kind}-${c}-${a}`);
+          const sCB = document.getElementById(`pair-split-${kind}-${c}-${b}`);
+          if (sCA && sCB){ const tmp = sCA.value; sCA.value = sCB.value; sCB.value = tmp; }
+        });
       });
 
       // a-b 之間的特殊讓法也對調
@@ -2079,6 +2174,11 @@
         const spAB = document.getElementById(`pair-special-${par}-${a}-${b}`);
         const spBA = document.getElementById(`pair-special-${par}-${b}-${a}`);
         if (spAB && spBA){ const tmp = spAB.value; spAB.value = spBA.value; spBA.value = tmp; }
+      });
+      ['front','back'].forEach(kind => {
+        const sAB = document.getElementById(`pair-split-${kind}-${a}-${b}`);
+        const sBA = document.getElementById(`pair-split-${kind}-${b}-${a}`);
+        if (sAB && sBA){ const tmp = sAB.value; sAB.value = sBA.value; sBA.value = tmp; }
       });
 
       // 5. a-b 之間的讓洞也要對調方向（正負互換）
@@ -2993,7 +3093,7 @@
         else if (diff >= 2) mark.className = 'mark-double-square';
       }
       updatePlayerTotals(player);
-      if (jump) jumpPlayerCell(player, hole);
+      if (jump) { trackHoleEntry(hole); updateSplitFrontResults(); jumpPlayerCell(player, hole); }
     }
 
     function jumpPlayerCell(player, hole){
@@ -3072,7 +3172,9 @@
         p4: (() => { const raw = document.getElementById(`pair-special-p4-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); })(),
         p5: (() => { const raw = document.getElementById(`pair-special-p5-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); })()
       };
-      return { checked, value, mode, specials };
+      const splitVal = kind => { const raw = document.getElementById(`pair-split-${kind}-${i}-${j}`)?.value ?? ''; return raw === '' ? 0 : parseFloat(raw); };
+      const split = { front: splitVal('front'), back: splitVal('back') };
+      return { checked, value, mode, specials, split };
     }
 
     function getStrokeAllowance(pairValue, hole){
@@ -3094,6 +3196,25 @@
       return 0;
     }
 
+    // 前後9分開：讓 N 洞 = 該9洞中 HDCP 最難的 N 洞各讓1桿；讓滿9洞比照18洞全讓（Par5讓2、Par4讓1、Par3讓0.5）
+    function getNineStrokeAllowance(nineValue, hole, nineHoles){
+      if (!nineValue || nineValue > 0) return 0;
+      const abs = Math.abs(nineValue);
+      const par = getHoleInfo(hole).par;
+      if (abs >= 9) {
+        if (par === 5) return 2;
+        if (par === 4) return 1;
+        if (par === 3) return 0.5;
+        return 0;
+      }
+      const ranked = [...nineHoles].sort((x, y) => {
+        const hx = getHoleInfo(x).hdcp || 99;
+        const hy = getHoleInfo(y).hdcp || 99;
+        return hx - hy || x - y;
+      });
+      return ranked.indexOf(hole) < abs ? 1 : 0;
+    }
+
     function getSpecialStrokeAllowance(value, par){
       if (!value || !par) return 0;
       return value < 0 ? Math.abs(value) : 0;
@@ -3108,10 +3229,31 @@
         const par = getHoleInfo(hole).par;
         const key = par === 3 ? 'p3' : par === 4 ? 'p4' : par === 5 ? 'p5' : '';
         allowance = key ? getSpecialStrokeAllowance(meta.specials[key], par) : 0;
+      } else if (meta.mode === 'split') {
+        const front = getFrontNineHoles();
+        const inFront = front.includes(hole);
+        allowance = getNineStrokeAllowance(inFront ? meta.split.front : meta.split.back, hole, inFront ? front : getBackNineHoles());
       } else {
         allowance = getStrokeAllowance(meta.value, hole);
       }
       return gross - allowance;
+    }
+
+    // 計算 a 對 b 在指定洞的比洞點數（正 = a 贏），規則與結算相同
+    function computePairPoints(a, b, holes){
+      let score = 0, played = 0;
+      holes.forEach(hole => {
+        const grossA = getPlayerScore(a, hole);
+        const grossB = getPlayerScore(b, hole);
+        if (!grossA || !grossB) return;
+        played++;
+        const netA = getNetScoreForPair(a,b,hole);
+        const netB = getNetScoreForPair(b,a,hole);
+        const holePar = getHoleInfo(hole).par;
+        if (netA < netB) score += isPairOffsetEnabled(a,b) ? getOffsetPoints(grossA, grossB, holePar) : getMatchMultiplier(grossA, holePar);
+        else if (netB < netA) score -= isPairOffsetEnabled(a,b) ? getOffsetPoints(grossB, grossA, holePar) : getMatchMultiplier(grossB, holePar);
+      });
+      return { score, played };
     }
 
     function buildMatchPairs(){
@@ -3151,6 +3293,11 @@
             ['p3','p4','p5'].forEach(kind => {
               const val = meta.specials[kind];
               if (Number.isNaN(val) || Math.abs(val) > 18) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的特殊讓法必須介於 -18 到 18。`);
+            });
+          } else if (meta.mode === 'split') {
+            ['front','back'].forEach(kind => {
+              const val = meta.split[kind];
+              if (Number.isNaN(val) || Math.abs(val) > 9) errors.push(`${nameOf(a)} 與 ${nameOf(b)} 的${kind === 'front' ? '前' : '後'}9讓洞必須介於 -9 到 9。`);
             });
           } else {
             const input = document.getElementById(`pair-strokes-${a}-${b}`);
@@ -3645,6 +3792,7 @@
     }
 
     function clearCurrentRoundData(keepPreview=true){
+      holeEntryOrder = [];
       document.getElementById('courseName').value = '';
       document.getElementById('startHole').value = '1';
       document.getElementById('pointVal').value = '100';
@@ -3673,6 +3821,9 @@
         ['p3','p4','p5'].forEach(kind => {
           const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
           if (el) el.value = '';
+        });
+        ['front','back'].forEach(kind => {
+          [`pair-split-${kind}-${a}-${b}`, `pair-split-${kind}-${b}-${a}`].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         });
         setPairHandicapMode(a,b,'general',true);
         syncPairModeUI(a,b);
@@ -4405,7 +4556,10 @@
           </div>
         </div>`;
       };
-      document.getElementById('vegas-hole-output').innerHTML = `<div class="detail-unified-list">${buildHalf(split.frontLabel, split.front, 0)}${buildHalf(split.backLabel, split.back, 1)}</div>`;
+      const skipNote = isVegasOrderSkipped()
+        ? `<div class="small-note" style="margin-bottom:10px;">⚠️ 偵測到跳洞，分組依實際輸入順序：${logs.map(x => x.hole).join(' → ')}</div>`
+        : '';
+      document.getElementById('vegas-hole-output').innerHTML = `${skipNote}<div class="detail-unified-list">${buildHalf(split.frontLabel, split.front, 0)}${buildHalf(split.backLabel, split.back, 1)}</div>`;
     }
 
     function finishGame(){
@@ -4475,6 +4629,7 @@
           hdcp: Object.fromEntries(Array.from({length:18}, (_,k) => { const h = k+1; return [h, getCellValue(`cell_Hd_${h}`)]; }))
         },
         scores: {},
+        holeEntryOrder: [...holeEntryOrder],
         pairs: {}
       };
       playerIDs.forEach(i => {
@@ -4491,6 +4646,10 @@
             p3: document.getElementById(`pair-special-p3-${a}-${b}`)?.value || '',
             p4: document.getElementById(`pair-special-p4-${a}-${b}`)?.value || '',
             p5: document.getElementById(`pair-special-p5-${a}-${b}`)?.value || ''
+          },
+          split: {
+            front: document.getElementById(`pair-split-front-${a}-${b}`)?.value || '',
+            back: document.getElementById(`pair-split-back-${a}-${b}`)?.value || ''
           }
         };
       });
@@ -4586,6 +4745,8 @@
         }
         renderScoreboard();
         playerIDs.forEach(i => { for (let h=1; h<=18; h++) if (document.getElementById(`cell_${i}_${h}`)) document.getElementById(`cell_${i}_${h}`).value = state.scores?.[`${i}_${h}`] || ''; });
+        if (Array.isArray(state.holeEntryOrder)) holeEntryOrder = state.holeEntryOrder.map(Number).filter(h => h >= 1 && h <= 18);
+        else seedHoleEntryOrderFromScores();
         pairKeys.forEach(key => {
           const [a,b] = key.split('_');
           const pair = state.pairs?.[key];
@@ -4595,7 +4756,16 @@
             const el = document.getElementById(`pair-special-${kind}-${a}-${b}`);
             if (el) el.value = pair.special?.[kind] || '';
           });
+          ['front','back'].forEach(kind => {
+            const raw = pair.split?.[kind] ?? '';
+            const el = document.getElementById(`pair-split-${kind}-${a}-${b}`);
+            const sym = document.getElementById(`pair-split-${kind}-${b}-${a}`);
+            if (el) el.value = raw;
+            if (sym) sym.value = raw === '' ? '' : String(-1 * Number(raw || 0));
+          });
           setPairHandicapMode(Number(a), Number(b), pair.mode || 'general', true);
+          // 鏡射邊（b 對 a）的讓法模式也要恢復，否則 b 的淨桿會用錯讓法
+          setPairHandicapMode(Number(b), Number(a), pair.mode || 'general', true);
           const offsetCb = document.getElementById(`pair-offset-${a}-${b}`);
           const offsetBox = document.getElementById(`pair-offset-box-${a}-${b}`);
           if (offsetCb) { offsetCb.checked = !!pair.offset; offsetBox?.classList.toggle('active', !!pair.offset); }
@@ -4609,6 +4779,7 @@
         updateParTotals();
         getActivePlayers().forEach(p => { updatePlayerTotals(p); for (let h=1; h<=18; h++) drawMark(p,h,false); });
         updateVegasPreview();
+        updateSplitFrontResults();
         showWarning('已自動恢復上次未完成的資料。', 'global');
       } catch (e) {
         console.error(e);
